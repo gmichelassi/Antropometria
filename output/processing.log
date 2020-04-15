@@ -1,0 +1,6 @@
+02/04/2020 01:12:00 PM matplotlib.pyplot DEBUG    Loaded backend qt5agg version unknown.
+02/04/2020 01:12:01 PM matplotlib.pyplot DEBUG    Loaded backend tkagg version unknown.
+02/04/2020 01:12:01 PM matplotlib.pyplot DEBUG    Loaded backend TkAgg version unknown.
+02/04/2020 01:12:01 PM asd_data.py  INFO     Loading data from csv file
+02/04/2020 01:12:01 PM asd_data.py  INFO     Casos file: /home/gabriel/PycharmProjects/antropometria36/data/casos/distances_ratio_all_px_euclidian.csv
+02/04/2020 01:12:01 PM asd_data.py  INFO     Controles file: /home/gabriel/PycharmProjects/antropometria36/data/controles/distances_ratio_all_px_euclidian.csv
