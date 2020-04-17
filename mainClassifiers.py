@@ -25,21 +25,6 @@ log = logger.getLogger(__file__)
 
 
 def run_combinations(dataset='euclidian_px_all', verbose=False):
-    """
-    This function loads the datasets and labels pre-processed by Dimensionality Reductions and trains four classifiers
-    with a set of pre-defined parameters.
-
-    Input
-    ------
-    dataset: {string} The name of the dataset file that will be loaded
-    verbose: {boolean} If true, extra information will be saved
-                            - Confusion Matrix, metrics for each cross validation...
-
-    Output
-    ------
-    CSV file with the evaluation metrics for each classifier that was trained
-    P.S.: The CSV file that will be saved will be grouped by dimensionality reduction method applied
-    """
     log.info("Running models for %s dataset", dataset)
 
     dimensionality_reductions = ['PCA',

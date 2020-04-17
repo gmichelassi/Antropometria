@@ -4,9 +4,10 @@
 Este projeto tem como objetivo cumprir as seguintes tarefas principais:
 ~~~
 1. Carregar um conjunto de dados qualquer;
-2. Realizar a redução de dimensionalidade/seleção de característiscas do conjunto carregado;
-3. Realizar a calibração dos parâmetros para o classificador disponível;
-4. Salvar o modelo de _Machine Learning_ obtido para que possa ser executado em um projeto futuro;
+2. Realizar o balanceamento das classes por superamostragem (SMOTE) e subamostragem (aleatoria);
+3. Realizar a redução de dimensionalidade/seleção de característiscas do conjunto carregado;
+4. Realizar a calibração dos parâmetros para o classificador disponível;
+5. Salvar o modelo de _Machine Learning_ obtido para que possa ser executado em um projeto futuro;
 ~~~
 Além dessas tarefas principais, este trabalho também lida com as seguintes tarefas secundárias:
 ~~~

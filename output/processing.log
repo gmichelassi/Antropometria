@@ -1,6 +1,12 @@
-02/04/2020 01:12:00 PM matplotlib.pyplot DEBUG    Loaded backend qt5agg version unknown.
-02/04/2020 01:12:01 PM matplotlib.pyplot DEBUG    Loaded backend tkagg version unknown.
-02/04/2020 01:12:01 PM matplotlib.pyplot DEBUG    Loaded backend TkAgg version unknown.
-02/04/2020 01:12:01 PM asd_data.py  INFO     Loading data from csv file
-02/04/2020 01:12:01 PM asd_data.py  INFO     Casos file: /home/gabriel/PycharmProjects/antropometria36/data/casos/distances_ratio_all_px_euclidian.csv
-02/04/2020 01:12:01 PM asd_data.py  INFO     Controles file: /home/gabriel/PycharmProjects/antropometria36/data/controles/distances_ratio_all_px_euclidian.csv
+16/04/2020 07:20:14 PM mainParameterCalibration.py INFO     Running Grid Search for euclidian_px_all dataset
+16/04/2020 07:20:14 PM mainParameterCalibration.py INFO     Reading files for euclidian_px_all dataset
+16/04/2020 07:20:14 PM mainParameterCalibration.py INFO     Dataset file: ./data/reduction_files/None_euclidian_px_all.csv
+16/04/2020 07:20:14 PM mainParameterCalibration.py INFO     Data has 2 classes, 95 instances and 2278 features
+16/04/2020 07:20:14 PM mainParameterCalibration.py INFO     X.shape (95, 2278), y.shape (95,)
+16/04/2020 07:20:14 PM mainParameterCalibration.py INFO     Training Models for randomforestclassifier and None
+16/04/2020 09:26:16 PM mainParameterCalibration.py INFO     Training complete
+16/04/2020 09:26:16 PM mainParameterCalibration.py INFO     Best result presented accuracy 82.07% for randomforestclassifier and None
+16/04/2020 09:26:16 PM mainParameterCalibration.py INFO     Best parameters found: {'bootstrap': True, 'class_weight': None, 'criterion': 'gini', 'max_depth': None, 'max_features': 33, 'min_samples_leaf': 1, 'n_estimators': 500, 'n_jobs': -1, 'random_state': 707878}
+16/04/2020 09:26:16 PM mainParameterCalibration.py INFO     Best parameters were found on index: 48
+16/04/2020 09:26:16 PM mainParameterCalibration.py INFO     Saving results!
+16/04/2020 09:26:16 PM mainParameterCalibration.py INFO     --- Total execution time: 126.04109231630962 minutes ---

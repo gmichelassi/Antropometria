@@ -32,13 +32,13 @@ def load_by_chunks(file_name):
     return merge_frames(chunk_list)
 
 
-def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization="", labels=False):
+def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=False, labels=False):
 
     log.info("Loading data from csv file")
     filename = "/distances"
 
-    if normalization == 'ratio':
-        filename = filename + "_" + normalization
+    if normalization:
+        filename = filename + "_ratio"
 
     if dataset == 'all' or dataset == 'farkas':
         filename = filename + "_" + dataset
@@ -59,7 +59,7 @@ def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=
     log.info("Controles file: " + str(controles_file))
 
     if os.path.isfile(casos_file) and os.path.isfile(controles_file):
-        if normalization is 'ratio':
+        if normalization:
             casos = load_by_chunks(casos_file)
             controles = load_by_chunks(controles_file)
         else:
@@ -78,7 +78,7 @@ def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=
         X = merge_frames(frames)
 
         # remove image paths
-        if normalization is not 'ratio':
+        if not normalization:
             X = remove_feature(X, 'img_name')
             X = remove_feature(X, 'id')
 
@@ -112,3 +112,20 @@ def load_glass():
     X = remove_feature(dataset, 'class_label')
 
     return X, target
+
+
+def load(dataset='distances_all_px_euclidian', folder='casos', feature_to_remove=None, label=1):
+    if feature_to_remove is None:
+        feature_to_remove = ['img_name', 'id']
+    if folder == '' and label == '':
+        path = "./{0}.csv".format(dataset)
+    else:
+        path = "./data/{0}/{1}.csv".format(folder, dataset)
+
+    data = pd.read_csv(path)
+
+    if feature_to_remove is not None:
+        data = remove_feature(data, feature_to_remove)
+    labels = np.full(len(data), 1)
+
+    return data, labels

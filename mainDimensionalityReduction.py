@@ -22,11 +22,11 @@ log = logger.getLogger(__file__)
 def run_dimensionality_reductions(filtro=0.0, reductionless=False):
     all_samples = {}
 
-    # X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
-    # all_samples['euclidian_px_all'] = (X, y)
+    X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
+    all_samples['euclidian_px_all'] = (X, y)
 
-    X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', normalization='ratio', labels=False)
-    all_samples['euclidian_ratio_px_all'] = (X, y)
+    # X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', normalization=True, labels=False)
+    # all_samples['euclidian_ratio_px_all'] = (X, y)
 
     # all_samples['wine'] = asd.load_wine()
     # all_samples['glass'] = asd.load_glass()

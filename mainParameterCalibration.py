@@ -14,7 +14,6 @@ import time
 import initContext as context
 from config import logger
 
-from asd_data import load_by_chunks
 context.loadModules()
 log = logger.getLogger(__file__)
 
@@ -139,10 +138,10 @@ def run_randomizedSearch(dataset='euclidian_px_all', n_labels=111, filtro=0.0):
     ]
 
     classifiers = {
-        # 'randomforestclassifier': rf,
+        'randomforestclassifier': rf,
         # 'svc': svm,
         # 'kneighborsclassifier': knn,
-        'mlpclassifier': nnn,
+        # 'mlpclassifier': nnn,
     }
 
     labels = pd.read_csv(filepath_or_buffer='./data/reduction_files/labels_{0}.csv'.format(dataset))
@@ -232,7 +231,7 @@ def run_randomizedSearch(dataset='euclidian_px_all', n_labels=111, filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_gridSearch(n_labels=94)
+    run_gridSearch(n_labels=95)
     # run_gridSearch(dataset='wine', n_labels=178)
     # run_gridSearch(dataset='glass', n_labels=214)
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
