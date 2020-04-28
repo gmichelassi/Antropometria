@@ -3,6 +3,8 @@ import time
 import initContext as context
 import random
 import numpy as np
+import pandas as pd
+from classifiers.utils import normalizacao_min_max, build_ratio_dataset
 from sklearn.utils import shuffle
 from imblearn.over_sampling import SMOTE, BorderlineSMOTE, KMeansSMOTE, SVMSMOTE
 from config import logger
@@ -67,25 +69,34 @@ def runRandomUnderSampling():
 def runSmote(algorithm=''):
     X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
 
-    log.info("Data before random undersampling")
+    log.info("Data before oversampling")
     log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
 
     if algorithm == 'Borderline':
+        log.info("Running Borderline Smote")
         X, y = BorderlineSMOTE().fit_resample(X, y)
     elif algorithm == 'KMeans':
+        log.info("Running KMeans Smote")
         X, y = KMeansSMOTE().fit_resample(X, y)
     elif algorithm == 'SVM':
+        log.info("Running SVM Smote")
         X, y = SVMSMOTE().fit_resample(X, y)
     else:
+        log.info("Running deafult Smote")
         X, y = SMOTE().fit_resample(X, y)
 
-    log.info("Data after random undersampling")
+    log.info("Data after oversampling")
     log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
 
-    return X, y
+    return normalizacao_min_max(X), y
 
 
 if __name__ == '__main__':
     start_time = time.time()
-    runSmote()
+    X, y = asd.load(dataset='distances_all_px_euclidian', folder='controles',
+                    feature_to_remove=['img_name', 'id'], label=1)
+
+    build_ratio_dataset(X)
+
+    # runRandomUnderSampling()
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

@@ -50,7 +50,7 @@ def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=
         filename = filename + "_" + m
 
     if d_type == 'euclidian' or d_type == 'manhattan':
-        filename = filename + "_" + d_type
+        filename = filename + "_eu"
 
     casos_file = cdir.CASES_DIR + filename + ".csv"
     log.info("Casos file: " + str(casos_file))
@@ -88,10 +88,10 @@ def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=
             raise ValueError("X and Y dimensions are not the same: {0} - {1}".format(X.shape, target.shape))
 
         if labels:
-            return shuffle(X, random_state=random_state)
+            return shuffle(X, random_state=random_state), d_type
         else:
             X, target = shuffle(X, target, random_state=random_state)
-            return X, target
+            return X, target, d_type
     else:
         raise IOError("File not found for parameters: [{0}, {1}, {2}, {3}]".format(dataset, unit, m, d_type))
 
@@ -114,7 +114,7 @@ def load_glass():
     return X, target
 
 
-def load(dataset='distances_all_px_euclidian', folder='casos', feature_to_remove=None, label=1):
+def load(dataset='distances_all_px_eu', folder='casos', feature_to_remove=None, label=1):
     if feature_to_remove is None:
         feature_to_remove = ['img_name', 'id']
     if folder == '' and label == '':
@@ -126,6 +126,6 @@ def load(dataset='distances_all_px_euclidian', folder='casos', feature_to_remove
 
     if feature_to_remove is not None:
         data = remove_feature(data, feature_to_remove)
-    labels = np.full(len(data), 1)
+    labels = np.full(len(data), label)
 
     return data, labels

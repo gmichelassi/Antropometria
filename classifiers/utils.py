@@ -205,3 +205,18 @@ def varianciaAcumuladaPCA(samples, labels, verbose=False):
         plt.xticks(np.arange(1, len(var_exp) + 1, 1))
         plt.legend(loc='center right')
         plt.savefig("./output/pca-explained-variance.png")
+
+
+def normalizacao_min_max(df):
+    df_final = []
+    for (feature, data) in df.iteritems():
+        max = np.amax(data.values)
+        min = np.amin(data.values)
+
+        columns = []
+        for i in data.values:
+            xi = (i - min)/(max - min)
+            columns.append(xi)
+        df_final.append(columns)
+
+    return pd.DataFrame(df_final).T
