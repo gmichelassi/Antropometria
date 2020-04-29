@@ -51,7 +51,7 @@ def run_dimensionality_reductions(filtro=0.0, reduction='None'):
 
     if reduction == 'None':
         log.info("Returning data without dimensionality reduction")
-        return X, y, dataset
+        return X, y
     elif reduction == 'PCA':
         red_dim = PCA(n_components=n_features_to_keep, whiten=True)
     elif reduction == 'mRMR':
