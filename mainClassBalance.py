@@ -67,7 +67,7 @@ def runRandomUnderSampling():
 
 
 def runSmote(algorithm=''):
-    X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
+    X, y, dataset = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
 
     log.info("Data before oversampling")
     log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
@@ -88,7 +88,8 @@ def runSmote(algorithm=''):
     log.info("Data after oversampling")
     log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
 
-    return normalizacao_min_max(X), y
+    # return normalizacao_min_max(X), y, dataset
+    return X, y, dataset
 
 
 if __name__ == '__main__':
