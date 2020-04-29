@@ -2,3 +2,4 @@ venv/
 .idea
 __pycache__/
 distances_ratio_all_px_euclidian.csv
+nohup.out

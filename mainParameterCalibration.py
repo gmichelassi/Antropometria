@@ -1,6 +1,7 @@
 # Classifiers
 from classifiers import svm, rf, knn, nnn, nb
 from mainDimensionalityReduction import run_dimensionality_reductions
+from multiprocessing import Process
 
 # Classifiers evaluation methods
 from sklearn.model_selection import GridSearchCV
@@ -19,8 +20,8 @@ context.loadModules()
 log = logger.getLogger(__file__)
 
 
-def run_gridSearch(dataset='euclidian_px_all', filtro=0.0):
-    log.info("Running Grid Search for %s dataset", dataset)
+def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, smote=''):
+    log.info("(" + str(smote) + ") Running Grid Search for %s dataset", dataset)
 
     dimensionality_reductions = ['None', 'PCA', 'mRMRProxy', 'FCBFProxy',
                                  'CFSProxy', 'RFSProxy', 'ReliefF']
@@ -74,8 +75,8 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0):
             if grid_results is not None:
                 log.info("Best result presented accuracy %.2f%% for %s and %s",
                          grid_results.best_score_ * 100, classifier_name, reduction)
-                log.info("Best parameters found: {0}".format(grid_results.best_params_))
-                log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
+                log.info("(" + str(smote) + ") Best parameters found: {0}".format(grid_results.best_params_))
+                log.info("(" + str(smote) + ") Best parameters were found on index: {0}".format(grid_results.best_index_))
 
                 log.info("Saving results!")
                 df_results = pd.DataFrame(grid_results.cv_results_)
@@ -154,7 +155,19 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_gridSearch()
+
+    proc1 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, 'Borderline'))
+    proc2 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, 'KMeans'))
+    proc3 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, 'SVM'))
+
+    proc1.start()
+    proc2.start()
+    proc3.start()
+
+    proc1.join()
+    proc2.join()
+    proc3.join()
+
     # run_gridSearch(dataset='wine', n_labels=178)
     # run_gridSearch(dataset='glass', n_labels=214)
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
