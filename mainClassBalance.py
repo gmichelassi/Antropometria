@@ -89,6 +89,7 @@ def runSmote(algorithm='', min_max=False):
     log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
 
     if min_max:
+        log.info("Applying min_max normalization")
         return normalizacao_min_max(X), y, dataset
     else:
         return X, y, dataset
