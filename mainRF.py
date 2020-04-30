@@ -21,10 +21,10 @@ from classifiers.utils import calculate_metrics, apply_pearson_feature_selection
 
 from config import logger
 import initContext as context
-
 context.loadModules()
 log = logger.getLogger(__file__)
 
+random_state = 10000
 
 def run_combinations(filtro=0, verbose=False):
     all_samples = {}
