@@ -1,7 +1,6 @@
 # Classifiers
 from classifiers import svm, rf, knn, nnn, nb
 from mainDimensionalityReduction import run_dimensionality_reductions
-from multiprocessing import Process
 
 # Classifiers evaluation methods
 from sklearn.model_selection import GridSearchCV
@@ -9,7 +8,6 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import StratifiedKFold
 
 # Utils
-from sklearn.utils.multiclass import unique_labels
 import numpy as np
 import pandas as pd
 import time
@@ -20,72 +18,80 @@ context.loadModules()
 log = logger.getLogger(__file__)
 
 
-def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, smote='', min_max=False):
-    log.info("(" + str(smote) + ") Running Grid Search for %s dataset", dataset)
+def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_max=False):
+    isRandomForestDone = False
+    log.info("Running Grid Search for %s dataset", dataset)
 
     dimensionality_reductions = ['None', 'PCA', 'mRMRProxy', 'FCBFProxy',
                                  'CFSProxy', 'RFSProxy', 'ReliefF']
-    reduction = dimensionality_reductions[0]
 
     classifiers = {'randomforestclassifier': rf,
-                   # 'svc': svm,
-                   # 'kneighborsclassifier': knn,
-                   # 'mlpclassifier': nnn
+                   'svc': svm,
+                   'kneighborsclassifier': knn,
+                   'mlpclassifier': nnn
                    }
 
     for classifier in classifiers.keys():
-        samples, labels = run_dimensionality_reductions(filtro=filtro, reduction=reduction,
-                                                        smote=smote, min_max=min_max)
+        for reduction in dimensionality_reductions:
+            if isRandomForestDone and classifier == 'randomforestclassifier':
+                continue
+            elif not isRandomForestDone and classifier == 'randomforestclassifier':
+                isRandomForestDone = True
+            elif classifier != 'randomforestclassifier' and reduction == 'None':
+                continue
 
-        instances, features = samples.shape
-        n_features_to_keep = int(np.sqrt(features))
+            samples, labels = run_dimensionality_reductions(filtro=filtro, reduction=reduction,
+                                                            amostragem=amostragem, min_max=min_max)
 
-        scoring = {'accuracy': 'accuracy',
-                   'precision_macro': 'precision_macro',
-                   'recall_macro': 'recall_macro',
-                   'f1_macro': 'f1_macro'}
+            instances, features = samples.shape
+            n_features_to_keep = int(np.sqrt(features))
 
-        estimators, param_grid, classifier_name = classifiers[classifier].make_grid_optimization_pipes(
-            n_features_to_keep)
-        cv = StratifiedKFold(n_splits=4)
-        for estimator in estimators:
-            try:
-                log.info("Training Models for %s and %s", classifier_name, reduction)
+            scoring = {'accuracy': 'accuracy',
+                       'precision_macro': 'precision_macro',
+                       'recall_macro': 'recall_macro',
+                       'f1_macro': 'f1_macro'}
 
-                grd = GridSearchCV(
-                    estimator=estimator,
-                    param_grid=param_grid,
-                    scoring=scoring,
-                    cv=cv,
-                    refit='accuracy',
-                    return_train_score=False,
-                    n_jobs=-1  # -1 means all CPUs
-                    # For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
-                )
-                grid_results = grd.fit(samples, labels)
+            estimators, param_grid, classifier_name = classifiers[classifier].make_grid_optimization_pipes(
+                n_features_to_keep)
+            cv = StratifiedKFold(n_splits=4)
+            for estimator in estimators:
+                try:
+                    log.info("Training Models for %s and %s", classifier_name, reduction)
 
-                log.info("Training complete")
+                    grd = GridSearchCV(
+                        estimator=estimator,
+                        param_grid=param_grid,
+                        scoring=scoring,
+                        cv=cv,
+                        refit='accuracy',
+                        return_train_score=False,
+                        n_jobs=-1  # -1 means all CPUs
+                        # For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+                    )
+                    grid_results = grd.fit(samples, labels)
 
-            except ValueError as e:
-                log.exception("Exception during pipeline execution", extra=e)
-                grid_results = None
-            except KeyError as ke:
-                log.exception("Exception during pipeline execution", extra=ke)
-                grid_results = None
+                    log.info("Training complete")
 
-            if grid_results is not None:
-                log.info("(" + str(smote) + ") Best result presented accuracy %.2f%% for %s and %s",
-                         grid_results.best_score_ * 100, classifier_name, reduction)
-                log.info("(" + str(smote) + ") Best parameters found: {0}".format(grid_results.best_params_))
-                log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
+                except ValueError as e:
+                    log.exception("Exception during pipeline execution", extra=e)
+                    grid_results = None
+                except KeyError as ke:
+                    log.exception("Exception during pipeline execution", extra=ke)
+                    grid_results = None
 
-                log.info("Saving results!")
-                df_results = pd.DataFrame(grid_results.cv_results_)
-                df_results.drop('params', axis=1)
-                path_results = './output/GridSearch/results_{0}_{1}_{2}.csv'.format(dataset,
-                                                                                    classifier_name,
-                                                                                    reduction)
-                df_results.to_csv(path_results, index_label='id')
+                if grid_results is not None:
+                    log.info("Best result presented accuracy %.2f%% for %s and %s",
+                             grid_results.best_score_ * 100, classifier_name, reduction)
+                    log.info("Best parameters found: {0}".format(grid_results.best_params_))
+                    log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
+
+                    log.info("Saving results!")
+                    df_results = pd.DataFrame(grid_results.cv_results_)
+                    df_results.drop('params', axis=1)
+                    path_results = './output/GridSearch/results_{0}_{1}_{2}.csv'.format(dataset,
+                                                                                        classifier_name,
+                                                                                        reduction)
+                    df_results.to_csv(path_results, index_label='id')
 
 
 def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
@@ -156,7 +162,5 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-
-    run_gridSearch(min_max=True)
-
+    run_gridSearch()
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
