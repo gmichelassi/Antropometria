@@ -26,9 +26,9 @@ def __dimensionality_reduction(red_dim, X, y):
     return data, y
 
 
-def run_dimensionality_reductions(filtro=0.0, reduction='None', smote=''):
+def run_dimensionality_reductions(filtro=0.0, reduction='None', smote='', min_max=False):
     # X, y, dataset = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
-    X, y, dataset = sampling.runSmote(smote)
+    X, y, dataset = sampling.runSmote(smote, min_max)
     # X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', normalization=True, labels=False)
     # X, y = asd.load_wine()
     # X, y = asd.load_glass()
