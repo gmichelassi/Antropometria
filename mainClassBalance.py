@@ -26,10 +26,10 @@ def __generateRandomNumbers(how_many=1, maximum=10):
     return numbers
 
 
-def runRandomUnderSampling():
-    X_casos, y_casos = asd.load(dataset='distances_all_px_euclidian', folder='casos',
+def runRandomUnderSampling(min_max=False):
+    X_casos, y_casos = asd.load(dataset='distances_all_px_eu', folder='casos',
                                 feature_to_remove=['img_name', 'id'], label=1)
-    X_controles, y_controles = asd.load(dataset='distances_all_px_euclidian', folder='controles',
+    X_controles, y_controles = asd.load(dataset='distances_all_px_eu', folder='controles',
                                         feature_to_remove=['img_name', 'id'], label=0)
 
     log.info("Data before random undersampling")
@@ -63,7 +63,12 @@ def runRandomUnderSampling():
     X = asd.merge_frames([X_casos, X_controles])
 
     X, target = shuffle(X, y, random_state=random_state)
-    return X, y
+
+    if min_max:
+        log.info("Applying min_max normalization")
+        return normalizacao_min_max(X), y, 'euclidian'
+    else:
+        return X, y, 'euclidian'
 
 
 def runSmote(algorithm='', min_max=False):
@@ -97,6 +102,7 @@ def runSmote(algorithm='', min_max=False):
 
 if __name__ == '__main__':
     start_time = time.time()
+    runRandomUnderSampling()
     X, y = asd.load(dataset='distances_all_px_euclidian', folder='controles',
                     feature_to_remove=['img_name', 'id'], label=1)
 
