@@ -1,2 +1,2 @@
 id,precision,recall,f1,accuracy,dimensionality_reduction,error,classifier,dataset,n_classes,bootstrap,ccp_alpha,class_weight,criterion,max_depth,max_features,max_leaf_nodes,max_samples,min_impurity_decrease,min_impurity_split,min_samples_leaf,min_samples_split,min_weight_fraction_leaf,n_estimators,n_jobs,oob_score,random_state,verbose,warm_start
-0,0.8198537573537573,0.8200674325674325,0.8180829891356207,0.8206521739130435,NoneType,0.17934782608695654,randomforestclassifier,euclidian_px_all,,True,0.0,,gini,,94,,,0.0,,1,2,0.0,500,-1,False,707878,0,False
+0,0.7495676691729323,0.7279411764705882,0.7233351084157535,0.7279411764705882,NoneType,0.2720588235294118,randomforestclassifier,euclidian_px_all,,True,0.0,,gini,,42,,,0.0,,2,2,0.0,500,-1,False,707878,0,False

@@ -8,6 +8,7 @@ from sklearn.metrics import confusion_matrix
 
 # DataSets
 import asd_data as asd
+import mainClassBalance as sampling
 
 # Utils
 import pandas as pd
@@ -28,7 +29,8 @@ log = logger.getLogger(__file__)
 def run_combinations(filtro=0, verbose=False):
     all_samples = {}
 
-    X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
+    X, y, dataset = sampling.runSmote('Borderline')
+    # X, y, dataset = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
     all_samples['euclidian_px_all'] = (X, y)
 
     for k in all_samples.keys():
