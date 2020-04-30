@@ -33,8 +33,6 @@ def run_dimensionality_reductions(filtro=0.0, reduction='None', smote=''):
     # X, y = asd.load_wine()
     # X, y = asd.load_glass()
 
-    log.info("Running dimensionality for %s dataset", dataset)
-
     log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
     n_classes = len(unique_labels(y))
 
