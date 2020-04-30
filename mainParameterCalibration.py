@@ -20,7 +20,7 @@ context.loadModules()
 log = logger.getLogger(__file__)
 
 
-def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, smote=''):
+def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, smote='', min_max=False):
     log.info("(" + str(smote) + ") Running Grid Search for %s dataset", dataset)
 
     dimensionality_reductions = ['None', 'PCA', 'mRMRProxy', 'FCBFProxy',
@@ -34,7 +34,8 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, smote=''):
                    }
 
     for classifier in classifiers.keys():
-        samples, labels = run_dimensionality_reductions(filtro=filtro, reduction=reduction, smote=smote)
+        samples, labels = run_dimensionality_reductions(filtro=filtro, reduction=reduction,
+                                                        smote=smote, min_max=min_max)
 
         instances, features = samples.shape
         n_features_to_keep = int(np.sqrt(features))
@@ -156,21 +157,6 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 if __name__ == '__main__':
     start_time = time.time()
 
-    proc1 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, 'Borderline'))
-    proc2 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, 'KMeans'))
-    proc3 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, 'SVM'))
-    proc4 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, ''))
+    run_gridSearch(min_max=True)
 
-    proc1.start()
-    proc2.start()
-    proc3.start()
-    proc4.start()
-
-    proc1.join()
-    proc2.join()
-    proc3.join()
-    proc4.join()
-
-    # run_gridSearch(dataset='wine', n_labels=178)
-    # run_gridSearch(dataset='glass', n_labels=214)
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
