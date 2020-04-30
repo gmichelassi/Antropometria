@@ -26,12 +26,14 @@ def __dimensionality_reduction(red_dim, X, y):
     return data, y
 
 
-def run_dimensionality_reductions(filtro=0.0, reduction='None', smote='', min_max=False):
-    # X, y, dataset = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
-    X, y, dataset = sampling.runSmote(smote, min_max)
-    # X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', normalization=True, labels=False)
-    # X, y = asd.load_wine()
-    # X, y = asd.load_glass()
+def run_dimensionality_reductions(filtro=0.0, reduction='None', amostragem='', min_max=False):
+    if amostragem is not None:
+        if amostragem == 'random':
+            X, y, dataset = sampling.runRandomUnderSampling(min_max=min_max)
+        else:
+            X, y, dataset = sampling.runSmote(amostragem, min_max)
+    else:
+        X, y, dataset = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
 
     log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
     n_classes = len(unique_labels(y))
