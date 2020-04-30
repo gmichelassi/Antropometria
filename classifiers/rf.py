@@ -7,8 +7,8 @@ def make_pipes(dimensionality_reductions, n_features_to_keep):
     pipes, reductions_names, models_names = [], [], []
 
     random_states = [707878]
-    max_features = [98]
-    n_estimators = [1500]
+    max_features = [170]
+    n_estimators = [1000]
     min_sample_leafs = [5]
 
     dimensionality_reduction = dimensionality_reductions
