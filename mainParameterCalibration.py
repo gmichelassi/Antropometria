@@ -34,7 +34,7 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, smote=''):
                    }
 
     for classifier in classifiers.keys():
-        samples, labels = run_dimensionality_reductions(filtro=filtro, reduction=reduction)
+        samples, labels = run_dimensionality_reductions(filtro=filtro, reduction=reduction, smote=smote)
 
         instances, features = samples.shape
         n_features_to_keep = int(np.sqrt(features))
@@ -73,10 +73,10 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, smote=''):
                 grid_results = None
 
             if grid_results is not None:
-                log.info("Best result presented accuracy %.2f%% for %s and %s",
+                log.info("(" + str(smote) + ") Best result presented accuracy %.2f%% for %s and %s",
                          grid_results.best_score_ * 100, classifier_name, reduction)
                 log.info("(" + str(smote) + ") Best parameters found: {0}".format(grid_results.best_params_))
-                log.info("(" + str(smote) + ") Best parameters were found on index: {0}".format(grid_results.best_index_))
+                log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
 
                 log.info("Saving results!")
                 df_results = pd.DataFrame(grid_results.cv_results_)
@@ -159,14 +159,17 @@ if __name__ == '__main__':
     proc1 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, 'Borderline'))
     proc2 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, 'KMeans'))
     proc3 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, 'SVM'))
+    proc4 = Process(target=run_gridSearch, args=('euclidian_px_all', 0.0, ''))
 
     proc1.start()
     proc2.start()
     proc3.start()
+    proc4.start()
 
     proc1.join()
     proc2.join()
     proc3.join()
+    proc4.join()
 
     # run_gridSearch(dataset='wine', n_labels=178)
     # run_gridSearch(dataset='glass', n_labels=214)
