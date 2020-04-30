@@ -29,7 +29,7 @@ log = logger.getLogger(__file__)
 def run_combinations(filtro=0, verbose=False):
     all_samples = {}
 
-    X, y, dataset = sampling.runSmote('SVM')
+    X, y, dataset = sampling.runSmote('')
     # X, y, dataset = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
     all_samples['euclidian_px_all'] = (X, y)
 
