@@ -74,16 +74,16 @@ def runSmote(algorithm=''):
 
     if algorithm == 'Borderline':
         log.info("Running Borderline Smote")
-        X, y = BorderlineSMOTE().fit_resample(X, y)
+        X, y = BorderlineSMOTE(random_state=random_state).fit_resample(X, y)
     elif algorithm == 'KMeans':
         log.info("Running KMeans Smote")
-        X, y = KMeansSMOTE().fit_resample(X, y)
+        X, y = KMeansSMOTE(random_state=random_state).fit_resample(X, y)
     elif algorithm == 'SVM':
         log.info("Running SVM Smote")
-        X, y = SVMSMOTE().fit_resample(X, y)
+        X, y = SVMSMOTE(random_state=random_state).fit_resample(X, y)
     else:
         log.info("Running deafult Smote")
-        X, y = SMOTE().fit_resample(X, y)
+        X, y = SMOTE(random_state=random_state).fit_resample(X, y)
 
     log.info("Data after oversampling")
     log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
