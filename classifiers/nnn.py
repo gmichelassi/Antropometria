@@ -32,7 +32,7 @@ def make_grid_optimization_pipes(n_features):
     estimator_name = 'mlpclassifier'
 
     grid_parameters = {
-        'hidden_layer_sizes': [(100, ), (n_features, ), (n_features, n_features, n_features)],
+        'hidden_layer_sizes': [(50, ), (50, 50, 50), (100, ), (100, 100, 100), (n_features, ), (n_features, n_features, n_features)],
         'activation': ['identity', 'logistic', 'tanh', 'relu'],
         'solver': ['lbfgs', 'sgd'],
         'alpha': [0.0001, 0.001, 0.01, 0.1, 0, 1, 10, 100],
