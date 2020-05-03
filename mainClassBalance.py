@@ -71,7 +71,7 @@ def runRandomUnderSampling(min_max=False):
         return X, y, 'euclidian'
 
 
-def runSmote(algorithm='', min_max=False):
+def runSmote(algorithm='default', min_max=False):
     X, y, dataset = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
 
     log.info("Data before oversampling")
@@ -87,7 +87,7 @@ def runSmote(algorithm='', min_max=False):
         log.info("Running SVM Smote")
         X, y = SVMSMOTE(random_state=random_state).fit_resample(X, y)
     else:
-        log.info("Running deafult Smote")
+        log.info("Running default Smote")
         X, y = SMOTE(random_state=random_state).fit_resample(X, y)
 
     log.info("Data after oversampling")
