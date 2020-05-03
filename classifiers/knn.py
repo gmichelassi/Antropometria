@@ -32,9 +32,9 @@ def make_grid_optimization_pipes(n_features):
 
     grid_parameters = {
         'n_neighbors': [1, 2, 3, 5, 10, 20, 25, 30, 35, 40],
-        'weights': ['uniform'],
-        'algorithm': ['brute'],
-        'leaf_size': [30],
+        'weights': ['uniform', 'distance'],
+        'algorithm': ['auto', 'brute'],
+        'leaf_size': [1, 5, 10, 20, 30],
         'n_jobs': [-1]
     }
 

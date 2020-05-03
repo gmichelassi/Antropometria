@@ -57,8 +57,8 @@ def make_grid_optimization_pipes(n_features):
     grid_parameters = {
         'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
         'C': [0.01, 0.1, 1, 5, 10, 50, 100],
-        'gamma': [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 5, 10],
-        'degree': [2, 7],
+        'gamma': ['scale', 'auto', 0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 5, 10],
+        'degree': [2, 3, 5],
         'coef0': [0],
         'probability': [True]
     }
