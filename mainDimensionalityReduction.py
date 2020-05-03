@@ -26,7 +26,7 @@ def __dimensionality_reduction(red_dim, X, y):
     return data, y
 
 
-def run_dimensionality_reductions(filtro=0.0, reduction='None', amostragem='', min_max=False):
+def run_dimensionality_reductions(filtro=0.0, reduction='None', amostragem=None, min_max=False):
     if amostragem is not None:
         if amostragem == 'random':
             X, y, dataset = sampling.runRandomUnderSampling(min_max=min_max)
