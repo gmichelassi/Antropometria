@@ -60,7 +60,8 @@ def make_grid_optimization_pipes(n_features):
         'gamma': ['scale', 'auto', 0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 5, 10],
         'degree': [2, 3, 5],
         'coef0': [0],
-        'probability': [True]
+        'probability': [True],
+        'random_state': [707878]
     }
 
     return estimator, grid_parameters, estimator_name
