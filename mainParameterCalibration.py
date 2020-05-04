@@ -26,7 +26,7 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
                                  'CFS', 'RFS', 'ReliefF']
 
     classifiers = {#'randomforestclassifier': rf,
-                   #'svc': svm,
+                   'svc': svm,
                    #'kneighborsclassifier': knn,
                    'mlpclassifier': nnn
                    }
