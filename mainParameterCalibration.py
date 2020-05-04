@@ -25,9 +25,9 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
     dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF',
                                  'CFS', 'RFS', 'ReliefF']
 
-    classifiers = {#'randomforestclassifier': rf,
+    classifiers = {'randomforestclassifier': rf,
                    'svc': svm,
-                   #'kneighborsclassifier': knn,
+                   'kneighborsclassifier': knn,
                    'mlpclassifier': nnn
                    }
 
@@ -105,9 +105,9 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
     reduction = dimensionality_reductions[0]
 
     classifiers = {'randomforestclassifier': rf,
-                   # 'svc': svm,
-                   # 'kneighborsclassifier': knn,
-                   # 'mlpclassifier': nnn
+                   'svc': svm,
+                   'kneighborsclassifier': knn,
+                   'mlpclassifier': nnn
                    }
 
     for classifier in classifiers.keys():
@@ -165,5 +165,5 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_gridSearch(amostragem=None)
+    run_gridSearch(amostragem='KMeans')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
