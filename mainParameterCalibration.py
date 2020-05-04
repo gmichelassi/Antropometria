@@ -25,9 +25,9 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
     dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF',
                                  'CFS', 'RFS', 'ReliefF']
 
-    classifiers = {'randomforestclassifier': rf,
-                   'svc': svm,
-                   'kneighborsclassifier': knn,
+    classifiers = {#'randomforestclassifier': rf,
+                   #'svc': svm,
+                   #'kneighborsclassifier': knn,
                    'mlpclassifier': nnn
                    }
 
@@ -44,7 +44,10 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
                                                             amostragem=amostragem, min_max=min_max)
 
             instances, features = samples.shape
-            n_features_to_keep = int(np.sqrt(features))
+            if classifier == 'randomforestclassifier':
+                n_features_to_keep = int(np.sqrt(features))
+            else:
+                n_features_to_keep = features
 
             scoring = {'accuracy': 'accuracy',
                        'precision_macro': 'precision_macro',
