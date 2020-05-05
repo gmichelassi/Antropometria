@@ -165,5 +165,5 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_gridSearch(amostragem='KMeans')
+    run_gridSearch(amostragem='SVM')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
