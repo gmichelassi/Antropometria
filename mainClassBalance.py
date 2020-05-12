@@ -71,7 +71,7 @@ def runRandomUnderSampling(min_max=False):
         return X, y, 'euclidian'
 
 
-def runSmote(algorithm='default', min_max=False):
+def runSmote(algorithm='default'):
     X, y, dataset = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
 
     log.info("Data before oversampling")
@@ -79,34 +79,27 @@ def runSmote(algorithm='default', min_max=False):
 
     if algorithm == 'Borderline':
         log.info("Running Borderline Smote")
-        X, y = BorderlineSMOTE(random_state=random_state).fit_resample(X, y)
+        X_novo, y_novo = BorderlineSMOTE(random_state=random_state).fit_resample(X, y)
     elif algorithm == 'KMeans':
         log.info("Running KMeans Smote")
-        X, y = KMeansSMOTE(random_state=random_state).fit_resample(X, y)
+        X_novo, y_novo = KMeansSMOTE(random_state=random_state).fit_resample(X, y)
     elif algorithm == 'SVM':
         log.info("Running SVM Smote")
-        X, y = SVMSMOTE(random_state=random_state).fit_resample(X, y)
+        X_novo, y_novo = SVMSMOTE(random_state=random_state).fit_resample(X, y)
     else:
         log.info("Running default Smote")
-        X, y = SMOTE(random_state=random_state).fit_resample(X, y)
+        X_novo, y_novo = SMOTE(random_state=random_state).fit_resample(X, y)
 
     log.info("Data after oversampling")
-    log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
+    log.info("Dataset: {0}, {1}".format(X_novo.shape, len(y_novo)))
 
-    if min_max:
-        log.info("Applying min_max normalization")
-        return normalizacao_min_max(X), y, dataset
-    else:
-        return X, y, dataset
+    synthetic_X = X_novo[~X_novo.apply(tuple, 1).isin(X.apply(tuple, 1))]
+    synthetic_y = y_novo[-len(synthetic_X):]
+
+    return X, y, synthetic_X, synthetic_y
 
 
 if __name__ == '__main__':
     start_time = time.time()
-    runRandomUnderSampling()
-    X, y = asd.load(dataset='distances_all_px_euclidian', folder='controles',
-                    feature_to_remove=['img_name', 'id'], label=1)
 
-    build_ratio_dataset(X)
-
-    # runRandomUnderSampling()
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
