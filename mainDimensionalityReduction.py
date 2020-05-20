@@ -20,20 +20,18 @@ log = logger.getLogger(__file__)
 
 
 def __dimensionality_reduction(red_dim, X, y):
+    if red_dim is None:
+        return X
     reduction_name = red_dim.__class__.__name__
     log.info("Applying {0} dimensionality reduction".format(reduction_name))
     data = red_dim.fit_transform(X, y)
-    return data, y
+    return data
 
 
-def run_dimensionality_reductions(filtro=0.0, reduction='None', amostragem=None, min_max=False):
-    if amostragem is not None:
-        if amostragem == 'random':
-            X, y, dataset = sampling.runRandomUnderSampling(min_max=min_max)
-        else:
-            X, y, dataset = sampling.runSmote(amostragem, min_max)
-    else:
-        X, y, dataset = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
+def run_dimensionality_reductions(reduction='None', filtro=0.0, amostragem=None):
+    synthetic_X, synthetic_y = None, None
+
+    X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
 
     log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
     n_classes = len(unique_labels(y))
@@ -50,8 +48,8 @@ def run_dimensionality_reductions(filtro=0.0, reduction='None', amostragem=None,
     n_features_to_keep = int(np.sqrt(features))
 
     if reduction == 'None':
-        log.info("Returning data without dimensionality reduction")
-        return X, y
+        log.info("Not applying any dimensionality reduction")
+        red_dim = None
     elif reduction == 'PCA':
         red_dim = PCA(n_components=n_features_to_keep, whiten=True)
     elif reduction == 'mRMR':
@@ -67,10 +65,18 @@ def run_dimensionality_reductions(filtro=0.0, reduction='None', amostragem=None,
     else:
         raise IOError("Dimensionality Reduction not found for parameter {0}".format(reduction))
 
-    return __dimensionality_reduction(red_dim, X, y)
+    X = __dimensionality_reduction(red_dim, X, y)
+
+    if amostragem is not None:
+        if amostragem == 'random':
+            X, y = sampling.runRandomUnderSampling(X, y)
+        else:
+            X, y, synthetic_X, synthetic_y = sampling.runSmote(X, y, amostragem)
+
+    return X, y, synthetic_X, synthetic_y
 
 
 if __name__ == '__main__':
     start_time = time.time()
-    print(run_dimensionality_reductions(filtro=0.0, reduction='None'))
+    print(run_dimensionality_reductions('mRMR', 0.0, 'smote'))
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

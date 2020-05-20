@@ -12,12 +12,12 @@ def make_pipes():
     return pipes, models_names
 
 
-def make_grid_optimization_pipes(n_features):
-    estimator = [GaussianNB]
-    estimator_name = 'gaussiannb'
-    grid_parameters = {}
+def make_grid_optimization_estimators(n_features):
+    return [GaussianNB()]
 
-    return estimator, grid_parameters, estimator_name
+
+def getParams():
+    return GaussianNB().get_params(deep=False).keys()
 
 
 def make_estimator():

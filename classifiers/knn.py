@@ -26,19 +26,32 @@ def make_pipes():
     return pipes, models_names
 
 
-def make_grid_optimization_pipes(n_features):
-    estimator = [KNeighborsClassifier()]
-    estimator_name = 'kneighborsclassifier'
+def make_grid_optimization_estimators(n_features):
+    estimators = []
 
-    grid_parameters = {
-        'n_neighbors': [1, 2, 3, 5, 10, 20, 25, 30, 35, 40],
-        'weights': ['uniform', 'distance'],
-        'algorithm': ['auto', 'brute'],
-        'leaf_size': [1, 5, 10, 20, 30],
-        'n_jobs': [-1]
-    }
+    n_neighbors = [1, 2, 3, 5, 10, 20, 25, 30, 35, 40]
+    weights = ['uniform', 'distance'],
+    algorithms = ['auto', 'brute'],
+    leaf_sizes = [1, 5, 10, 20, 30]
 
-    return estimator, grid_parameters, estimator_name
+    for n_neighbor in n_neighbors:
+        for weight in weights:
+            for algorithm in algorithms:
+                for leaf_size in leaf_sizes:
+                    estimator = KNeighborsClassifier(
+                        n_neighbors=n_neighbor,
+                        weights=weight,
+                        algorithm=algorithm,
+                        leaf_size=leaf_size,
+                        n_jobs=-1
+                    )
+
+                    estimators.append(estimator)
+    return estimators
+
+
+def getParams():
+    return KNeighborsClassifier().get_params(deep=False).keys()
 
 
 def make_random_optimization_pipes(n_features):

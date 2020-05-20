@@ -68,25 +68,34 @@ def make_oob_pipes(dimensionality_reductions, n_features_to_keep):
     return pipes, reductions_names, models_names
 
 
-def make_grid_optimization_pipes(n_features):
-    estimator = [RandomForestClassifier()]
-    estimator_name = 'randomforestclassifier'
+def make_grid_optimization_estimators(n_features):
+    estimators = []
 
-    grid_parameters = {
-        'n_estimators': [500, 1000, 1500, 2000],
-        'criterion': ['gini'],
-        'max_depth': [None],
-        'min_samples_leaf': [1, 2, 5, 10, 15, 20],
-        'max_features': [i for i in range(int(0.5 * n_features),
-                                          6 * n_features,
-                                          int(((6 * n_features - 0.5 * n_features) / 50)))],
-        'bootstrap': [True],
-        'n_jobs': [-1],
-        'random_state': [707878],
-        'class_weight': [None]
-    }
+    # Parâmetros
+    n_estimators = [500, 1000, 1500, 2000]
+    min_samples_leaf = [1, 2, 5, 10, 15, 20]
+    max_features = [i for i in range(int(0.5 * n_features), 6 * n_features, int(((6 * n_features - 0.5 * n_features) / 50)))]
 
-    return estimator, grid_parameters, estimator_name
+    for n_estimator in n_estimators:
+        for max_feature in max_features:
+            for min_sample_leaf in min_samples_leaf:
+                estimator = RandomForestClassifier(
+                    n_estimators=n_estimator,
+                    criterion='gini',
+                    max_depth=None,
+                    min_samples_leaf=min_sample_leaf,
+                    max_features=max_feature,
+                    bootstrap=True,
+                    n_jobs=-1,
+                    random_state=707878,
+                    class_weight=None
+                )
+                estimators.append(estimator)
+    return estimators
+
+
+def getParams():
+    return RandomForestClassifier().get_params(deep=False).keys()
 
 
 def make_random_optimization_pipes(n_features):

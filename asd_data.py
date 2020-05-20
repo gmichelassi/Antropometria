@@ -88,10 +88,10 @@ def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=
             raise ValueError("X and Y dimensions are not the same: {0} - {1}".format(X.shape, target.shape))
 
         if labels:
-            return shuffle(X, random_state=random_state), d_type
+            return shuffle(X, random_state=random_state)
         else:
             X, target = shuffle(X, target, random_state=random_state)
-            return X, target, d_type
+            return X, target
     else:
         raise IOError("File not found for parameters: [{0}, {1}, {2}, {3}]".format(dataset, unit, m, d_type))
 
