@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sn
 import pandas as pd
 import csv
-
+import math
+import random
 from sklearn.decomposition import PCA
 from scipy import stats
 
@@ -22,6 +23,16 @@ def mean_scores(scores):
     for score_key, score_value in scores.items():
         mean_score[score_key] = np.mean(score_value, axis=0)
     return mean_score
+
+
+def sample_std(scores):
+    mean = np.mean(scores)
+    std = 0
+    for i in scores:
+        std += (i - mean) ** 2
+    std = std/(len(scores) - 1)
+    print(std)
+    return math.sqrt(std)
 
 
 def save_confusion_matrix(confusion_matrix, dataset, reduction, classifier):
@@ -220,3 +231,15 @@ def normalizacao_min_max(df):
         df_final.append(columns)
 
     return pd.DataFrame(df_final).T
+
+
+def generateRandomNumbers(how_many=1, maximum=10):
+    numbers = []
+    random.seed(909898)
+    cont = 0
+    while cont < how_many:
+        nro = random.randint(0, maximum)
+        if nro not in numbers:
+            numbers.append(nro)
+            cont += 1
+    return numbers
