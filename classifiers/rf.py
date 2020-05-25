@@ -90,12 +90,13 @@ def make_grid_optimization_estimators(n_features):
                     random_state=707878,
                     class_weight=None
                 )
-                estimators.append(estimator)
+                parameters = {'n_estimators': n_estimator, 'criterion': 'gini', 'max_depth': None, 'min_samples_leaf': min_sample_leaf, 'max_features': max_feature, 'bootstrap': True, 'n_jobs': -1, 'random_state': 707878, 'class_weight': None}
+                estimators.append((estimator, parameters))
     return estimators
 
 
 def getParams():
-    return RandomForestClassifier().get_params(deep=False).keys()
+    return ['n_estimators', 'criterion', 'max_depth', 'min_samples_leaf', 'max_features', 'bootstrap', 'n_jobs', 'random_state', 'class_weight']
 
 
 def make_random_optimization_pipes(n_features):

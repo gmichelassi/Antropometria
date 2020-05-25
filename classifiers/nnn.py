@@ -48,12 +48,13 @@ def make_grid_optimization_estimators(n_features):
                         max_iter=300,
                         random_state=707878
                     )
-                    estimators.append(estimator)
+                    parameters = {'hidden_layer_sizes': hidden_layer_size, 'activation': activation, 'alpha': alpha, 'solver': solver, 'learning_rate_init': 0.001, 'max_iter': 300, 'random_state': 707878}
+                    estimators.append((estimator, parameters))
     return estimators
 
 
 def getParams():
-    return MLPClassifier().get_params(deep=False).keys()
+    return ['hidden_layer_sizes', 'activation', 'alpha', 'solver', 'learning_rate_init', 'max_iter', 'random_state']
 
 
 def make_random_optimization_pipes(n_features):
