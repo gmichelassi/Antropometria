@@ -51,7 +51,7 @@ def make_pipes():
 
 
 def getParams():
-    return SVC().get_params(deep=False).keys()
+    return ['kernel', 'C', 'gamma', 'degree', 'coef0', 'probability', 'random_state']
 
 
 def make_grid_optimization_estimators(n_features):
@@ -75,7 +75,8 @@ def make_grid_optimization_estimators(n_features):
                         probability=True,
                         random_state=707878
                     )
-                    estimators.append(estimator)
+                    parameters = {'kernel': kernel, 'C': C, 'gamma': gamma, 'degree': degree, 'coef0': 0, 'probability': True, 'random_state': 707878}
+                    estimators.append((estimator, parameters))
     return estimators
 
 

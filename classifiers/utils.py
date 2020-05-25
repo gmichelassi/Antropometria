@@ -31,7 +31,6 @@ def sample_std(scores):
     for i in scores:
         std += (i - mean) ** 2
     std = std/(len(scores) - 1)
-    print(std)
     return math.sqrt(std)
 
 

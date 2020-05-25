@@ -42,10 +42,10 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
 
     isRandomForestDone = False
     dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF']
-    classifiers = {'randomforestclassifier': rf,
-                   'svc': svm,
-                   'kneighborsclassifier': knn,
-                   'mlpclassifier': nnn,
+    classifiers = {# 'randomforestclassifier': rf,
+                   # 'svc': svm,
+                   # 'kneighborsclassifier': knn,
+                   # 'mlpclassifier': nnn,
                    'gaussiannb': nb
                    }
 
@@ -80,32 +80,36 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
                 writer.writeheader()
 
                 log.info("Training Models for %s and %s", classifier, reduction)
+                log.info("{0} estimators found".format(len(estimators)))
 
-                for estimator in estimators:
-                    log.info("#%d - Executing Cross-Validation", test_id)
+                log.info("Executing Cross-Validation")
+                current_fold, folds = 0, []
+                for train_index, test_index in cv.split(X, y):
+                    X_train, y_train = X[train_index], y[train_index]
+                    X_test, y_test = X[test_index], y[test_index]
 
+                    if synthetic_X is not None:
+                        X_train, y_train = __completeFrame(X_train, y_train, synthetic_X, synthetic_y, n_splits,
+                                                           current_fold)
+                    folds.append((X_train, y_train, X_test, y_test))
+                    current_fold += 1
+                log.info("Cross-Validation success!")
+
+                for model in estimators:
+                    estimator, parameters = model
                     accuracy, precision, recall, f1 = [], [], [], []
-                    current_fold = 0
-                    for train_index, test_index in cv.split(X, y):
-                        X_train, y_train = X[train_index], y[train_index]
-                        X_test, y_test = X[test_index], y[test_index]
 
-                        if synthetic_X is not None:
-                            X_train, y_train = __completeFrame(X_train, y_train, synthetic_X, synthetic_y, n_splits, current_fold)
+                    # Antes, somente geramos as folds, agora vamos utilizadas para cada modelo
+                    for i in range(n_splits):
+                        estimator.fit(folds[i][0], folds[i][1])
+                        y_predict = estimator.predict(folds[i][2])
 
-                        estimator.fit(X_train, y_train)
-                        y_predict = estimator.predict(X_test)
+                        accuracy.append(accuracy_score(y_true=folds[i][3], y_pred=y_predict))
+                        precision.append(precision_score(y_true=folds[i][3], y_pred=y_predict))
+                        recall.append(recall_score(y_true=folds[i][3], y_pred=y_predict))
+                        f1.append(f1_score(y_true=folds[i][3], y_pred=y_predict))
+                        # c_matrix = confusion_matrix(y_true=folds[i][3], y_pred=y_predict)
 
-                        accuracy.append(accuracy_score(y_true=y_test, y_pred=y_predict))
-                        precision.append(precision_score(y_true=y_test, y_pred=y_predict))
-                        recall.append(recall_score(y_true=y_test, y_pred=y_predict))
-                        f1.append(f1_score(y_true=y_test, y_pred=y_predict))
-                        # c_matrix = confusion_matrix(y_true=y_test, y_pred=y_predict)
-                        current_fold += 1
-
-                    log.info("#%d - Cross-Validation success!", test_id)
-
-                    parameters = estimator.get_params(deep=False)
                     mean_results = mean_scores({'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1})
 
                     tc = 2.262  # valor na tabela da distribuição t-student com k-1 graus de liberdade e p = ?
@@ -121,8 +125,7 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
                         best_parameters = parameters
                         best_IC = IC
 
-                    log.info("#%d - CV result (accuracy) %.2f for model %s and reduction %s",
-                             test_id, mean_results['accuracy'], classifier, reduction)
+                    # log.info("#%d - CV result (accuracy) %.2f for model %s and reduction %s", test_id, mean_results['accuracy'], classifier, reduction)
 
                     results = {'id': test_id,
                                'dataset': dataset,
@@ -136,11 +139,11 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
 
                     results.update(parameters)
                     writer.writerow(results)
-                    log.info("#%d - Saving results!", test_id)
+                    # log.info("#%d - Saving results!", test_id)
 
                     test_id += 1
                     p_done = (100 * float(test_id)) / float(len(estimators))
-                    log.info("%.2f%% of classifier %s processing done...", p_done, classifier)
+                    # log.info("%.2f%% of classifier %s processing done...", p_done, classifier)
 
                 log.info("Best result presented accuracy %.3f for %s and %s", best_accuracy, classifier, reduction)
                 log.info("Confidence interval is [%.3f,%.3f]", best_IC[0], best_IC[1])
