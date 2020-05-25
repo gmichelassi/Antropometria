@@ -42,10 +42,10 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
 
     isRandomForestDone = False
     dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF']
-    classifiers = {# 'randomforestclassifier': rf,
-                   # 'svc': svm,
-                   # 'kneighborsclassifier': knn,
-                   # 'mlpclassifier': nnn,
+    classifiers = {'randomforestclassifier': rf,
+                   'svc': svm,
+                   'kneighborsclassifier': knn,
+                   'mlpclassifier': nnn,
                    'gaussiannb': nb
                    }
 
