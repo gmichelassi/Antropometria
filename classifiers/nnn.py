@@ -30,22 +30,23 @@ def make_pipes():
 def make_grid_optimization_estimators(n_features):
     estimators = []
     hidden_layer_sizes = [(50,), (50, 50, 50), (100,), (100, 100, 100), (n_features,),
-                          (n_features, n_features, n_features)],
-    activations = ['identity', 'logistic', 'tanh', 'relu'],
-    solvers = ['lbfgs', 'sgd'],
-    alphas = [0.0001, 0.001, 0.01, 0.1, 0, 1, 10, 100],
+                          (n_features, n_features, n_features)]
+    activations = ['identity', 'logistic', 'tanh', 'relu']
+    solvers = ['lbfgs', 'sgd']
+    alphas = [0.0001, 0.001, 0.01]
 
     for hidden_layer_size in hidden_layer_sizes:
         for activation in activations:
             for solver in solvers:
                 for alpha in alphas:
+
                     estimator = MLPClassifier(
                         hidden_layer_sizes=hidden_layer_size,
                         activation=activation,
                         alpha=alpha,
                         solver=solver,
                         learning_rate_init=0.001,
-                        max_iter=300,
+                        max_iter=5000,
                         random_state=707878
                     )
                     parameters = {'hidden_layer_sizes': hidden_layer_size, 'activation': activation, 'alpha': alpha, 'solver': solver, 'learning_rate_init': 0.001, 'max_iter': 300, 'random_state': 707878}

@@ -57,10 +57,10 @@ def getParams():
 def make_grid_optimization_estimators(n_features):
     estimators = []
 
-    kernels = ['linear', 'poly', 'rbf', 'sigmoid'],
-    Cs = [0.01, 0.1, 1, 5, 10, 50, 100],
-    gammas = ['scale', 'auto', 0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 5, 10],
-    degrees = [2, 3, 5],
+    kernels = ['linear', 'poly', 'rbf', 'sigmoid']
+    Cs = [0.01, 0.1, 1, 5, 10, 50, 100]
+    gammas = ['scale', 'auto', 0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 5, 10]
+    degrees = [2, 3, 5]
 
     for kernel in kernels:
         for C in Cs:
