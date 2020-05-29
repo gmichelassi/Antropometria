@@ -90,7 +90,7 @@ def make_grid_optimization_estimators(n_features):
                     random_state=707878,
                     class_weight=None
                 )
-                parameters = {'n_estimators': n_estimator, 'criterion': 'gini', 'max_depth': None, 'min_samples_leaf': min_sample_leaf, 'max_features': max_feature, 'bootstrap': True, 'n_jobs': -1, 'random_state': 707878, 'class_weight': None}
+                parameters = [n_estimator, 'gini', None, min_sample_leaf, max_feature, True, -1, 707878, None]
                 estimators.append((estimator, parameters))
     return estimators
 

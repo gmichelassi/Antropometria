@@ -45,7 +45,7 @@ def make_grid_optimization_estimators(n_features):
                         leaf_size=leaf_size,
                         n_jobs=-1
                     )
-                    parameters = {'n_neighbors': n_neighbor, 'weights': weight, 'algorithm': algorithm, 'leaf_size': leaf_size, 'n_jobs': -1}
+                    parameters = [n_neighbor, weight, algorithm, leaf_size, -1]
                     estimators.append((estimator, parameters))
     return estimators
 

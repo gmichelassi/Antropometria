@@ -13,11 +13,11 @@ def make_pipes():
 
 
 def make_grid_optimization_estimators(n_features):
-    return [(GaussianNB(), {})]
+    return [(GaussianNB(), [])]
 
 
 def getParams():
-    return {}
+    return []
 
 
 def make_estimator():

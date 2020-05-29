@@ -3,7 +3,6 @@ from classifiers import svm, rf, knn, nnn, nb
 from mainDimensionalityReduction import run_dimensionality_reductions
 
 # Classifiers evaluation methods
-from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
@@ -51,6 +50,8 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
 
     for classifier in classifiers.keys():
         for reduction in dimensionality_reductions:
+            resultados = []
+
             if isRandomForestDone and classifier == 'randomforestclassifier':
                 continue
             elif not isRandomForestDone and classifier == 'randomforestclassifier':
@@ -74,81 +75,72 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
 
             columns = ['id', 'dataset', 'classifier', 'reduction', 'accuracy', 'IC_Accuracy', 'precision', 'recall', 'f1']
             columns += classifiers[classifier].getParams()
+            resultados.append(columns)
 
-            with open('./output/GridSearch/results_{0}_{1}.csv'.format(classifier, reduction), 'w') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=columns)
-                writer.writeheader()
+            log.info("Training Models for %s and %s", classifier, reduction)
+            log.info("{0} estimators found".format(len(estimators)))
 
-                log.info("Training Models for %s and %s", classifier, reduction)
-                log.info("{0} estimators found".format(len(estimators)))
+            log.info("Executing Cross-Validation")
+            current_fold, folds = 0, []
+            for train_index, test_index in cv.split(X, y):
+                X_train, y_train = X[train_index], y[train_index]
+                X_test, y_test = X[test_index], y[test_index]
 
-                log.info("Executing Cross-Validation")
-                current_fold, folds = 0, []
-                for train_index, test_index in cv.split(X, y):
-                    X_train, y_train = X[train_index], y[train_index]
-                    X_test, y_test = X[test_index], y[test_index]
+                if synthetic_X is not None:
+                    X_train, y_train = __completeFrame(X_train, y_train, synthetic_X, synthetic_y, n_splits,
+                                                       current_fold)
+                folds.append((X_train, y_train, X_test, y_test))
+                current_fold += 1
+            log.info("Cross-Validation success!")
 
-                    if synthetic_X is not None:
-                        X_train, y_train = __completeFrame(X_train, y_train, synthetic_X, synthetic_y, n_splits,
-                                                           current_fold)
-                    folds.append((X_train, y_train, X_test, y_test))
-                    current_fold += 1
-                log.info("Cross-Validation success!")
+            for model in estimators:
+                estimator, parameters = model
+                accuracy, precision, recall, f1 = [], [], [], []
 
-                for model in estimators:
-                    estimator, parameters = model
-                    accuracy, precision, recall, f1 = [], [], [], []
+                # Antes, somente geramos as folds, agora vamos utilizadas para cada modelo
+                for i in range(n_splits):
+                    estimator.fit(folds[i][0], folds[i][1])
+                    y_predict = estimator.predict(folds[i][2])
 
-                    # Antes, somente geramos as folds, agora vamos utilizadas para cada modelo
-                    for i in range(n_splits):
-                        estimator.fit(folds[i][0], folds[i][1])
-                        y_predict = estimator.predict(folds[i][2])
+                    accuracy.append(accuracy_score(y_true=folds[i][3], y_pred=y_predict))
+                    precision.append(precision_score(y_true=folds[i][3], y_pred=y_predict))
+                    recall.append(recall_score(y_true=folds[i][3], y_pred=y_predict))
+                    f1.append(f1_score(y_true=folds[i][3], y_pred=y_predict))
+                    # c_matrix = confusion_matrix(y_true=folds[i][3], y_pred=y_predict)
 
-                        accuracy.append(accuracy_score(y_true=folds[i][3], y_pred=y_predict))
-                        precision.append(precision_score(y_true=folds[i][3], y_pred=y_predict))
-                        recall.append(recall_score(y_true=folds[i][3], y_pred=y_predict))
-                        f1.append(f1_score(y_true=folds[i][3], y_pred=y_predict))
-                        # c_matrix = confusion_matrix(y_true=folds[i][3], y_pred=y_predict)
+                mean_results = mean_scores({'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1})
 
-                    mean_results = mean_scores({'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1})
+                tc = 2.262  # valor na tabela da distribuição t-student com k-1 graus de liberdade e p = ?
+                s = sample_std(accuracy)
+                IC_1 = mean_results['accuracy'] + tc * (s / math.sqrt(n_splits))
+                IC_2 = mean_results['accuracy'] - tc * (s / math.sqrt(n_splits))
 
-                    tc = 2.262  # valor na tabela da distribuição t-student com k-1 graus de liberdade e p = ?
-                    s = sample_std(accuracy)
-                    IC_1 = mean_results['accuracy'] + tc * (s / math.sqrt(n_splits))
-                    IC_2 = mean_results['accuracy'] - tc * (s / math.sqrt(n_splits))
+                IC = (IC_2, IC_1)
 
-                    IC = (IC_2, IC_1)
+                if mean_results['accuracy'] > best_accuracy:
+                    best_accuracy = mean_results['accuracy']
+                    best_id = test_id
+                    best_parameters = parameters
+                    best_IC = IC
 
-                    if mean_results['accuracy'] > best_accuracy:
-                        best_accuracy = mean_results['accuracy']
-                        best_id = test_id
-                        best_parameters = parameters
-                        best_IC = IC
+                # log.info("#%d - CV result (accuracy) %.2f for model %s and reduction %s", test_id, mean_results['accuracy'], classifier, reduction)
 
-                    # log.info("#%d - CV result (accuracy) %.2f for model %s and reduction %s", test_id, mean_results['accuracy'], classifier, reduction)
+                train_results = [test_id, dataset, classifier, reduction, mean_results['accuracy'], IC, mean_results['precision'], mean_results['recall'], mean_results['f1']]
+                train_results += parameters
+                resultados.append(train_results)
 
-                    results = {'id': test_id,
-                               'dataset': dataset,
-                               'classifier': classifier,
-                               'reduction': reduction,
-                               'accuracy': mean_results['accuracy'],
-                               'IC_Accuracy': IC,
-                               'precision': mean_results['precision'],
-                               'recall': mean_results['recall'],
-                               'f1': mean_results['f1']}
+                # log.info("#%d - Saving results!", test_id)
 
-                    results.update(parameters)
-                    writer.writerow(results)
-                    # log.info("#%d - Saving results!", test_id)
+                test_id += 1
+                p_done = (100 * float(test_id)) / float(len(estimators))
+                # log.info("%.2f%% of classifier %s processing done...", p_done, classifier)
+            df = pd.DataFrame(resultados)
+            df.to_csv('./output/GridSearch/results_{0}_{1}.csv'.format(classifier, reduction), index=False, header=False)
 
-                    test_id += 1
-                    p_done = (100 * float(test_id)) / float(len(estimators))
-                    # log.info("%.2f%% of classifier %s processing done...", p_done, classifier)
-
-                log.info("Best result presented accuracy %.3f for %s and %s", best_accuracy, classifier, reduction)
-                log.info("Confidence interval is [%.3f,%.3f]", best_IC[0], best_IC[1])
-                log.info("Best parameters found: {0}".format(best_parameters))
-                log.info("Best parameters were found on index: {0}".format(best_id))
+            log.info("Best result presented accuracy %.3f for %s and %s", best_accuracy, classifier, reduction)
+            log.info("Confidence interval is [%.3f,%.3f]", best_IC[0], best_IC[1])
+            log.info("Best parameters found: {0}".format(best_parameters))
+            log.info("Best parameters were found on index: {0}".format(best_id))
 
 
 def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
