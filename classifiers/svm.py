@@ -75,7 +75,7 @@ def make_grid_optimization_estimators(n_features):
                         probability=True,
                         random_state=707878
                     )
-                    parameters = {'kernel': kernel, 'C': C, 'gamma': gamma, 'degree': degree, 'coef0': 0, 'probability': True, 'random_state': 707878}
+                    parameters = [kernel, C, gamma, degree, 0, True, 707878]
                     estimators.append((estimator, parameters))
     return estimators
 
