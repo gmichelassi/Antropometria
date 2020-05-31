@@ -30,8 +30,7 @@ def make_pipes():
 def make_grid_optimization_estimators(n_features):
     estimators = []
 
-    hidden_layer_sizes = [(50,), (50, 50, 50), (100,), (100, 100, 100), (n_features,),
-                           (n_features, n_features, n_features)]
+    hidden_layer_sizes = [(50,), (50, 50, 50), (100,), (100, 100, 100), (n_features,), (n_features, n_features, n_features)]
     activations = ['identity', 'logistic', 'tanh', 'relu']
     solvers = ['lbfgs', 'sgd']
     alphas = [0.0001, 0.001, 0.01]
