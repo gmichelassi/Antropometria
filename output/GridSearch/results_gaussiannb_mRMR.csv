@@ -1,0 +1,2 @@
+id,dataset,classifier,reduction,accuracy,IC_Accuracy,precision,recall,f1
+0,euclidian_px_all,gaussiannb,mRMR,0.7063636363636363,"(0.632662130519886, 0.7800651422073867)",0.6466666666666667,0.615,0.608095238095238
