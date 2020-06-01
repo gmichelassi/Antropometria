@@ -123,7 +123,7 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
                     best_parameters = parameters
                     best_IC = IC
 
-                log.info("#%d - CV result (accuracy) %.2f for model %s and reduction %s", test_id, mean_results['accuracy'], classifier, reduction)
+                # log.info("#%d - CV result (accuracy) %.2f for model %s and reduction %s", test_id, mean_results['accuracy'], classifier, reduction)
 
                 train_results = [test_id, dataset, classifier, reduction, mean_results['accuracy'], IC, mean_results['precision'], mean_results['recall'], mean_results['f1']]
                 train_results += parameters
@@ -133,7 +133,7 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
 
                 test_id += 1
                 p_done = (100 * float(test_id)) / float(len(estimators))
-                log.info("%.2f%% of classifier %s processing done...", p_done, classifier)
+                # log.info("%.2f%% of classifier %s processing done...", p_done, classifier)
             df = pd.DataFrame(resultados)
             df.to_csv('./output/GridSearch/results_{0}_{1}.csv'.format(classifier, reduction), index=False, header=False)
 
@@ -211,5 +211,5 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_gridSearch(amostragem='Smote')
+    run_gridSearch(amostragem='Borderline')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
