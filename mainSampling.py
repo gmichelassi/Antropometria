@@ -62,7 +62,7 @@ def runRandomUnderSampling(X, y):
     return X, target
 
 
-def runSmote(X, y, algorithm='default'):
+def runSmote(X, y, algorithm='default', split_synthetic=False):
     log.info("Data before oversampling")
     log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
 
@@ -87,10 +87,13 @@ def runSmote(X, y, algorithm='default'):
     log.info("Data after oversampling")
     log.info("Dataset: {0}, {1}".format(X_novo.shape, len(y_novo)))
 
-    synthetic_X = X_novo[-N:]
-    synthetic_y = y_novo[-N:]
+    if split_synthetic:
+        synthetic_X = X_novo[-N:]
+        synthetic_y = y_novo[-N:]
 
-    return X, y, synthetic_X, synthetic_y
+        return X, y, synthetic_X, synthetic_y
+    else:
+        return X_novo, y_novo, None, None
 
 
 if __name__ == '__main__':

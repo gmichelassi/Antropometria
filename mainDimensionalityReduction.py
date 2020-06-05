@@ -11,8 +11,8 @@ import time
 import numpy as np
 import pandas as pd
 import initContext as context
-import mainClassBalance as sampling
-from classifiers.utils import apply_pearson_feature_selection, build_ratio_dataset
+import mainSampling as sampling
+from classifiers.utils import apply_pearson_feature_selection, build_ratio_dataset, normalizacao_min_max
 from sklearn.utils.multiclass import unique_labels
 from config import logger
 context.loadModules()
@@ -28,7 +28,7 @@ def __dimensionality_reduction(red_dim, X, y):
     return data
 
 
-def run_dimensionality_reductions(reduction='None', filtro=0.0, amostragem=None):
+def run_dimensionality_reductions(reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False):
     synthetic_X, synthetic_y = None, None
 
     X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
@@ -39,8 +39,12 @@ def run_dimensionality_reductions(reduction='None', filtro=0.0, amostragem=None)
     if 0.0 < filtro <= 0.99:
         log.info("Applying pearson correlation filter")
         X = apply_pearson_feature_selection(X, filtro)
-    else:
-        X = X.values
+
+    if min_max:
+        log.info("Applying min_max normalization")
+        X = normalizacao_min_max(X)
+
+    X = X.values
 
     instances, features = X.shape
     log.info('Data has {0} classes, {1} instances and {2} features'.format(n_classes, instances, features))
@@ -68,10 +72,10 @@ def run_dimensionality_reductions(reduction='None', filtro=0.0, amostragem=None)
     X = __dimensionality_reduction(red_dim, X, y)
 
     if amostragem is not None:
-        if amostragem == 'random':
+        if amostragem == 'Random':
             X, y = sampling.runRandomUnderSampling(X, y)
         else:
-            X, y, synthetic_X, synthetic_y = sampling.runSmote(X, y, amostragem)
+            X, y, synthetic_X, synthetic_y = sampling.runSmote(X, y, amostragem, split_synthetic)
 
     return X, y, synthetic_X, synthetic_y
 

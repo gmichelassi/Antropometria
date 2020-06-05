@@ -68,35 +68,24 @@ def make_oob_pipes(dimensionality_reductions, n_features_to_keep):
     return pipes, reductions_names, models_names
 
 
-def make_grid_optimization_estimators(n_features):
-    estimators = []
+def make_grid_optimization_pipes(n_features):
+    estimator = RandomForestClassifier()
 
-    # Parâmetros
-    n_estimators = [500, 1000, 1500, 2000]
-    min_samples_leaf = [1, 2, 5, 10, 15, 20]
-    max_features = [i for i in range(int(0.5 * n_features), 6 * n_features, int(((6 * n_features - 0.5 * n_features) / 50)))]
+    grid_parameters = {
+        'n_estimators': [500, 1000, 1500, 2000],
+        'criterion': ['gini'],
+        'max_depth': [None],
+        'min_samples_leaf': [1, 2, 5, 10, 15, 20],
+        'max_features': [i for i in range(int(0.5 * n_features),
+                                          6 * n_features,
+                                          int(((6 * n_features - 0.5 * n_features) / 50)))],
+        'bootstrap': [True],
+        'n_jobs': [-1],
+        'random_state': [707878],
+        'class_weight': [None]
+    }
 
-    for n_estimator in n_estimators:
-        for max_feature in max_features:
-            for min_sample_leaf in min_samples_leaf:
-                estimator = RandomForestClassifier(
-                    n_estimators=n_estimator,
-                    criterion='gini',
-                    max_depth=None,
-                    min_samples_leaf=min_sample_leaf,
-                    max_features=max_feature,
-                    bootstrap=True,
-                    n_jobs=-1,
-                    random_state=707878,
-                    class_weight=None
-                )
-                parameters = [n_estimator, 'gini', None, min_sample_leaf, max_feature, True, -1, 707878, None]
-                estimators.append((estimator, parameters))
-    return estimators
-
-
-def getParams():
-    return ['n_estimators', 'criterion', 'max_depth', 'min_samples_leaf', 'max_features', 'bootstrap', 'n_jobs', 'random_state', 'class_weight']
+    return estimator, grid_parameters
 
 
 def make_random_optimization_pipes(n_features):
