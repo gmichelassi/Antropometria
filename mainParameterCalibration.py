@@ -8,6 +8,7 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
 # Utils
+import matplotlib as plt
 from classifiers.utils import mean_scores, sample_std
 import csv
 import numpy as np
@@ -17,8 +18,10 @@ import math
 import initContext as context
 from config import logger
 
+plt.set_loglevel("info")
 context.loadModules()
 log = logger.getLogger(__file__)
+
 
 
 def __completeFrame(X, y, synthetic_X, synthetic_y, n_splits=10, current_fold=0):
