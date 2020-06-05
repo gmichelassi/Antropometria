@@ -110,6 +110,8 @@ def run_gridSearch(dataset='euclidian_px_all'):
             for filtro in filtros:
                 for min_max in min_maxs:
                     for amostragem in amostragens:
+                        start_processing = time.time()
+
                         log.info("Running test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier, reduction, filtro, min_max, amostragem)
 
                         X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
@@ -163,6 +165,8 @@ def run_gridSearch(dataset='euclidian_px_all'):
                             df_results.drop('params', axis=1)
                             path_results = './output/GridSearch/results_{0}_{1}_{2}_{3}_{4}_{5}.csv'.format(dataset, classifier, reduction, filtro, min_max, amostragem)
                             df_results.to_csv(path_results, index_label='id')
+
+                        log.info("Execution time: %s minutes" % ((time.time() - start_processing) / 60))
 
 
 def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
