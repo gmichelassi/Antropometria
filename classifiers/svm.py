@@ -50,39 +50,25 @@ def make_pipes():
     return pipes, models_names
 
 
-def getParams():
-    return ['kernel', 'C', 'gamma', 'degree', 'coef0', 'probability', 'random_state']
+def make_grid_optimization_pipes(n_features):
+    estimator = [SVC()]
+    estimator_name = 'svc'
 
+    grid_parameters = {
+        'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
+        'C': [0.01, 0.1, 1, 5, 10, 50, 100],
+        'gamma': ['scale', 'auto', 0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 5, 10],
+        'degree': [2, 3, 5],
+        'coef0': [0],
+        'probability': [True],
+        'random_state': [707878]
+    }
 
-def make_grid_optimization_estimators(n_features):
-    estimators = []
-
-    kernels = ['linear', 'poly', 'rbf', 'sigmoid']
-    Cs = [0.01, 0.1, 1, 5, 10, 50, 100]
-    gammas = ['scale', 'auto', 0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 5, 10]
-    degrees = [2, 3, 5]
-
-    for kernel in kernels:
-        for C in Cs:
-            for gamma in gammas:
-                for degree in degrees:
-                    estimator = SVC(
-                        kernel=kernel,
-                        C=C,
-                        gamma=gamma,
-                        degree=degree,
-                        coef0=0,
-                        probability=True,
-                        random_state=707878
-                    )
-                    parameters = [kernel, C, gamma, degree, 0, True, 707878]
-                    estimators.append((estimator, parameters))
-    return estimators
+    return estimator, grid_parameters, estimator_name
 
 
 def make_random_optimization_pipes(n_features):
-    estimator = [SVC()]
-    estimator_name = 'svc'
+    estimator = SVC()
 
     random_parameters = {
         'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
@@ -93,7 +79,7 @@ def make_random_optimization_pipes(n_features):
         'probability': [True]
     }
 
-    return estimator, random_parameters, estimator_name
+    return estimator, random_parameters
 
 
 def make_estimator():

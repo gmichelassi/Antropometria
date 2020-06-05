@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix
 
 # DataSets
 import asd_data as asd
-import mainClassBalance as sampling
+import mainSampling as sampling
 
 # Utils
 import pandas as pd
