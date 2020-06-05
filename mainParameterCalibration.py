@@ -3,7 +3,7 @@ from classifiers import svm, rf, knn, nnn, nb
 from mainDimensionalityReduction import run_dimensionality_reductions
 
 # Classifiers evaluation methods
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
@@ -36,21 +36,69 @@ def __completeFrame(X, y, synthetic_X, synthetic_y, n_splits=10, current_fold=0)
     return X, y
 
 
-def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_max=False):
+def __errorEstimation(model=None, parameters=None, reduction='None', filtro=0.0, amostragem=None, min_max=False):
+    if parameters is None or model is None:
+        return
+
+    log.info("Running error estimation for current classifier with best parameters found")
+
+    X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max)
+    model = model.set_params(parameters)
+
+    n_splits = 10
+    cv = StratifiedKFold(n_splits=n_splits)
+
+    current_fold, folds = 0, []
+    for train_index, test_index in cv.split(X, y):
+        X_train, y_train = X[train_index], y[train_index]
+        X_test, y_test = X[test_index], y[test_index]
+
+        if synthetic_X is not None:
+            X_train, y_train = __completeFrame(X_train, y_train, synthetic_X, synthetic_y, n_splits,
+                                               current_fold)
+        folds.append((X_train, y_train, X_test, y_test))
+        current_fold += 1
+
+    accuracy, precision, recall, f1 = [], [], [], []
+
+    # Antes, somente geramos as folds, agora vamos utilizadas para cada modelo
+    for i in range(n_splits):
+        model.fit(folds[i][0], folds[i][1])
+        y_predict = model.predict(folds[i][2])
+
+        accuracy.append(accuracy_score(y_true=folds[i][3], y_pred=y_predict))
+        precision.append(precision_score(y_true=folds[i][3], y_pred=y_predict))
+        recall.append(recall_score(y_true=folds[i][3], y_pred=y_predict))
+        f1.append(f1_score(y_true=folds[i][3], y_pred=y_predict))
+
+    mean_results = mean_scores({'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1})
+
+    tc = 2.262  # valor na tabela da distribuição t-student com k-1 graus de liberdade e p = ?
+    s = sample_std(accuracy)
+    IC_2 = mean_results['accuracy'] + tc * (s / math.sqrt(n_splits))
+    IC_1 = mean_results['accuracy'] - tc * (s / math.sqrt(n_splits))
+
+    IC = (IC_1, IC_2)
+
+    log.info("Accuracy found: {0}".format(mean_results['accuracy']))
+    log.info("Confidence interval: {0}".format(IC))
+    log.info("Precision found: {0}".format(mean_results['precision']))
+    log.info("Recall found: {0}".format(mean_results['recall']))
+    log.info("F1 Score found: {0}".format(mean_results['f1']))
+
+
+def run_gridSearch(dataset='euclidian_px_all'):
     log.info("Running Grid Search for %s dataset", dataset)
 
     isRandomForestDone = False
     dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF']
-    classifiers = {'randomforestclassifier': rf,
-                   'svc': svm,
-                   'kneighborsclassifier': knn,
-                   'mlpclassifier': nnn,
-                   'gaussiannb': nb
-                   }
+    classifiers = {'randomforestclassifier': rf, 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb}
+    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM']
+    filtros = [0.0, 0.98, 0.99]
+    min_maxs = [False, True]
 
     for classifier in classifiers.keys():
         for reduction in dimensionality_reductions:
-            resultados = []
 
             if isRandomForestDone and classifier == 'randomforestclassifier':
                 continue
@@ -59,88 +107,62 @@ def run_gridSearch(dataset='euclidian_px_all', filtro=0.0, amostragem=None, min_
             elif classifier != 'randomforestclassifier' and reduction == 'None':
                 continue
 
-            X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(reduction, filtro, amostragem)
+            for filtro in filtros:
+                for min_max in min_maxs:
+                    for amostragem in amostragens:
+                        log.info("Running test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier, reduction, filtro, min_max, amostragem)
 
-            instances, features = X.shape
-            if classifier == 'randomforestclassifier':
-                n_features_to_keep = int(np.sqrt(features))
-            else:
-                n_features_to_keep = features
+                        X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
 
-            estimators = classifiers[classifier].make_grid_optimization_estimators(n_features_to_keep)
-            n_splits = 10
-            cv = StratifiedKFold(n_splits=n_splits)
+                        instances, features = X.shape
+                        if classifier == 'randomforestclassifier':
+                            n_features_to_keep = int(np.sqrt(features))
+                        else:
+                            n_features_to_keep = features
 
-            test_id, best_accuracy, best_id, best_parameters, best_IC = 0, -1, -1, {}, ()
+                        n_splits = 10
+                        scoring = {'accuracy': 'accuracy', 'precision_macro': 'precision_macro', 'recall_macro': 'recall_macro', 'f1_macro': 'f1_macro'}
+                        estimator, param_grid = classifiers[classifier].make_grid_optimization_pipes(n_features_to_keep)
+                        cv = StratifiedKFold(n_splits=n_splits)
 
-            columns = ['id', 'dataset', 'classifier', 'reduction', 'accuracy', 'IC_Accuracy', 'precision', 'recall', 'f1']
-            columns += classifiers[classifier].getParams()
-            resultados.append(columns)
+                        try:
+                            log.info("Training Models for %s and %s", classifier, reduction)
 
-            log.info("Training Models for %s and %s", classifier, reduction)
-            log.info("{0} estimators found".format(len(estimators)))
+                            grd = GridSearchCV(
+                                estimator=estimator,
+                                param_grid=param_grid,
+                                scoring=scoring,
+                                cv=cv,
+                                refit='accuracy',
+                                return_train_score=False,
+                                n_jobs=-1
+                                # -1 means all CPUs
+                                # For n_jobs below -1, (n_cpus + 1 + n_jobs) are used.
+                            )
 
-            log.info("Executing Cross-Validation")
-            current_fold, folds = 0, []
-            for train_index, test_index in cv.split(X, y):
-                X_train, y_train = X[train_index], y[train_index]
-                X_test, y_test = X[test_index], y[test_index]
+                            grid_results = grd.fit(X, y)
 
-                if synthetic_X is not None:
-                    X_train, y_train = __completeFrame(X_train, y_train, synthetic_X, synthetic_y, n_splits,
-                                                       current_fold)
-                folds.append((X_train, y_train, X_test, y_test))
-                current_fold += 1
-            log.info("Cross-Validation success!")
+                            log.info("Training complete")
 
-            for model in estimators:
-                estimator, parameters = model
-                accuracy, precision, recall, f1 = [], [], [], []
+                        except ValueError as e:
+                            log.exception("Exception during pipeline execution", extra=e)
+                            grid_results = None
+                        except KeyError as ke:
+                            log.exception("Exception during pipeline execution", extra=ke)
+                            grid_results = None
 
-                # Antes, somente geramos as folds, agora vamos utilizadas para cada modelo
-                for i in range(n_splits):
-                    estimator.fit(folds[i][0], folds[i][1])
-                    y_predict = estimator.predict(folds[i][2])
+                        if grid_results is not None:
+                            log.info("Best result presented accuracy %.2f%% for test [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", grid_results.best_score_ * 100, classifier, reduction, filtro, min_max, amostragem)
+                            log.info("Best parameters found: {0}".format(grid_results.best_params_))
+                            log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
 
-                    accuracy.append(accuracy_score(y_true=folds[i][3], y_pred=y_predict))
-                    precision.append(precision_score(y_true=folds[i][3], y_pred=y_predict))
-                    recall.append(recall_score(y_true=folds[i][3], y_pred=y_predict))
-                    f1.append(f1_score(y_true=folds[i][3], y_pred=y_predict))
-                    # c_matrix = confusion_matrix(y_true=folds[i][3], y_pred=y_predict)
+                            __errorEstimation(model=estimator, parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
 
-                mean_results = mean_scores({'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1})
-
-                tc = 2.262  # valor na tabela da distribuição t-student com k-1 graus de liberdade e p = ?
-                s = sample_std(accuracy)
-                IC_1 = mean_results['accuracy'] + tc * (s / math.sqrt(n_splits))
-                IC_2 = mean_results['accuracy'] - tc * (s / math.sqrt(n_splits))
-
-                IC = (IC_2, IC_1)
-
-                if mean_results['accuracy'] > best_accuracy:
-                    best_accuracy = mean_results['accuracy']
-                    best_id = test_id
-                    best_parameters = parameters
-                    best_IC = IC
-
-                # log.info("#%d - CV result (accuracy) %.2f for model %s and reduction %s", test_id, mean_results['accuracy'], classifier, reduction)
-
-                train_results = [test_id, dataset, classifier, reduction, mean_results['accuracy'], IC, mean_results['precision'], mean_results['recall'], mean_results['f1']]
-                train_results += parameters
-                resultados.append(train_results)
-
-                # log.info("#%d - Saving results!", test_id)
-
-                test_id += 1
-                p_done = (100 * float(test_id)) / float(len(estimators))
-                # log.info("%.2f%% of classifier %s processing done...", p_done, classifier)
-            df = pd.DataFrame(resultados)
-            df.to_csv('./output/GridSearch/results_{0}_{1}.csv'.format(classifier, reduction), index=False, header=False)
-
-            log.info("Best result presented accuracy %.3f for %s and %s", best_accuracy, classifier, reduction)
-            log.info("Confidence interval is [%.3f,%.3f]", best_IC[0], best_IC[1])
-            log.info("Best parameters found: {0}".format(best_parameters))
-            log.info("Best parameters were found on index: {0}".format(best_id))
+                            log.info("Saving results!")
+                            df_results = pd.DataFrame(grid_results.cv_results_)
+                            df_results.drop('params', axis=1)
+                            path_results = './output/GridSearch/results_{0}_{1}_{2}_{3}_{4}_{5}.csv'.format(dataset, classifier, reduction, filtro, min_max, amostragem)
+                            df_results.to_csv(path_results, index_label='id')
 
 
 def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
@@ -211,5 +233,5 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_gridSearch(amostragem='KMeans')
+
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

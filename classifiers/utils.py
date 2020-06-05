@@ -122,7 +122,7 @@ def apply_pearson_feature_selection(samples, max_value=0.99):
     # plt.ylabel("Processing time duration (s)")
     # plt.title("Feature x Time to process")
     # plt.savefig("./output/featurexduration-pearson.png")
-    return samples.drop(features_to_delete, axis=1).values  # Deletamos todas as features selecionadas e retornamos o DataFrame
+    return samples.drop(features_to_delete, axis=1)  # Deletamos todas as features selecionadas e retornamos o DataFrame
 
 
 def calculate_metrics(confusion_matrix, labels):
@@ -219,13 +219,14 @@ def varianciaAcumuladaPCA(samples, labels, verbose=False):
 
 def normalizacao_min_max(df):
     df_final = []
-    for (feature, data) in df.iteritems():
-        max = np.amax(data.values)
-        min = np.amin(data.values)
 
+    max_dist = math.ceil(df.max(axis=1).max())
+    min_dist = 0
+
+    for (feature, data) in df.iteritems():
         columns = []
         for i in data.values:
-            xi = (i - min)/(max - min)
+            xi = (i - min_dist)/(max_dist - min_dist)
             columns.append(xi)
         df_final.append(columns)
 
