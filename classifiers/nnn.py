@@ -27,40 +27,25 @@ def make_pipes():
     return pipes, models_names
 
 
-def make_grid_optimization_estimators(n_features):
-    estimators = []
+def make_grid_optimization_pipes(n_features):
+    estimator = [MLPClassifier()]
+    estimator_name = 'mlpclassifier'
+    grid_parameters = {
+        'hidden_layer_sizes': [(50, ), (50, 50, 50), (100, ), (100, 100, 100), (n_features, ), (n_features, n_features, n_features)],
+        'activation': ['identity', 'logistic', 'tanh', 'relu'],
+        'solver': ['lbfgs', 'sgd'],
+        'alpha': [0.0001, 0.001, 0.01],
+        'learning_rate': ['adaptive'],
+        'learning_rate_init': [0.001],
+        'max_iter': [300],
+        'random_state': [707878]
+    }
 
-    hidden_layer_sizes = [(50,), (50, 50, 50), (100,), (100, 100, 100), (n_features,), (n_features, n_features, n_features)]
-    activations = ['identity', 'logistic', 'tanh', 'relu']
-    solvers = ['lbfgs', 'sgd']
-    alphas = [0.0001, 0.001, 0.01]
-
-    for hidden_layer_size in hidden_layer_sizes:
-        for activation in activations:
-            for solver in solvers:
-                for alpha in alphas:
-
-                    estimator = MLPClassifier(
-                        hidden_layer_sizes=hidden_layer_size,
-                        activation=activation,
-                        alpha=alpha,
-                        solver=solver,
-                        learning_rate_init=0.001,
-                        max_iter=5000,
-                        random_state=707878
-                    )
-                    parameters = [hidden_layer_size, activation, alpha, solver, 0.001, 300, 707878]
-                    estimators.append((estimator, parameters))
-    return estimators
-
-
-def getParams():
-    return ['hidden_layer_sizes', 'activation', 'alpha', 'solver', 'learning_rate_init', 'max_iter', 'random_state']
+    return estimator, grid_parameters, estimator_name
 
 
 def make_random_optimization_pipes(n_features):
-    estimator = [MLPClassifier()]
-    estimator_name = 'mlpclassifier'
+    estimator = MLPClassifier()
 
     random_parameters = {
         'hidden_layer_sizes': [(100, ), (n_features, ), (n_features, n_features, n_features)],
@@ -72,7 +57,7 @@ def make_random_optimization_pipes(n_features):
         'max_iter': [300]
     }
 
-    return estimator, random_parameters, estimator_name
+    return estimator, random_parameters
 
 
 def make_estimator():
