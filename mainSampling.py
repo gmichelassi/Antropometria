@@ -14,7 +14,7 @@ log = logger.getLogger(__file__)
 random_state = 10000
 
 
-def runRandomUnderSampling(X, y):
+def runRandomUnderSampling(X, y, verbose):
     casos, controles, cont = [], [], 0
     for i in y:
         if i == 1:
@@ -27,9 +27,10 @@ def runRandomUnderSampling(X, y):
     X_casos, y_casos = X[casos], y[casos]
     X_controles, y_controles = X[controles], y[controles]
 
-    log.info("Data before random undersampling")
-    log.info("Casos: {0}, {1}".format(X_casos.shape, len(y_casos)))
-    log.info("Controles: {0}, {1}".format(X_controles.shape, len(y_controles)))
+    if verbose:
+        log.info("Data before random undersampling")
+        log.info("Casos: {0}, {1}".format(X_casos.shape, len(y_casos)))
+        log.info("Controles: {0}, {1}".format(X_controles.shape, len(y_controles)))
 
     number_of_features = abs(len(y_casos) - len(y_controles))
     features_to_delete = []
@@ -50,9 +51,10 @@ def runRandomUnderSampling(X, y):
         X_controles = np.delete(X_controles, feature_index_to_delete, axis=0)
         y_controles = np.delete(y_controles, feature_index_to_delete, axis=0)
 
-    log.info("Data after random undersampling")
-    log.info("Casos: {0}, {1}".format(X_casos.shape, len(y_casos)))
-    log.info("Controles: {0}, {1}".format(X_controles.shape, len(y_controles)))
+    if verbose:
+        log.info("Data after random undersampling")
+        log.info("Casos: {0}, {1}".format(X_casos.shape, len(y_casos)))
+        log.info("Controles: {0}, {1}".format(X_controles.shape, len(y_controles)))
 
     y = np.concatenate((y_casos, y_controles))
     X = np.concatenate((X_casos, X_controles))
@@ -62,9 +64,10 @@ def runRandomUnderSampling(X, y):
     return X, target
 
 
-def runSmote(X, y, algorithm='default', split_synthetic=False):
-    log.info("Data before oversampling")
-    log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
+def runSmote(X, y, algorithm='default', split_synthetic=False, verbose=True):
+    if verbose:
+        log.info("Data before oversampling")
+        log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
 
     n_casos = np.count_nonzero(y == 1)
     n_controles = np.count_nonzero(y == 0)
@@ -72,20 +75,25 @@ def runSmote(X, y, algorithm='default', split_synthetic=False):
     N = abs(n_casos - n_controles)
 
     if algorithm == 'Borderline':
-        log.info("Running Borderline Smote")
+        if verbose:
+            log.info("Running Borderline Smote")
         X_novo, y_novo = BorderlineSMOTE(random_state=random_state).fit_resample(X, y)
     elif algorithm == 'KMeans':
-        log.info("Running KMeans Smote")
+        if verbose:
+            log.info("Running KMeans Smote")
         X_novo, y_novo = KMeansSMOTE(random_state=random_state).fit_resample(X, y)
     elif algorithm == 'SVM':
-        log.info("Running SVM Smote")
+        if verbose:
+            log.info("Running SVM Smote")
         X_novo, y_novo = SVMSMOTE(random_state=random_state).fit_resample(X, y)
     else:
-        log.info("Running default Smote")
+        if verbose:
+            log.info("Running default Smote")
         X_novo, y_novo = SMOTE(random_state=random_state).fit_resample(X, y)
 
-    log.info("Data after oversampling")
-    log.info("Dataset: {0}, {1}".format(X_novo.shape, len(y_novo)))
+    if verbose:
+        log.info("Data after oversampling")
+        log.info("Dataset: {0}, {1}".format(X_novo.shape, len(y_novo)))
 
     if split_synthetic:
         synthetic_X = X_novo[-N:]

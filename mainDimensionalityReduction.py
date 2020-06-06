@@ -19,35 +19,42 @@ context.loadModules()
 log = logger.getLogger(__file__)
 
 
-def __dimensionality_reduction(red_dim, X, y):
+def __dimensionality_reduction(red_dim, X, y, verbose):
     if red_dim is None:
         return X
     reduction_name = red_dim.__class__.__name__
-    log.info("Applying {0} dimensionality reduction".format(reduction_name))
+    if verbose:
+        log.info("Applying {0} dimensionality reduction".format(reduction_name))
     data = red_dim.fit_transform(X, y)
     return data
 
 
-def run_dimensionality_reductions(reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False):
+def run_dimensionality_reductions(reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
     synthetic_X, synthetic_y = None, None
 
     X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
 
-    log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
+    if verbose:
+        log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
+
     n_classes = len(unique_labels(y))
 
     if 0.0 < filtro <= 0.99:
-        log.info("Applying pearson correlation filter")
+        if verbose:
+            log.info("Applying pearson correlation filter")
         X = apply_pearson_feature_selection(X, filtro)
 
     if min_max:
-        log.info("Applying min_max normalization")
+        if verbose:
+            log.info("Applying min_max normalization")
         X = normalizacao_min_max(X)
 
     X = X.values
 
     instances, features = X.shape
-    log.info('Data has {0} classes, {1} instances and {2} features'.format(n_classes, instances, features))
+
+    if verbose:
+        log.info('Data has {0} classes, {1} instances and {2} features'.format(n_classes, instances, features))
 
     n_features_to_keep = int(np.sqrt(features))
 
@@ -69,13 +76,13 @@ def run_dimensionality_reductions(reduction='None', filtro=0.0, amostragem=None,
     else:
         raise IOError("Dimensionality Reduction not found for parameter {0}".format(reduction))
 
-    X = __dimensionality_reduction(red_dim, X, y)
+    X = __dimensionality_reduction(red_dim, X, y, verbose)
 
     if amostragem is not None:
         if amostragem == 'Random':
-            X, y = sampling.runRandomUnderSampling(X, y)
+            X, y = sampling.runRandomUnderSampling(X, y, verbose)
         else:
-            X, y, synthetic_X, synthetic_y = sampling.runSmote(X, y, amostragem, split_synthetic)
+            X, y, synthetic_X, synthetic_y = sampling.runSmote(X, y, amostragem, split_synthetic, verbose)
 
     return X, y, synthetic_X, synthetic_y
 

@@ -88,6 +88,12 @@ def make_grid_optimization_pipes(n_features):
     return estimator, grid_parameters
 
 
+def set_parameters(parameters):
+    return RandomForestClassifier(n_estimators=parameters['n_estimators'], criterion=parameters['criterion'], max_depth=None,
+                                  min_samples_leaf=parameters['min_samples_leaf'], max_features=parameters['max_features'],
+                                  bootstrap=True, n_jobs=-1, random_state=707878, class_weight=None)
+
+
 def make_random_optimization_pipes(n_features):
     estimator = [RandomForestClassifier()]
     estimator_name = 'randomforestclassifier'

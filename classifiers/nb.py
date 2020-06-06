@@ -19,6 +19,10 @@ def make_grid_optimization_pipes(n_features):
     return estimator, grid_parameters
 
 
+def set_parameters(parameters):
+    return GaussianNB()
+
+
 def make_estimator():
     estimator_name = 'gaussiannb'
     estimator = GaussianNB()
