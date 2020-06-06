@@ -23,7 +23,6 @@ context.loadModules()
 log = logger.getLogger(__file__)
 
 
-
 def __completeFrame(X, y, synthetic_X, synthetic_y, n_splits=10, current_fold=0):
     synthetic_X = np.array_split(synthetic_X, n_splits)
     synthetic_y = np.array_split(synthetic_y, n_splits)
@@ -45,8 +44,8 @@ def __errorEstimation(model=None, parameters=None, reduction='None', filtro=0.0,
 
     log.info("Running error estimation for current classifier with best parameters found")
 
-    X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max)
-    model = model.set_params(parameters)
+    X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
+    model = model.set_parameters(parameters)
 
     n_splits = 10
     cv = StratifiedKFold(n_splits=n_splits)
@@ -161,7 +160,7 @@ def run_gridSearch(dataset='euclidian_px_all'):
                             log.info("Best parameters found: {0}".format(grid_results.best_params_))
                             log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
 
-                            __errorEstimation(model=estimator, parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
+                            __errorEstimation(model=classifiers[classifier], parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
 
                             log.info("Saving results!")
                             df_results = pd.DataFrame(grid_results.cv_results_)
