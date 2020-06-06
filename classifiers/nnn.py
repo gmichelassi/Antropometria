@@ -37,11 +37,17 @@ def make_grid_optimization_pipes(n_features):
         'alpha': [0.0001, 0.001, 0.01],
         'learning_rate': ['adaptive'],
         'learning_rate_init': [0.001],
-        'max_iter': [300],
+        'max_iter': [5000],
         'random_state': [707878]
     }
 
     return estimator, grid_parameters, estimator_name
+
+
+def set_parameters(parameters):
+    return MLPClassifier(hidden_layer_sizes=parameters['hidden_layer_sizes'], activation=parameters['activation'],
+                         solver=parameters['solver'], alpha=parameters['alpha'], learning_rate=parameters['learning_rate'],
+                         learning_rate_init=parameters['learning_rate_init'], max_iter=5000, random_state=707878)
 
 
 def make_random_optimization_pipes(n_features):
