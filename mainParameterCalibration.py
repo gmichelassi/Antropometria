@@ -44,7 +44,13 @@ def __errorEstimation(model=None, parameters=None, reduction='None', filtro=0.0,
 
     log.info("Running error estimation for current classifier with best parameters found")
 
-    X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
+    try:
+        X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
+    except RuntimeError as re:
+        log.info("It was not possible run error estimation for this test")
+        log.info("Error: " + str(re))
+        return
+
     model = model.set_parameters(parameters)
 
     n_splits = 10
@@ -117,7 +123,12 @@ def run_gridSearch(dataset='euclidian_px_all'):
 
                         log.info("Running test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier, reduction, filtro, min_max, amostragem)
 
-                        X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
+                        try:
+                            X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
+                        except RuntimeError as re:
+                            log.info("It was not possible run test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier, reduction, filtro, min_max, amostragem)
+                            log.info("Error: " + str(re))
+                            continue
 
                         instances, features = X.shape
                         if classifier == 'randomforestclassifier':
