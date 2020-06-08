@@ -81,8 +81,6 @@ def runSmote(X, y, algorithm='default', split_synthetic=False, verbose=True):
     elif algorithm == 'KMeans':
         if verbose:
             log.info("Running KMeans Smote")
-        print(X.shape)
-        print(y)
         X_novo, y_novo = KMeansSMOTE(random_state=random_state).fit_resample(X, y)
     elif algorithm == 'SVM':
         if verbose:
