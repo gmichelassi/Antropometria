@@ -28,8 +28,7 @@ def make_pipes():
 
 
 def make_grid_optimization_pipes(n_features):
-    estimator = [MLPClassifier()]
-    estimator_name = 'mlpclassifier'
+    estimator = MLPClassifier()
     grid_parameters = {
         'hidden_layer_sizes': [(50, ), (50, 50, 50), (100, ), (100, 100, 100), (n_features, ), (n_features, n_features, n_features)],
         'activation': ['identity', 'logistic', 'tanh', 'relu'],
@@ -41,7 +40,7 @@ def make_grid_optimization_pipes(n_features):
         'random_state': [707878]
     }
 
-    return estimator, grid_parameters, estimator_name
+    return estimator, grid_parameters
 
 
 def set_parameters(parameters):

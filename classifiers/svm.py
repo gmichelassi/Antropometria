@@ -51,8 +51,7 @@ def make_pipes():
 
 
 def make_grid_optimization_pipes(n_features):
-    estimator = [SVC()]
-    estimator_name = 'svc'
+    estimator = SVC()
 
     grid_parameters = {
         'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
@@ -64,7 +63,7 @@ def make_grid_optimization_pipes(n_features):
         'random_state': [707878]
     }
 
-    return estimator, grid_parameters, estimator_name
+    return estimator, grid_parameters
 
 
 def set_parameters(parameters):
