@@ -32,7 +32,7 @@ def __dimensionality_reduction(red_dim, X, y, verbose):
 def run_dimensionality_reductions(reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
     synthetic_X, synthetic_y = None, None
 
-    X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
+    X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False, verbose=verbose)
 
     if verbose:
         log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
