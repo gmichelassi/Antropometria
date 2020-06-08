@@ -80,9 +80,9 @@ def runSmote(X, y, algorithm='default', split_synthetic=False, verbose=True):
         X_novo, y_novo = BorderlineSMOTE(random_state=random_state).fit_resample(X, y)
     elif algorithm == 'KMeans':
         if verbose:
-            print(X.shape)
-            print(y)
             log.info("Running KMeans Smote")
+        print(X.shape)
+        print(y)
         X_novo, y_novo = KMeansSMOTE(random_state=random_state).fit_resample(X, y)
     elif algorithm == 'SVM':
         if verbose:

@@ -32,9 +32,10 @@ def load_by_chunks(file_name):
     return merge_frames(chunk_list)
 
 
-def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=False, labels=False):
+def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=False, labels=False, verbose=True):
 
-    log.info("Loading data from csv file")
+    if verbose:
+        log.info("Loading data from csv file")
     filename = "/distances"
 
     if normalization:
@@ -53,10 +54,12 @@ def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=
         filename = filename + "_eu"
 
     casos_file = cdir.CASES_DIR + filename + ".csv"
-    log.info("Casos file: " + str(casos_file))
+    if verbose:
+        log.info("Casos file: " + str(casos_file))
 
     controles_file = cdir.CONTROL_DIR_1 + filename + ".csv"
-    log.info("Controles file: " + str(controles_file))
+    if verbose:
+        log.info("Controles file: " + str(controles_file))
 
     if os.path.isfile(casos_file) and os.path.isfile(controles_file):
         if normalization:
