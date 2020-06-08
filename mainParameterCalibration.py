@@ -96,7 +96,7 @@ def run_gridSearch(dataset='euclidian_px_all'):
     dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF']
     # 'randomforestclassifier': rf,
     classifiers = {'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb}
-    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM']
+    amostragens = ['None', 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM']
     filtros = [0.0, 0.98, 0.99]
     min_maxs = [False, True]
 
