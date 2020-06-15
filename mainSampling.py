@@ -6,6 +6,7 @@ import pandas as pd
 from classifiers.utils import normalizacao_min_max, build_ratio_dataset
 from sklearn.utils import shuffle
 from imblearn.over_sampling import SMOTE, BorderlineSMOTE, KMeansSMOTE, SVMSMOTE
+from imblearn.combine import SMOTETomek
 from config import logger
 from classifiers.utils import generateRandomNumbers
 
@@ -86,6 +87,10 @@ def runSmote(X, y, algorithm='default', split_synthetic=False, verbose=True):
         if verbose:
             log.info("Running SVM Smote")
         X_novo, y_novo = SVMSMOTE(random_state=random_state).fit_resample(X, y)
+    elif algorithm == 'Tomek':
+        if verbose:
+            log.info("Running Smote Tomek")
+        X_novo, y_novo = SMOTETomek(random_state=random_state).fit_resample(X, y)
     else:
         if verbose:
             log.info("Running default Smote")
