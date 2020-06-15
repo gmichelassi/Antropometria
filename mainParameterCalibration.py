@@ -49,7 +49,7 @@ def __errorEstimation(model=None, parameters=None, reduction='None', filtro=0.0,
     except RuntimeError as re:
         log.info("It was not possible run error estimation for this test")
         log.info("Error: " + str(re))
-        return
+        return {}
 
     model = model.set_parameters(parameters)
 
@@ -67,10 +67,11 @@ def __errorEstimation(model=None, parameters=None, reduction='None', filtro=0.0,
         folds.append((X_train, y_train, X_test, y_test))
         current_fold += 1
 
-    accuracy, precision, recall, f1 = [], [], [], []
+    accuracy, precision, recall, f1, tempo = [], [], [], [], []
 
     # Antes, somente geramos as folds, agora vamos utilizadas para cada modelo
     for i in range(n_splits):
+        __start_time = time.time()
         model.fit(folds[i][0], folds[i][1])
         y_predict = model.predict(folds[i][2])
 
@@ -78,8 +79,9 @@ def __errorEstimation(model=None, parameters=None, reduction='None', filtro=0.0,
         precision.append(precision_score(y_true=folds[i][3], y_pred=y_predict))
         recall.append(recall_score(y_true=folds[i][3], y_pred=y_predict))
         f1.append(f1_score(y_true=folds[i][3], y_pred=y_predict))
+        tempo.append((time.time() - __start_time) / 60)
 
-    mean_results = mean_scores({'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1})
+    mean_results = mean_scores({'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1, 'time': tempo})
 
     tc = 2.262  # valor na tabela da distribuição t-student com k-1 graus de liberdade e p = ?
     s = sample_std(accuracy)
@@ -93,6 +95,15 @@ def __errorEstimation(model=None, parameters=None, reduction='None', filtro=0.0,
     log.info("Precision found: {0}".format(mean_results['precision']))
     log.info("Recall found: {0}".format(mean_results['recall']))
     log.info("F1 Score found: {0}".format(mean_results['f1']))
+
+    return {
+        'accuracy': mean_results['accuracy'],
+        'IC': IC,
+        'precision': mean_results['precision'],
+        'recall': mean_results['recall'],
+        'f1score': mean_results['f1'],
+        'time': mean_results['time']
+    }
 
 
 def run_gridSearch(dataset='euclidian_px_all'):
@@ -171,9 +182,28 @@ def run_gridSearch(dataset='euclidian_px_all'):
                             log.info("Best parameters found: {0}".format(grid_results.best_params_))
                             log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
 
-                            __errorEstimation(model=classifiers[classifier], parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
+                            errResults = __errorEstimation(model=classifiers[classifier], parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
 
                             log.info("Saving results!")
+                            with open("./output/GridSearch/best_results.csv", "a") as csvfile:
+                                writer = csv.DictWriter(csvfile, fieldnames=['biblioteca', 'classifier', 'reduction', 'filtro', 'min_max', 'par_amostragem', 'par_accuracy', 'err_accuracy', 'IC', 'err_precision', 'err_recall', 'err_f1score', 'err_time', 'parameters'])
+                                results = {
+                                    'biblioteca': 'dlibHOG',
+                                    'classifier': classifier,
+                                    'reduction': reduction,
+                                    'filtro': filtro,
+                                    'min_max': min_max,
+                                    'par_amostragem': amostragem,
+                                    'par_accuracy': grid_results.best_score_,
+                                    'err_accuracy': errResults['accuracy'],
+                                    'IC': errResults['IC'],
+                                    'err_precision': errResults['precision'],
+                                    'err_recall': errResults['recall'],
+                                    'err_f1score': errResults['f1score'],
+                                    'err_time': errResults['time'],
+                                    'parameters': grid_results.best_params_}
+                                writer.writerow(results)
+
                             df_results = pd.DataFrame(grid_results.cv_results_)
                             df_results.drop('params', axis=1)
                             path_results = './output/GridSearch/results_{0}_{1}_{2}_{3}_{4}_{5}.csv'.format(dataset, classifier, reduction, filtro, min_max, amostragem)
