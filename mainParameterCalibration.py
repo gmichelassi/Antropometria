@@ -49,7 +49,7 @@ def __errorEstimation(model=None, parameters=None, reduction='None', filtro=0.0,
     except RuntimeError as re:
         log.info("It was not possible run error estimation for this test")
         log.info("Error: " + str(re))
-        return {}
+        return {'accuracy': "", 'IC': "", 'precision': "", 'recall': "", 'f1score': "", 'time': ""}
 
     model = model.set_parameters(parameters)
 
