@@ -32,33 +32,16 @@ def load_by_chunks(file_name):
     return merge_frames(chunk_list)
 
 
-def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=False, labels=False, verbose=True):
+def load_data(lib='dlibHOG', dataset='distances_all_px_eu', normalization=False, labels=False, verbose=True):
 
     if verbose:
         log.info("Loading data from csv file")
-    filename = "/distances"
 
-    if normalization:
-        filename = filename + "_ratio"
+    casos_file = f'./data/{lib}/casos_{dataset}.csv'
+    controles_file = f'./data/{lib}/controles_{dataset}.csv'
 
-    if dataset == 'all' or dataset == 'farkas':
-        filename = filename + "_" + dataset
-
-    if unit == 'px' or unit == 'cm':
-        filename = filename + "_" + unit
-
-    if m == '1000':
-        filename = filename + "_" + m
-
-    if d_type == 'euclidian' or d_type == 'manhattan':
-        filename = filename + "_eu"
-
-    casos_file = cdir.CASES_DIR + filename + ".csv"
     if verbose:
         log.info("Casos file: " + str(casos_file))
-
-    controles_file = cdir.CONTROL_DIR_1 + filename + ".csv"
-    if verbose:
         log.info("Controles file: " + str(controles_file))
 
     if os.path.isfile(casos_file) and os.path.isfile(controles_file):
@@ -96,7 +79,7 @@ def load_data(d_type="euclidian", unit="px", dataset="all", m="", normalization=
             X, target = shuffle(X, target, random_state=random_state)
             return X, target
     else:
-        raise IOError("File not found for parameters: [{0}, {1}, {2}, {3}]".format(dataset, unit, m, d_type))
+        raise IOError("File not found for parameters: [{0}, {1}, {2}]".format(lib, dataset, normalization))
 
 
 def load_wine():

@@ -106,7 +106,7 @@ def __errorEstimation(model=None, parameters=None, reduction='None', filtro=0.0,
     }
 
 
-def run_gridSearch(dataset='euclidian_px_all'):
+def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
     log.info("Running Grid Search for %s dataset", dataset)
 
     isRandomForestDone = False
@@ -185,10 +185,10 @@ def run_gridSearch(dataset='euclidian_px_all'):
                             errResults = __errorEstimation(model=classifiers[classifier], parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
 
                             log.info("Saving results!")
-                            with open("./output/GridSearch/best_results.csv", "a") as csvfile:
+                            with open(f"./output/GridSearch/{lib}_best_results.csv", "a") as csvfile:
                                 writer = csv.DictWriter(csvfile, fieldnames=['biblioteca', 'classifier', 'reduction', 'filtro', 'min_max', 'par_amostragem', 'par_accuracy', 'err_accuracy', 'IC', 'err_precision', 'err_recall', 'err_f1score', 'err_time', 'parameters'])
                                 results = {
-                                    'biblioteca': 'dlibHOG',
+                                    'biblioteca': lib,
                                     'classifier': classifier,
                                     'reduction': reduction,
                                     'filtro': filtro,
@@ -206,7 +206,7 @@ def run_gridSearch(dataset='euclidian_px_all'):
 
                             df_results = pd.DataFrame(grid_results.cv_results_)
                             df_results.drop('params', axis=1)
-                            path_results = './output/GridSearch/results_{0}_{1}_{2}_{3}_{4}_{5}.csv'.format(dataset, classifier, reduction, filtro, min_max, amostragem)
+                            path_results = './output/GridSearch/results_{0}_{1}_{2}_{3}_{4}_{5}_{6}.csv'.format(lib, dataset, classifier, reduction, filtro, min_max, amostragem)
                             df_results.to_csv(path_results, index_label='id')
 
                         log.info("Execution time: %s minutes" % ((time.time() - start_processing) / 60))
