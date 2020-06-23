@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 17/06/2020 11:00:51 AM matplotlib   DEBUG    CONFIGDIR=/home/ariane/.config/matplotlib
 17/06/2020 11:00:51 AM matplotlib   DEBUG    (private) matplotlib data path: /home/ariane/.local/lib/python3.6/site-packages/matplotlib/mpl-data
 17/06/2020 11:00:51 AM matplotlib   DEBUG    matplotlib data path: /home/ariane/.local/lib/python3.6/site-packages/matplotlib/mpl-data
@@ -26495,3 +26496,8 @@
 19/06/2020 01:22:48 PM asd_data.py  INFO     Casos file: ./data/dlibHOG/casos_distances_all_px_eu.csv
 19/06/2020 01:22:48 PM asd_data.py  INFO     Controles file: ./data/dlibHOG/controles_distances_all_px_eu.csv
 >>>>>>> 99ac64a0c8bef0ef86652de003639612b0077fad
+=======
+19/06/2020 01:22:48 PM asd_data.py  INFO     Loading data from csv file
+19/06/2020 01:22:48 PM asd_data.py  INFO     Casos file: ./data/dlibHOG/casos_distances_all_px_eu.csv
+19/06/2020 01:22:48 PM asd_data.py  INFO     Controles file: ./data/dlibHOG/controles_distances_all_px_eu.csv
+>>>>>>> 0b41c969b3c23f7cd8616461d8a1032d92c25df5
