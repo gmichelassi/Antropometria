@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 17/06/2020 11:00:51 AM matplotlib   DEBUG    CONFIGDIR=/home/ariane/.config/matplotlib
 17/06/2020 11:00:51 AM matplotlib   DEBUG    (private) matplotlib data path: /home/ariane/.local/lib/python3.6/site-packages/matplotlib/mpl-data
 17/06/2020 11:00:51 AM matplotlib   DEBUG    matplotlib data path: /home/ariane/.local/lib/python3.6/site-packages/matplotlib/mpl-data
@@ -26489,3 +26490,8 @@
 23/06/2020 06:55:53 AM mainParameterCalibration.py INFO     Saving results!
 23/06/2020 06:55:53 AM mainParameterCalibration.py INFO     Execution time: 6.142666935920715 minutes
 23/06/2020 06:55:53 AM mainParameterCalibration.py INFO     --- Total execution time: 8395.013320247332 minutes ---
+=======
+19/06/2020 01:22:48 PM asd_data.py  INFO     Loading data from csv file
+19/06/2020 01:22:48 PM asd_data.py  INFO     Casos file: ./data/dlibHOG/casos_distances_all_px_eu.csv
+19/06/2020 01:22:48 PM asd_data.py  INFO     Controles file: ./data/dlibHOG/controles_distances_all_px_eu.csv
+>>>>>>> 99ac64a0c8bef0ef86652de003639612b0077fad
