@@ -107,7 +107,7 @@ def __errorEstimation(lib='dlibHOG', model=None, parameters=None, reduction='Non
     }
 
 
-def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all', proc=0):
+def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
     log.info("Running Grid Search for %s dataset", dataset)
 
     isRandomForestDone = False
@@ -132,7 +132,7 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all', proc=0):
                     for amostragem in amostragens:
                         start_processing = time.time()
 
-                        log.info("(%d) Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", proc, lib, classifier, reduction, filtro, min_max, amostragem)
+                        log.info("Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", lib, classifier, reduction, filtro, min_max, amostragem)
 
                         try:
                             X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
@@ -281,14 +281,6 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-
-    proc1 = Process(target=run_gridSearch, args=('dlibCNN', 'euclidian_px_all', 0))
-    proc2 = Process(target=run_gridSearch, args=('openFace', 'euclidian_px_all', 1))
-
-    proc1.start()
-    proc2.start()
-
-    proc1.join()
-    proc2.join()
-    run_gridSearch()
+    run_gridSearch('dlibCNN', 'euclidian_px_all')
+    # run_gridSearch('openFace', 'euclidian_px_all')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
