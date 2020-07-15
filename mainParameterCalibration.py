@@ -112,8 +112,8 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
 
     isRandomForestDone = False
     dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF']
-    # 'randomforestclassifier': rf, 'svc': svm,
-    classifiers = {'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb}
+    # 'randomforestclassifier': rf, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb
+    classifiers = {'svc': svm}
     amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
     filtros = [0.0, 0.98, 0.99]
     min_maxs = [False, True]
@@ -282,7 +282,7 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    # run_gridSearch('dlibCNN', 'euclidian_px_all')  # dostoievski
-    run_gridSearch('openFace', 'euclidian_px_all')  # tolstoi
+    run_gridSearch('dlibCNN', 'euclidian_px_all')  # dostoievski
+    # run_gridSearch('openFace', 'euclidian_px_all')  # tolstoi
     # run_gridSearch('openCvDNN', 'euclidian_px_all')  # puchkin
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
