@@ -131,6 +131,10 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
             for filtro in filtros:
                 for min_max in min_maxs:
                     for amostragem in amostragens:
+
+                        if reduction == 'RFS' and filtro == 0.0 and min_max and amostragem == 'Borderline':
+                            continue
+
                         start_processing = time.time()
 
                         log.info("Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", lib, classifier, reduction, filtro, min_max, amostragem)
@@ -282,7 +286,7 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_gridSearch('dlibCNN', 'euclidian_px_all')  # dostoievski
+    # run_gridSearch('dlibCNN', 'euclidian_px_all')  # dostoievski
     # run_gridSearch('openFace', 'euclidian_px_all')  # tolstoi
-    # run_gridSearch('openCvDNN', 'euclidian_px_all')  # puchkin
+    run_gridSearch('openCvDNN', 'euclidian_px_all')  # puchkin
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
