@@ -39,14 +39,14 @@ def __completeFrame(X, y, synthetic_X, synthetic_y, n_splits=10, current_fold=0)
     return X, y
 
 
-def __errorEstimation(lib='dlibHOG', model=None, parameters=None, reduction='None', filtro=0.0, amostragem=None, min_max=False):
+def __errorEstimation(lib='dlibHOG', dataset='', model=None, parameters=None, reduction='None', filtro=0.0, amostragem=None, min_max=False):
     if parameters is None or model is None:
         return
 
     log.info("Running error estimation for current classifier with best parameters found")
 
     try:
-        X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
+        X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
     except RuntimeError as re:
         log.info("It was not possible run error estimation for this test")
         log.info("Error: " + str(re))
@@ -112,11 +112,10 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
 
     isRandomForestDone = False
     dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF']
-    # 'randomforestclassifier': rf, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb
-    classifiers = {'svc': svm}
-    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
-    filtros = [0.0, 0.98, 0.99]
-    min_maxs = [False, True]
+    classifiers = {'randomforestclassifier': rf, 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb}
+    amostragens = [None, 'Smote']  # 'Random', 'Borderline', 'KMeans', 'SVM', 'Tomek'
+    filtros = [0.0]  # , 0.98, 0.99
+    min_maxs = [False]  # , True
 
     for classifier in classifiers.keys():
         for reduction in dimensionality_reductions:
@@ -131,16 +130,12 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
             for filtro in filtros:
                 for min_max in min_maxs:
                     for amostragem in amostragens:
-
-                        if reduction == 'RFS' and filtro == 0.0 and min_max and amostragem == 'Borderline':
-                            continue
-
                         start_processing = time.time()
 
                         log.info("Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", lib, classifier, reduction, filtro, min_max, amostragem)
 
                         try:
-                            X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
+                            X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
                         except RuntimeError as re:
                             log.info("It was not possible run test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier, reduction, filtro, min_max, amostragem)
                             log.info("Error: " + str(re))
@@ -188,7 +183,12 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
                             log.info("Best parameters found: {0}".format(grid_results.best_params_))
                             log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
 
-                            errResults = __errorEstimation(lib=lib, model=classifiers[classifier], parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
+                            try:
+                                errResults = __errorEstimation(lib=lib, dataset=dataset, model=classifiers[classifier], parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
+                            except KeyError as ke:
+                                errResults = {'accuracy': '', 'IC': '', 'precision': '', 'recall': '', 'f1score': '', 'time': ''}
+                                log.info("It was not possible to run error estimation")
+                                log.info("Error: {0}".format(ke))
 
                             log.info("Saving results!")
                             with open(f"./output/GridSearch/{lib}_best_results.csv", "a") as csvfile:
@@ -288,5 +288,6 @@ if __name__ == '__main__':
     start_time = time.time()
     # run_gridSearch('dlibCNN', 'euclidian_px_all')  # dostoievski
     # run_gridSearch('openFace', 'euclidian_px_all')  # tolstoi
-    run_gridSearch('openCvDNN', 'euclidian_px_all')  # puchkin
+    # run_gridSearch('openCvDNN', 'euclidian_px_all')  # puchkin
+    run_gridSearch('panda', 'olhaPanda')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

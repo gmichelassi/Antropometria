@@ -100,18 +100,18 @@ def load_glass():
     return X, target
 
 
-def load(dataset='distances_all_px_eu', folder='casos', feature_to_remove=None, label=1):
-    if feature_to_remove is None:
-        feature_to_remove = ['img_name', 'id']
-    if folder == '' and label == '':
+def load(folder='casos', dataset='distances_all_px_eu', label_name='labels'):
+    if folder == '':
         path = "./{0}.csv".format(dataset)
     else:
         path = "./data/{0}/{1}.csv".format(folder, dataset)
 
-    data = pd.read_csv(path)
+    if os.path.isfile(path):
+        data = pd.read_csv(path)
 
-    if feature_to_remove is not None:
-        data = remove_feature(data, feature_to_remove)
-    labels = np.full(len(data), label)
+        labels = data[label_name]
+        data = remove_feature(data, [label_name])
 
-    return data, labels
+        return data, labels
+    else:
+        raise IOError("File not found")
