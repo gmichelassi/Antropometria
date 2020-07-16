@@ -33,7 +33,7 @@ def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', 
     synthetic_X, synthetic_y = None, None
 
     if dataset == 'distances_all_px_eu':
-        X, y = asd.load_data(lib=lib, dataset='distances_all_px_eu', normalization=False, labels=False, verbose=verbose)
+        X, y = asd.load_data(lib=lib, dataset=dataset, normalization=False, labels=False, verbose=verbose)
     else:
         X, y = asd.load(folder=lib, dataset=dataset, label_name='TEA.CTRL')
 
@@ -92,5 +92,4 @@ def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', 
 
 if __name__ == '__main__':
     start_time = time.time()
-    print(run_dimensionality_reductions('mRMR', 0.0, 'smote'))
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
