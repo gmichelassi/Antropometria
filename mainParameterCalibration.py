@@ -1,6 +1,6 @@
 # Classifiers
 from classifiers import svm, rf, knn, nnn, nb
-from mainDimensionalityReduction import run_dimensionality_reductions
+from DimensionalityReduction import run_dimensionality_reductions
 
 # Classifiers evaluation methods
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
@@ -24,6 +24,18 @@ context.loadModules()
 log = logger.getLogger(__file__)
 
 
+def __testToRun():
+    isRandomForestDone = False
+    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF']
+    classifiers = {'randomforestclassifier': rf, 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn,
+                   'gaussiannb': nb}
+    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
+    filtros = [0.0, 0.98, 0.99]
+    min_maxs = [False, True]
+
+    return isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs
+
+
 def __completeFrame(X, y, synthetic_X, synthetic_y, n_splits=10, current_fold=0):
     synthetic_X = np.array_split(synthetic_X, n_splits)
     synthetic_y = np.array_split(synthetic_y, n_splits)
@@ -39,9 +51,10 @@ def __completeFrame(X, y, synthetic_X, synthetic_y, n_splits=10, current_fold=0)
     return X, y
 
 
-def __errorEstimation(lib='dlibHOG', dataset='', model=None, parameters=None, reduction='None', filtro=0.0, amostragem=None, min_max=False):
+def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, parameters=None, reduction='None', filtro=0.0, amostragem=None, min_max=False):
     if parameters is None or model is None:
-        return
+        log.info("It was not possible run error estimation for this test")
+        return {'accuracy': "", 'IC': "", 'precision': "", 'recall': "", 'f1score': "", 'time': ""}
 
     log.info("Running error estimation for current classifier with best parameters found")
 
@@ -107,15 +120,10 @@ def __errorEstimation(lib='dlibHOG', dataset='', model=None, parameters=None, re
     }
 
 
-def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
+def run_gridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
     log.info("Running Grid Search for %s dataset", dataset)
 
-    isRandomForestDone = False
-    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF']
-    classifiers = {'randomforestclassifier': rf, 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb}
-    amostragens = [None, 'Smote']  # 'Random', 'Borderline', 'KMeans', 'SVM', 'Tomek'
-    filtros = [0.0]  # , 0.98, 0.99
-    min_maxs = [False]  # , True
+    isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs = __testToRun()
 
     for classifier in classifiers.keys():
         for reduction in dimensionality_reductions:
@@ -191,6 +199,7 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
                                 log.info("Error: {0}".format(ke))
 
                             log.info("Saving results!")
+
                             with open(f"./output/GridSearch/{lib}_best_results.csv", "a") as csvfile:
                                 writer = csv.DictWriter(csvfile, fieldnames=['biblioteca', 'classifier', 'reduction', 'filtro', 'min_max', 'par_amostragem', 'par_accuracy', 'err_accuracy', 'IC', 'err_precision', 'err_recall', 'err_f1score', 'err_time', 'parameters'])
                                 results = {
@@ -218,7 +227,7 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
                         log.info("Execution time: %s minutes" % ((time.time() - start_processing) / 60))
 
 
-def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
+def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
     log.info("Running Randomized Search for %s dataset", dataset)
 
     dimensionality_reductions = ['None', 'PCA', 'mRMRProxy', 'FCBFProxy',
@@ -286,8 +295,6 @@ def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    # run_gridSearch('dlibCNN', 'euclidian_px_all')  # dostoievski
-    # run_gridSearch('openFace', 'euclidian_px_all')  # tolstoi
-    # run_gridSearch('openCvDNN', 'euclidian_px_all')  # puchkin
-    run_gridSearch('panda', 'olhaPanda')
+    run_gridSearch('dlibCNN', 'distances_all_px_eu')  # dostoievski
+    # run_gridSearch('openFace', 'distances_all_px_eu')  # tolstoi
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
