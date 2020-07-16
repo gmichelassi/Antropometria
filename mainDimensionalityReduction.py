@@ -29,10 +29,13 @@ def __dimensionality_reduction(red_dim, X, y, verbose):
     return data
 
 
-def run_dimensionality_reductions(lib='dlibHOG', reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
+def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
     synthetic_X, synthetic_y = None, None
 
-    X, y = asd.load_data(lib=lib, dataset='distances_all_px_eu', normalization=False, labels=False, verbose=verbose)
+    if dataset == 'distances_all_px_eu':
+        X, y = asd.load_data(lib=lib, dataset='distances_all_px_eu', normalization=False, labels=False, verbose=verbose)
+    else:
+        X, y = asd.load(folder=lib, dataset=dataset, label_name='TEA.CTRL')
 
     if verbose:
         log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
