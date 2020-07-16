@@ -120,7 +120,7 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
     }
 
 
-def run_gridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
+def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
     log.info("Running Grid Search for %s dataset", dataset)
 
     isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs = __testToRun()
@@ -228,73 +228,11 @@ def run_gridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
 
 
 def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
-    log.info("Running Randomized Search for %s dataset", dataset)
-
-    dimensionality_reductions = ['None', 'PCA', 'mRMRProxy', 'FCBFProxy',
-                                 'CFSProxy', 'RFSProxy', 'ReliefF']
-    reduction = dimensionality_reductions[0]
-
-    classifiers = {'randomforestclassifier': rf,
-                   'svc': svm,
-                   'kneighborsclassifier': knn,
-                   'mlpclassifier': nnn
-                   }
-
-    for classifier in classifiers.keys():
-        samples, labels = run_dimensionality_reductions(filtro=filtro, reduction=reduction)
-
-        instances, features = samples.shape
-        n_features_to_keep = int(np.sqrt(features))
-
-        scoring = {'accuracy': 'accuracy',
-                   'precision_macro': 'precision_macro',
-                   'recall_macro': 'recall_macro',
-                   'f1_macro': 'f1_macro'}
-
-        estimators, param_distributions, classifier_name = \
-            classifiers[classifier].make_random_optimization_pipes(n_features_to_keep)
-
-        cv = StratifiedKFold(n_splits=4)
-        for estimator in estimators:
-            try:
-                log.info("Training Models for %s and %s", classifier_name, reduction)
-
-                rdm = RandomizedSearchCV(
-                    estimator=estimator,
-                    param_distributions=param_distributions,
-                    n_iter=100,
-                    scoring=scoring,
-                    n_jobs=-1,
-                    iid=False,
-                    cv=cv,
-                    refit='accuracy',
-                    random_state=787870)
-                rdm_results = rdm.fit(samples, labels)
-
-                log.info("Training complete")
-
-            except ValueError as e:
-                log.exception("Exception during pipeline execution", extra=e)
-                rdm_results = None
-            except KeyError as ke:
-                log.exception("Exception during pipeline execution", extra=ke)
-                rdm_results = None
-
-            if rdm_results is not None:
-                log.info("Best result presented accuracy %.2f%% for %s and %s",
-                         rdm_results.best_score_ * 100, classifier_name, reduction)
-                log.info("Best parameters found: " + str(rdm_results.best_params_))
-                log.info("Best parameters were found on index: " + str(rdm_results.best_index_))
-                log.info("Saving results!")
-                df_results = pd.DataFrame(rdm_results.cv_results_)
-                df_results.drop('params', axis=1)
-                path_results = './output/RandomSearch/results_' \
-                               + dataset + '_' + classifier_name + '_' + reduction + '.csv'
-                df_results.to_csv(path_results, index_label='id')
+    pass
 
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_gridSearch('dlibCNN', 'distances_all_px_eu')  # dostoievski
+    runGridSearch('openCvHaar', 'distances_all_px_eu')  # dostoievski
     # run_gridSearch('openFace', 'distances_all_px_eu')  # tolstoi
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
