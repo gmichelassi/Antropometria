@@ -11,7 +11,7 @@ import time
 import numpy as np
 import pandas as pd
 import initContext as context
-import mainSampling as sampling
+import Sampling as sampling
 from classifiers.utils import apply_pearson_feature_selection, build_ratio_dataset, normalizacao_min_max
 from sklearn.utils.multiclass import unique_labels
 from config import logger
