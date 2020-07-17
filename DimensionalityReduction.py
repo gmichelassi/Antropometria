@@ -33,7 +33,10 @@ def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', 
     synthetic_X, synthetic_y = None, None
 
     if dataset == 'distances_all_px_eu':
-        X, y = asd.load_data(lib=lib, dataset=dataset, normalization=False, labels=False, verbose=verbose)
+        if lib == 'ratio':
+            X, y = asd.load_data(lib=lib, dataset=dataset, ratio=True, labels=False, verbose=verbose)
+        else:
+            X, y = asd.load_data(lib=lib, dataset=dataset, ratio=False, labels=False, verbose=verbose)
     else:
         X, y = asd.load(folder=lib, dataset=dataset, label_name='TEA.CTRL')
 
