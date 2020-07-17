@@ -26,12 +26,12 @@ log = logger.getLogger(__file__)
 
 def __testToRun():
     isRandomForestDone = False
-    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF']
+    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF']  # , 'CFS', 'RFS', 'ReliefF'
     classifiers = {'randomforestclassifier': rf, 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn,
                    'gaussiannb': nb}
-    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
-    filtros = [0.0, 0.98, 0.99]
-    min_maxs = [False, True]
+    amostragens = [None, 'Smote']  # 'Random', 'Borderline', 'KMeans', 'SVM', 'Tomek'
+    filtros = [0.0]  # , 0.98, 0.99
+    min_maxs = [False]  # , True
 
     return isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs
 
@@ -233,6 +233,6 @@ def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    runGridSearch('openCvHaar', 'distances_all_px_eu')  # dostoievski
+    runGridSearch('ratio', 'distances_all_px_eu')  # puchkin
     # run_gridSearch('openFace', 'distances_all_px_eu')  # tolstoi
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
