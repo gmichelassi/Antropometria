@@ -158,12 +158,12 @@ def build_confusion_matrix(confusion_matrix, labels):
     return df, n_classes
 
 
-def build_ratio_dataset(dataset):
+def build_ratio_dataset(dataset, name):
     n_linhas, n_columns = dataset.shape  # obtemos o tamanho do dataset
     linha_dataset_final = []  # lista auxiliar que conterá as linhas do dataset final
     columns = combine_columns_names(n_columns=n_columns)
 
-    with open('./data/distances_ratio_all_px_euclidian.csv', 'w') as csvfile:
+    with open(f'./data/ratio/{name}_distances_all_px_eu.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(columns)
 

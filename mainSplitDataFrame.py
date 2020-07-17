@@ -2,6 +2,7 @@ import asd_data as asd
 
 # Utils
 from classifiers.utils import apply_pearson_feature_selection
+from classifiers.utils import build_ratio_dataset
 from scipy import stats
 import os
 import time
@@ -22,7 +23,7 @@ def splitDataFrame():
     #  https://docs.scipy.org/doc/numpy/reference/generated/numpy.arange.html
     all_samples = {}
 
-    X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', labels=False)
+    X, y = asd.load_data()
     all_samples['euclidian_px_all'] = (X, y)
 
     # X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', normalization='ratio', labels=False)
@@ -131,37 +132,24 @@ def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
 if __name__ == '__main__':
     start_time = time.time()
 
-    multipleProcessing = True
+    multipleProcessing = False
 
     if multipleProcessing:
         proc1 = Process(target=runPearsonCorrelation, args=("euclidian_ratio_px_all", 0, 1, 0.99, 65070))
         proc2 = Process(target=runPearsonCorrelation, args=("euclidian_ratio_px_all", 1, 2, 0.99, 70695))
-        proc3 = Process(target=runPearsonCorrelation, args=("euclidian_ratio_px_all", 2, 3, 0.99, 66468))
-        proc4 = Process(target=runPearsonCorrelation, args=("euclidian_ratio_px_all", 3, 4, 0.99, 69539))
-        proc5 = Process(target=runPearsonCorrelation, args=("euclidian_ratio_px_all", 4, 5, 0.99, 73532))
-        proc6 = Process(target=runPearsonCorrelation, args=("euclidian_ratio_px_all", 5, 6, 0.99, 70400))
-        proc7 = Process(target=runPearsonCorrelation, args=("euclidian_ratio_px_all", 6, 7, 0.99, 68191))
-        proc8 = Process(target=runPearsonCorrelation, args=("euclidian_ratio_px_all", 7, 8, 0.99, 74533))
 
         proc1.start()
         proc2.start()
-        proc3.start()
-        proc4.start()
-        proc5.start()
-        proc6.start()
-        proc7.start()
-        proc8.start()
 
         proc1.join()
         proc2.join()
-        proc3.join()
-        proc4.join()
-        proc5.join()
-        proc6.join()
-        proc7.join()
-        proc8.join()
     else:
-        # checkShapes("euclidian_ratio_px_all", starting_file=0, ending_file=16)
-        mergeDataFrames("euclidian_ratio_px_all")
+        X = pd.read_csv('./data/dlibHOG/casos_distances_all_px_eu.csv', delimiter=',')
+        X = X.drop(['img_name', 'id'], axis=1)
+        build_ratio_dataset(dataset=X, name='casos')
+
+        X = pd.read_csv('./data/dlibHOG/controles_distances_all_px_eu.csv', delimiter=',')
+        X = X.drop(['img_name', 'id'], axis=1)
+        build_ratio_dataset(dataset=X, name='controles')
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
