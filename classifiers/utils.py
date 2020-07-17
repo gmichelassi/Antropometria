@@ -184,7 +184,7 @@ def build_ratio_dataset(dataset, name):
             writer.writerow(linha_dataset_final)
             linha_dataset_final.clear()
 
-            print("Linha {0} concluída".format(linha), flush=True)
+            print("Linha {0} concluida".format(linha), flush=True)
 
 
 def combine_columns_names(n_columns):
