@@ -11,7 +11,7 @@ import time
 import numpy as np
 import pandas as pd
 import initContext as context
-import mainSampling as sampling
+import Sampling as sampling
 from classifiers.utils import apply_pearson_feature_selection, build_ratio_dataset, normalizacao_min_max
 from sklearn.utils.multiclass import unique_labels
 from config import logger
@@ -29,10 +29,16 @@ def __dimensionality_reduction(red_dim, X, y, verbose):
     return data
 
 
-def run_dimensionality_reductions(lib='dlibHOG', reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
+def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
     synthetic_X, synthetic_y = None, None
 
-    X, y = asd.load_data(lib=lib, dataset='distances_all_px_eu', normalization=False, labels=False, verbose=verbose)
+    if dataset == 'distances_all_px_eu':
+        if lib == 'ratio':
+            X, y = asd.load_data(lib=lib, dataset=dataset, ratio=True, labels=False, verbose=verbose)
+        else:
+            X, y = asd.load_data(lib=lib, dataset=dataset, ratio=False, labels=False, verbose=verbose)
+    else:
+        X, y = asd.load(folder=lib, dataset=dataset, label_name='TEA.CTRL')
 
     if verbose:
         log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
@@ -89,5 +95,4 @@ def run_dimensionality_reductions(lib='dlibHOG', reduction='None', filtro=0.0, a
 
 if __name__ == '__main__':
     start_time = time.time()
-    print(run_dimensionality_reductions('mRMR', 0.0, 'smote'))
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

@@ -1,6 +1,6 @@
 # Classifiers
 from classifiers import svm, rf, knn, nnn, nb
-from mainDimensionalityReduction import run_dimensionality_reductions
+from DimensionalityReduction import run_dimensionality_reductions
 
 # Classifiers evaluation methods
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
@@ -24,6 +24,17 @@ context.loadModules()
 log = logger.getLogger(__file__)
 
 
+def __testToRun():
+    isRandomForestDone = False
+    dimensionality_reductions = ['FCBF', 'CFS', 'RFS', 'ReliefF']
+    classifiers = {'svc': svm}
+    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']  #
+    filtros = [0.0, 0.98, 0.99]
+    min_maxs = [False, True]
+
+    return isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs
+
+
 def __completeFrame(X, y, synthetic_X, synthetic_y, n_splits=10, current_fold=0):
     synthetic_X = np.array_split(synthetic_X, n_splits)
     synthetic_y = np.array_split(synthetic_y, n_splits)
@@ -39,14 +50,15 @@ def __completeFrame(X, y, synthetic_X, synthetic_y, n_splits=10, current_fold=0)
     return X, y
 
 
-def __errorEstimation(lib='dlibHOG', model=None, parameters=None, reduction='None', filtro=0.0, amostragem=None, min_max=False):
+def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, parameters=None, reduction='None', filtro=0.0, amostragem=None, min_max=False):
     if parameters is None or model is None:
-        return
+        log.info("It was not possible run error estimation for this test")
+        return {'accuracy': "", 'IC': "", 'precision': "", 'recall': "", 'f1score': "", 'time': ""}
 
     log.info("Running error estimation for current classifier with best parameters found")
 
     try:
-        X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
+        X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
     except RuntimeError as re:
         log.info("It was not possible run error estimation for this test")
         log.info("Error: " + str(re))
@@ -107,16 +119,10 @@ def __errorEstimation(lib='dlibHOG', model=None, parameters=None, reduction='Non
     }
 
 
-def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
+def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
     log.info("Running Grid Search for %s dataset", dataset)
 
-    isRandomForestDone = False
-    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF']
-    # 'randomforestclassifier': rf, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb
-    classifiers = {'svc': svm}
-    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
-    filtros = [0.0, 0.98, 0.99]
-    min_maxs = [False, True]
+    isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs = __testToRun()
 
     for classifier in classifiers.keys():
         for reduction in dimensionality_reductions:
@@ -131,8 +137,7 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
             for filtro in filtros:
                 for min_max in min_maxs:
                     for amostragem in amostragens:
-
-                        if reduction == 'RFS' and filtro == 0.0 and min_max and amostragem == 'Borderline':
+                        if reduction == 'FCBF' and amostragem == 'Borderline' and filtro == 0.0 and not min_max:
                             continue
 
                         start_processing = time.time()
@@ -140,7 +145,7 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
                         log.info("Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", lib, classifier, reduction, filtro, min_max, amostragem)
 
                         try:
-                            X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
+                            X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
                         except RuntimeError as re:
                             log.info("It was not possible run test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier, reduction, filtro, min_max, amostragem)
                             log.info("Error: " + str(re))
@@ -188,9 +193,15 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
                             log.info("Best parameters found: {0}".format(grid_results.best_params_))
                             log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
 
-                            errResults = __errorEstimation(lib=lib, model=classifiers[classifier], parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
+                            try:
+                                errResults = __errorEstimation(lib=lib, dataset=dataset, model=classifiers[classifier], parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
+                            except KeyError as ke:
+                                errResults = {'accuracy': '', 'IC': '', 'precision': '', 'recall': '', 'f1score': '', 'time': ''}
+                                log.info("It was not possible to run error estimation")
+                                log.info("Error: {0}".format(ke))
 
                             log.info("Saving results!")
+
                             with open(f"./output/GridSearch/{lib}_best_results.csv", "a") as csvfile:
                                 writer = csv.DictWriter(csvfile, fieldnames=['biblioteca', 'classifier', 'reduction', 'filtro', 'min_max', 'par_amostragem', 'par_accuracy', 'err_accuracy', 'IC', 'err_precision', 'err_recall', 'err_f1score', 'err_time', 'parameters'])
                                 results = {
@@ -218,75 +229,12 @@ def run_gridSearch(lib='dlibHOG', dataset='euclidian_px_all'):
                         log.info("Execution time: %s minutes" % ((time.time() - start_processing) / 60))
 
 
-def run_randomizedSearch(dataset='euclidian_px_all', filtro=0.0):
-    log.info("Running Randomized Search for %s dataset", dataset)
-
-    dimensionality_reductions = ['None', 'PCA', 'mRMRProxy', 'FCBFProxy',
-                                 'CFSProxy', 'RFSProxy', 'ReliefF']
-    reduction = dimensionality_reductions[0]
-
-    classifiers = {'randomforestclassifier': rf,
-                   'svc': svm,
-                   'kneighborsclassifier': knn,
-                   'mlpclassifier': nnn
-                   }
-
-    for classifier in classifiers.keys():
-        samples, labels = run_dimensionality_reductions(filtro=filtro, reduction=reduction)
-
-        instances, features = samples.shape
-        n_features_to_keep = int(np.sqrt(features))
-
-        scoring = {'accuracy': 'accuracy',
-                   'precision_macro': 'precision_macro',
-                   'recall_macro': 'recall_macro',
-                   'f1_macro': 'f1_macro'}
-
-        estimators, param_distributions, classifier_name = \
-            classifiers[classifier].make_random_optimization_pipes(n_features_to_keep)
-
-        cv = StratifiedKFold(n_splits=4)
-        for estimator in estimators:
-            try:
-                log.info("Training Models for %s and %s", classifier_name, reduction)
-
-                rdm = RandomizedSearchCV(
-                    estimator=estimator,
-                    param_distributions=param_distributions,
-                    n_iter=100,
-                    scoring=scoring,
-                    n_jobs=-1,
-                    iid=False,
-                    cv=cv,
-                    refit='accuracy',
-                    random_state=787870)
-                rdm_results = rdm.fit(samples, labels)
-
-                log.info("Training complete")
-
-            except ValueError as e:
-                log.exception("Exception during pipeline execution", extra=e)
-                rdm_results = None
-            except KeyError as ke:
-                log.exception("Exception during pipeline execution", extra=ke)
-                rdm_results = None
-
-            if rdm_results is not None:
-                log.info("Best result presented accuracy %.2f%% for %s and %s",
-                         rdm_results.best_score_ * 100, classifier_name, reduction)
-                log.info("Best parameters found: " + str(rdm_results.best_params_))
-                log.info("Best parameters were found on index: " + str(rdm_results.best_index_))
-                log.info("Saving results!")
-                df_results = pd.DataFrame(rdm_results.cv_results_)
-                df_results.drop('params', axis=1)
-                path_results = './output/RandomSearch/results_' \
-                               + dataset + '_' + classifier_name + '_' + reduction + '.csv'
-                df_results.to_csv(path_results, index_label='id')
+def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
+    pass
 
 
 if __name__ == '__main__':
     start_time = time.time()
-    # run_gridSearch('dlibCNN', 'euclidian_px_all')  # dostoievski
-    run_gridSearch('openFace', 'euclidian_px_all')  # tolstoi
-    # run_gridSearch('openCvDNN', 'euclidian_px_all')  # puchkin
+    # runGridSearch('ratio', 'distances_all_px_eu')  # puchkin
+    runGridSearch('openFace', 'distances_all_px_eu')  # tolstoi
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

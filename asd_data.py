@@ -32,7 +32,7 @@ def load_by_chunks(file_name):
     return merge_frames(chunk_list)
 
 
-def load_data(lib='dlibHOG', dataset='distances_all_px_eu', normalization=False, labels=False, verbose=True):
+def load_data(lib='dlibHOG', dataset='distances_all_px_eu', ratio=False, labels=False, verbose=True):
 
     if verbose:
         log.info("Loading data from csv file")
@@ -45,7 +45,7 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', normalization=False,
         log.info("Controles file: " + str(controles_file))
 
     if os.path.isfile(casos_file) and os.path.isfile(controles_file):
-        if normalization:
+        if ratio:
             casos = load_by_chunks(casos_file)
             controles = load_by_chunks(controles_file)
         else:
@@ -64,7 +64,7 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', normalization=False,
         X = merge_frames(frames)
 
         # remove image paths
-        if not normalization:
+        if not ratio:
             X = remove_feature(X, 'img_name')
             X = remove_feature(X, 'id')
 
@@ -79,7 +79,7 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', normalization=False,
             X, target = shuffle(X, target, random_state=random_state)
             return X, target
     else:
-        raise IOError("File not found for parameters: [{0}, {1}, {2}]".format(lib, dataset, normalization))
+        raise IOError("File not found for parameters: [{0}, {1}, {2}]".format(lib, dataset, ratio))
 
 
 def load_wine():
@@ -100,18 +100,18 @@ def load_glass():
     return X, target
 
 
-def load(dataset='distances_all_px_eu', folder='casos', feature_to_remove=None, label=1):
-    if feature_to_remove is None:
-        feature_to_remove = ['img_name', 'id']
-    if folder == '' and label == '':
+def load(folder='casos', dataset='distances_all_px_eu', label_name='labels'):
+    if folder == '':
         path = "./{0}.csv".format(dataset)
     else:
         path = "./data/{0}/{1}.csv".format(folder, dataset)
 
-    data = pd.read_csv(path)
+    if os.path.isfile(path):
+        data = pd.read_csv(path)
 
-    if feature_to_remove is not None:
-        data = remove_feature(data, feature_to_remove)
-    labels = np.full(len(data), label)
+        labels = data[label_name]
+        data = remove_feature(data, [label_name])
 
-    return data, labels
+        return data, labels
+    else:
+        raise IOError("File not found")

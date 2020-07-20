@@ -23,7 +23,7 @@ log = logger.getLogger(__file__)
 def saveModel(filtro=0.0):
     all_samples = {}
 
-    X, y = asd.load_data(d_type='euclidian', unit='px', m='', normalization='', dataset='all', labels=False)
+    X, y = asd.load_data(d_type='euclidian', unit='px', m='', ratio='', dataset='all', labels=False)
     all_samples['euclidian_px_all'] = (X, y)
 
     for k in all_samples.keys():
