@@ -27,7 +27,7 @@ log = logger.getLogger(__file__)
 def __testToRun():
     isRandomForestDone = False
     dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF']  # , 'CFS', 'RFS', 'ReliefF'
-    classifiers = {'randomforestclassifier': rf, 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn,
+    classifiers = {'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn,
                    'gaussiannb': nb}
     amostragens = [None, 'Smote']  # 'Random', 'Borderline', 'KMeans', 'SVM', 'Tomek'
     filtros = [0.0]  # , 0.98, 0.99
