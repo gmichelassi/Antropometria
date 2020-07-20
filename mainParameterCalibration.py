@@ -26,12 +26,11 @@ log = logger.getLogger(__file__)
 
 def __testToRun():
     isRandomForestDone = False
-    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF']  # , 'CFS', 'RFS', 'ReliefF'
-    classifiers = {'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn,
-                   'gaussiannb': nb}
-    amostragens = [None, 'Smote']  # 'Random', 'Borderline', 'KMeans', 'SVM', 'Tomek'
-    filtros = [0.0]  # , 0.98, 0.99
-    min_maxs = [False]  # , True
+    dimensionality_reductions = ['FCBF', 'CFS', 'RFS', 'ReliefF']
+    classifiers = {'svc': svm}
+    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']  #
+    filtros = [0.0, 0.98, 0.99]
+    min_maxs = [False, True]
 
     return isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs
 
@@ -138,6 +137,9 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
             for filtro in filtros:
                 for min_max in min_maxs:
                     for amostragem in amostragens:
+                        if reduction == 'FCBF' and amostragem == 'Borderline' and filtro == 0.0 and not min_max:
+                            continue
+
                         start_processing = time.time()
 
                         log.info("Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", lib, classifier, reduction, filtro, min_max, amostragem)
@@ -233,6 +235,6 @@ def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    runGridSearch('ratio', 'distances_all_px_eu')  # puchkin
-    # run_gridSearch('openFace', 'distances_all_px_eu')  # tolstoi
+    # runGridSearch('ratio', 'distances_all_px_eu')  # puchkin
+    runGridSearch('openFace', 'distances_all_px_eu')  # tolstoi
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
