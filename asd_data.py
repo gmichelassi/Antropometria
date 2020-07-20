@@ -32,7 +32,7 @@ def load_by_chunks(file_name):
     return merge_frames(chunk_list)
 
 
-def load_data(lib='dlibHOG', dataset='distances_all_px_eu', normalization=False, labels=False, verbose=True):
+def load_data(lib='dlibHOG', dataset='distances_all_px_eu', ratio=False, labels=False, verbose=True):
 
     if verbose:
         log.info("Loading data from csv file")
@@ -45,7 +45,7 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', normalization=False,
         log.info("Controles file: " + str(controles_file))
 
     if os.path.isfile(casos_file) and os.path.isfile(controles_file):
-        if normalization:
+        if ratio:
             casos = load_by_chunks(casos_file)
             controles = load_by_chunks(controles_file)
         else:
@@ -64,7 +64,7 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', normalization=False,
         X = merge_frames(frames)
 
         # remove image paths
-        if not normalization:
+        if not ratio:
             X = remove_feature(X, 'img_name')
             X = remove_feature(X, 'id')
 
@@ -79,7 +79,7 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', normalization=False,
             X, target = shuffle(X, target, random_state=random_state)
             return X, target
     else:
-        raise IOError("File not found for parameters: [{0}, {1}, {2}]".format(lib, dataset, normalization))
+        raise IOError("File not found for parameters: [{0}, {1}, {2}]".format(lib, dataset, ratio))
 
 
 def load_wine():
