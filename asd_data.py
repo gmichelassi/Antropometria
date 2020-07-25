@@ -109,7 +109,7 @@ def load(folder='casos', dataset='distances_all_px_eu', label_name='labels'):
     if os.path.isfile(path):
         data = pd.read_csv(path)
 
-        labels = data[label_name]
+        labels = data[label_name].values
         data = remove_feature(data, [label_name])
 
         return data, labels
