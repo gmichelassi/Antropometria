@@ -2,13 +2,11 @@ import asd_data as asd
 import time
 import initContext as context
 import numpy as np
-import pandas as pd
-from classifiers.utils import normalizacao_min_max, build_ratio_dataset
-from sklearn.utils import shuffle
+from sklearn.cluster import KMeans
 from imblearn.over_sampling import SMOTE, BorderlineSMOTE, KMeansSMOTE, SVMSMOTE
 from imblearn.combine import SMOTETomek
+from imblearn.under_sampling import RandomUnderSampler
 from config import logger
-from classifiers.utils import generateRandomNumbers
 
 context.loadModules()
 log = logger.getLogger(__file__)
@@ -16,53 +14,17 @@ random_state = 10000
 
 
 def runRandomUnderSampling(X, y, verbose):
-    casos, controles, cont = [], [], 0
-    for i in y:
-        if i == 1:
-            casos.append(cont)
-        else:
-            controles.append(cont)
+    if verbose:
+        log.info("Data before under sampling")
+        log.info("Dataset: {0}, {1}".format(X.shape, len(y)))
 
-        cont += 1
-
-    X_casos, y_casos = X[casos], y[casos]
-    X_controles, y_controles = X[controles], y[controles]
+    X_novo, y_novo = RandomUnderSampler(random_state=random_state).fit_resample(X, y)
 
     if verbose:
-        log.info("Data before random undersampling")
-        log.info("Casos: {0}, {1}".format(X_casos.shape, len(y_casos)))
-        log.info("Controles: {0}, {1}".format(X_controles.shape, len(y_controles)))
+        log.info("Data after under sampling")
+        log.info("Dataset: {0}, {1}".format(X_novo.shape, len(y_novo)))
 
-    number_of_features = abs(len(y_casos) - len(y_controles))
-    features_to_delete = []
-    if len(y_casos) > len(y_controles):
-        feature_index_to_delete = generateRandomNumbers(number_of_features, len(y_casos) - 1)
-
-        for feature_index in feature_index_to_delete:
-            features_to_delete.append(X_casos[feature_index])
-
-        X_casos = np.delete(X_casos, feature_index_to_delete, axis=0)
-        y_casos = np.delete(y_casos, feature_index_to_delete, axis=0)
-    else:
-        feature_index_to_delete = generateRandomNumbers(number_of_features, len(y_controles) - 1)
-
-        for feature_index in feature_index_to_delete:
-            features_to_delete.append(X_controles[feature_index])
-
-        X_controles = np.delete(X_controles, feature_index_to_delete, axis=0)
-        y_controles = np.delete(y_controles, feature_index_to_delete, axis=0)
-
-    if verbose:
-        log.info("Data after random undersampling")
-        log.info("Casos: {0}, {1}".format(X_casos.shape, len(y_casos)))
-        log.info("Controles: {0}, {1}".format(X_controles.shape, len(y_controles)))
-
-    y = np.concatenate((y_casos, y_controles))
-    X = np.concatenate((X_casos, X_controles))
-
-    X, target = shuffle(X, y, random_state=random_state)
-
-    return X, target
+    return X_novo, y_novo
 
 
 def runSmote(X, y, algorithm='default', split_synthetic=False, verbose=True):
@@ -82,7 +44,7 @@ def runSmote(X, y, algorithm='default', split_synthetic=False, verbose=True):
     elif algorithm == 'KMeans':
         if verbose:
             log.info("Running KMeans Smote")
-        X_novo, y_novo = KMeansSMOTE(random_state=random_state).fit_resample(X, y)
+        X_novo, y_novo = KMeansSMOTE(random_state=random_state, kmeans_estimator=KMeans(n_clusters=20)).fit_resample(X, y)
     elif algorithm == 'SVM':
         if verbose:
             log.info("Running SVM Smote")
