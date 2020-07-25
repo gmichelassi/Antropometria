@@ -26,9 +26,9 @@ log = logger.getLogger(__file__)
 
 def __testToRun():
     isRandomForestDone = False
-    dimensionality_reductions = ['FCBF', 'CFS', 'RFS', 'ReliefF']
-    classifiers = {'svc': svm}
-    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']  #
+    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF', 'RFSelect']
+    classifiers = {'randomforestclassifier': rf, 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb}
+    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
     filtros = [0.0, 0.98, 0.99]
     min_maxs = [False, True]
 
@@ -40,12 +40,10 @@ def __completeFrame(X, y, synthetic_X, synthetic_y, n_splits=10, current_fold=0)
     synthetic_y = np.array_split(synthetic_y, n_splits)
 
     for i in range(len(synthetic_X)):
-        if i == current_fold:
-            pass
-        else:
+        if i != current_fold:
             for j in range(len(synthetic_X[i])):
-                X = np.append(X, [synthetic_X[i][j]], 0)
-                y = np.append(y, [synthetic_y[i][j]], 0)
+                X = np.append(arr=X, values=[synthetic_X[i][j]], axis=0)
+                y = np.append(arr=y, values=[synthetic_y[i][j]], axis=0)
 
     return X, y
 
@@ -75,8 +73,7 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
         X_test, y_test = X[test_index], y[test_index]
 
         if synthetic_X is not None:
-            X_train, y_train = __completeFrame(X_train, y_train, synthetic_X, synthetic_y, n_splits,
-                                               current_fold)
+            X_train, y_train = __completeFrame(X_train, y_train, synthetic_X, synthetic_y, n_splits, current_fold)
         folds.append((X_train, y_train, X_test, y_test))
         current_fold += 1
 
@@ -235,6 +232,5 @@ def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    # runGridSearch('ratio', 'distances_all_px_eu')  # puchkin
-    runGridSearch('openFace', 'distances_all_px_eu')  # tolstoi
+    runGridSearch(lib='teste', dataset='olhaPanda')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
