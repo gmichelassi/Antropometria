@@ -1,5 +1,5 @@
 # Feature selection / Dimensionality reduction
-from classifiers.custom_feature_selection import mRMRProxy, FCBFProxy, CFSProxy, RFSProxy
+from classifiers.custom_feature_selection import mRMRProxy, FCBFProxy, CFSProxy, RFSProxy, RFSelect
 from sklearn.decomposition import PCA
 from skrebate import ReliefF
 
@@ -54,9 +54,7 @@ def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', 
         if verbose:
             log.info("Applying min_max normalization")
         X = normalizacao_min_max(X)
-
     X = X.values
-
     instances, features = X.shape
 
     if verbose:
@@ -79,6 +77,8 @@ def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', 
         red_dim = RFSProxy(n_features_to_select=n_features_to_keep, verbose=False)
     elif reduction == 'ReliefF':
         red_dim = ReliefF(n_features_to_select=n_features_to_keep, n_neighbors=100, n_jobs=-1)
+    elif reduction == 'RFSelect':
+        red_dim = RFSelect()
     else:
         raise IOError("Dimensionality Reduction not found for parameter {0}".format(reduction))
 
@@ -95,4 +95,5 @@ def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', 
 
 if __name__ == '__main__':
     start_time = time.time()
+    run_dimensionality_reductions(reduction='RFSelect')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

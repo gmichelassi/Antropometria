@@ -70,7 +70,6 @@ def make_oob_pipes(dimensionality_reductions, n_features_to_keep):
 
 def make_grid_optimization_pipes(n_features):
     estimator = RandomForestClassifier()
-    # valor certo eh 50
     grid_parameters = {
         'n_estimators': [500, 1000, 1500, 2000],
         'criterion': ['gini'],
@@ -78,7 +77,7 @@ def make_grid_optimization_pipes(n_features):
         'min_samples_leaf': [1, 2, 5, 10, 15, 20],
         'max_features': [i for i in range(int(0.5 * n_features),
                                           6 * n_features,
-                                          int(((6 * n_features - 0.5 * n_features) / 15)))],
+                                          int(((6 * n_features - 0.5 * n_features) / 50)))],
         'bootstrap': [True],
         'n_jobs': [-1],
         'random_state': [707878],

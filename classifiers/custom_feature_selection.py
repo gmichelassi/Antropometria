@@ -3,9 +3,10 @@ from skfeature.function.information_theoretical_based.FCBF import fcbf
 from skfeature.function.statistical_based.CFS import cfs
 from skfeature.function.sparse_learning_based.RFS import rfs
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import SelectFromModel
 
 
-# noinspection PyAttributeOutsideInit
 class mRMRProxy(BaseEstimator, TransformerMixin):
     def __init__(self, n_features_to_select=2, mode='rank', verbose=True):
         self.n_features_to_select = n_features_to_select
@@ -28,7 +29,6 @@ class mRMRProxy(BaseEstimator, TransformerMixin):
         return self.transform(X)
 
 
-# noinspection PyAttributeOutsideInit
 class FCBFProxy(BaseEstimator, TransformerMixin):
     def __init__(self, n_features_to_select=2, mode='rank', delta=0.0, verbose=True):
         self.n_features_to_select = n_features_to_select
@@ -52,7 +52,6 @@ class FCBFProxy(BaseEstimator, TransformerMixin):
         return self.transform(X)
 
 
-# noinspection PyAttributeOutsideInit
 class CFSProxy(BaseEstimator, TransformerMixin):
     def __init__(self, n_features_to_select=None, mode='rank', verbose=True):
         self.n_features_to_select = n_features_to_select
@@ -78,7 +77,6 @@ class CFSProxy(BaseEstimator, TransformerMixin):
         return self.transform(X)
 
 
-# noinspection PyAttributeOutsideInit
 class RFSProxy(BaseEstimator, TransformerMixin):
     def __init__(self, n_features_to_select=None, mode='rank', gamma=1, verbose=True):
         self.n_features_to_select = n_features_to_select
@@ -99,6 +97,23 @@ class RFSProxy(BaseEstimator, TransformerMixin):
             return X[:, self.ranking_]
 
         return X[:, self.ranking_[:self.n_features_to_select]]
+
+    def fit_transform(self, X, y):
+        self.fit(X, y)
+        return self.transform(X)
+
+
+class RFSelect(BaseEstimator, TransformerMixin):
+    def __init__(self):
+        self.__sel = SelectFromModel(RandomForestClassifier())
+
+    def fit(self, X, y):
+        self.__sel.fit(X, y)
+
+        return self
+
+    def transform(self, X):
+        return X[:, self.__sel.get_support()]
 
     def fit_transform(self, X, y):
         self.fit(X, y)
