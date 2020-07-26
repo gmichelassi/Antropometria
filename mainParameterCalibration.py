@@ -232,5 +232,5 @@ def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-
+    runGridSearch(lib='ratio', dataset='distances_all_px_eu')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
