@@ -24,7 +24,6 @@ def set_parameters(parameters):
 
 
 def make_estimator():
-    estimator_name = 'gaussiannb'
     estimator = GaussianNB()
 
-    return estimator, estimator_name
+    return estimator

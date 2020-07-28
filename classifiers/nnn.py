@@ -66,7 +66,6 @@ def make_random_optimization_pipes(n_features):
 
 
 def make_estimator():
-    estimator_name = 'mlpclassifier'
     estimator = MLPClassifier(
         (22, 22, 22),
         activation='relu',
@@ -76,4 +75,4 @@ def make_estimator():
         max_iter=300
     )
 
-    return estimator, estimator_name
+    return estimator

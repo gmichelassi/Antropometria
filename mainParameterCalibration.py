@@ -8,7 +8,7 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
 # Utils
-from multiprocessing import Process
+from classifiers.utils import build_ratio_dataset
 import matplotlib as plt
 from classifiers.utils import mean_scores, sample_std
 import csv
@@ -26,11 +26,11 @@ log = logger.getLogger(__file__)
 
 def __testToRun():
     isRandomForestDone = False
-    dimensionality_reductions = ['RFSelect']
-    classifiers = {'randomforestclassifier': rf}
-    amostragens = [None, 'Smote']
-    filtros = [0.0]
-    min_maxs = [False]
+    dimensionality_reductions = ['None', 'RFSelect']  # , 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF'
+    classifiers = {'randomforestclassifier': rf}  # , 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb
+    amostragens = [None, 'Smote']  # 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek'
+    filtros = [0.0]  # , 0.98, 0.99
+    min_maxs = [False]  # , True
 
     return isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs
 
@@ -124,19 +124,16 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
     for classifier in classifiers.keys():
         for reduction in dimensionality_reductions:
 
-            if isRandomForestDone and classifier == 'randomforestclassifier':
-                continue
-            elif not isRandomForestDone and classifier == 'randomforestclassifier':
-                isRandomForestDone = True
-            elif classifier != 'randomforestclassifier' and reduction == 'None':
-                continue
+            # if isRandomForestDone and classifier == 'randomforestclassifier':
+            #     continue
+            # elif not isRandomForestDone and classifier == 'randomforestclassifier':
+            #     isRandomForestDone = True
+            # elif classifier != 'randomforestclassifier' and reduction == 'None':
+            #     continue
 
             for filtro in filtros:
                 for min_max in min_maxs:
                     for amostragem in amostragens:
-                        if reduction == 'FCBF' and amostragem == 'Borderline' and filtro == 0.0 and not min_max:
-                            continue
-
                         start_processing = time.time()
 
                         log.info("Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", lib, classifier, reduction, filtro, min_max, amostragem)
@@ -232,5 +229,11 @@ def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
+
+    X = pd.read_csv('./dlibHOG_semfaixa/casos_distances_all_px_eu.csv')
+    build_ratio_dataset(X, 'casos')
+    X = pd.read_csv('./dlibHOG_semfaixa/controles.csv')
+    build_ratio_dataset(X, 'controles')
+
     runGridSearch(lib='ratio', dataset='distances_all_px_eu')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

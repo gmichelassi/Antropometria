@@ -87,15 +87,14 @@ def make_random_optimization_pipes(n_features):
 
 
 def make_estimator():
-    estimator_name = 'svc'
     estimator = SVC(
-        kernel='rbf',
-        C=(2 ** 12),
-        gamma=(2 ** (-3)),
-        degree=7,
+        kernel='poly',
+        C=50,
+        gamma='auto',
+        degree=3,
         coef0=0,
         probability=True,
-        random_state=1000000
+        random_state=707878
     )
 
-    return estimator, estimator_name
+    return estimator

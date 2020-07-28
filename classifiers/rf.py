@@ -113,7 +113,6 @@ def make_random_optimization_pipes(n_features):
 
 
 def make_estimator():
-    estimator_name = 'randomforestclassifier'
     estimator = RandomForestClassifier(
         n_estimators=500,
         criterion='gini',
@@ -126,4 +125,4 @@ def make_estimator():
         class_weight=None
     )
 
-    return estimator, estimator_name
+    return estimator

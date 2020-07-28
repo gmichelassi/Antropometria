@@ -21,93 +21,80 @@ def splitDataFrame():
     #  https://stackoverflow.com/questions/48476629/how-to-split-dataframe-vertically-having-n-columns-in-each-resulting-df#comment83947161_48476787
     #  https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.split.html
     #  https://docs.scipy.org/doc/numpy/reference/generated/numpy.arange.html
-    all_samples = {}
 
-    X, y = asd.load_data()
-    all_samples['euclidian_px_all'] = (X, y)
+    # samples, labels = asd.load_data(lib='ratio', dataset='distances_all_px_eu', ratio=True, labels=False, verbose=True)
+    samples, labels = pd.read_csv('./data/teste.csv'), np.array([1])
+    N = 1
 
-    # X, y = asd.load_data(d_type='euclidian', unit='px', m='', dataset='all', normalization='ratio', labels=False)
-    # all_samples['euclidian_ratio_px_all'] = (X, y)
+    log.info("X.shape %s, y.shape %s", str(samples.shape), str(labels.shape))
 
-    for k in all_samples.keys():
-        N = 759
-        log.info("Spliting %s dataset", k)
-        samples, labels = all_samples[k]
+    dfs = np.split(samples, np.arange(N, len(samples.columns), N), axis=1)
+    indexes = list(range(0, len(dfs)))
 
-        log.info("X.shape %s, y.shape %s", str(samples.shape), str(labels.shape))
-
-        dfs = np.split(samples, np.arange(N, len(samples.columns), N), axis=1)
-        indexes = list(range(0, len(dfs)))
-
-        for subDataFrame, index in zip(dfs, indexes):
-            print(subDataFrame.shape)
-            subDataFrame.to_csv(path_or_buf="./data/subDataSets/{0}-{1}.csv".format(k, index),
-                                index=False)
+    for subDataFrame, index in zip(dfs, indexes):
+        print(subDataFrame.shape)
+        subDataFrame.to_csv(path_or_buf=f"./data/tmp/distances_eu_{index}.csv", index=False)
 
 
-def runPearsonCorrelation(dataset_name, starting_file=0, ending_file=64, filtro=0.99, where_to_start=0):
-    # range é um intervalo [inicio, fim)
-    for i in range(starting_file, ending_file):
-        log.info("Processing file {0} out of {1}".format(i, ending_file - 1))  # -1 pois o intervalo do for eh aberto
+def runPearsonCorrelation(i=0, filtro=0.98, where_to_start=0):
+    file_name = f"./data/tmp/distances_eu_-{i}.csv"
 
-        file_name = "{0}-{1}.csv".format(dataset_name, i)
-        current_split = pd.read_csv(filepath_or_buffer='./data/subDataSets/{0}'.format(file_name))
+    if not os.path.isfile(file_name):
+        return
 
-        log.info("Applying pearson correlation filter")
-        if where_to_start == 0:
-            samples = apply_pearson_feature_selection(current_split, filtro)
-        else:
-            print("entrou no código certo :)", flush=True)
-            samples = custom_pearson_feature_selection(current_split, filtro, where_to_start)
+    current_split = pd.read_csv(filepath_or_buffer=file_name)
 
-        current_split = pd.DataFrame(data=samples)
+    log.info("Applying pearson correlation filter")
+    if where_to_start == 0:
+        samples = apply_pearson_feature_selection(current_split, filtro)
+    else:
+        samples = custom_pearson_feature_selection(current_split, filtro, where_to_start)
 
-        log.info("Saving file!")
-        current_split.to_csv(path_or_buf='./data/subDataSets/processed-{0}'.format(file_name))
+    log.info("Saving file!")
+    pd.DataFrame(data=samples).to_csv(path_or_buf=file_name)
 
-        log.info("Removing unused files...")
-        os.remove('./data/subDataSets/{0}'.format(file_name))
-
-        log.info("Done...")
+    log.info("Done...")
 
 
-def mergeDataFrames(dataset_name, starting_file=0, ending_file=64):
-    log.info("Merging already processed datasets pairwise...")
-    contador = 0
-    for i in range(starting_file, ending_file, 2):
-        file_name1 = "{0}-{1}.csv".format(dataset_name, i)
-        file_name2 = "{0}-{1}.csv".format(dataset_name, i + 1)
+def mergeDataFrames(index):
+    file_name1 = f"./data/tmp/distances_eu_{index}.csv"
+    file_name2 = ""
 
-        df1 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name1))
-        df2 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name2))
+    if not os.path.isfile(file_name1):
+        return -1
 
-        frames = [df1, df2]
+    for i in range(index+1, countFiles()):
+        file_name2 = f"./data/tmp/distances_eu_{i}.csv"
+        if os.path.isfile(file_name2):
+            break
 
-        final_df = pd.concat(frames, axis=1, ignore_index=True)
-        print("file {0} - shape {1}".format(contador, final_df.shape))
+    if not os.path.isfile(file_name2):
+        return -1
 
-        log.info("Saving file!")
+    print(f"encontrou os dois aquivos {file_name1} e {file_name2}")
 
-        final_df.to_csv(path_or_buf="./data/subDataSets/{0}-{1}.csv".format(dataset_name, contador))
+    df1 = pd.read_csv(filepath_or_buffer=file_name1)
+    df2 = pd.read_csv(filepath_or_buffer=file_name2)
 
-        log.info("Removing unused files...")
-        os.remove('./data/subDataSets/processed-{0}'.format(file_name1))
-        os.remove('./data/subDataSets/processed-{0}'.format(file_name2))
+    N = df1.shape[1]
 
-        log.info("Done...")
-        contador += 1
+    frames = [df1, df2]
 
+    final_df = pd.concat(frames, axis=1, ignore_index=True)
 
-def checkShapes(dataset_name, starting_file=0, ending_file=64):
-    for i in range(starting_file, ending_file):
-        file_name = "{0}-{1}.csv".format(dataset_name, i)
-        df = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name))
-        print("File {0} - Shape: {1} - Redução de {2:.2f}%".format(i, df.shape,
-                                                                   100 - (round(df.shape[1] / 41000, 2) * 100)))
+    log.info("Saving file!")
+
+    final_df.to_csv(path_or_buf=file_name1)
+
+    log.info("Removing unused files...")
+    os.remove(file_name2)
+
+    log.info("Done...")
+
+    return N
 
 
 # mesmo método da correlação de pearson, porém com uma alteração para onde o segundo laço deve começar
-# fazemos isso para evitar comparar features em excesso
 def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
     columns_name = samples.columns  # Salvamos os "nomes" de todas colunas para identifica-las
     features_to_delete = []
@@ -129,27 +116,42 @@ def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
     return samples.drop(features_to_delete, axis=1).values
 
 
+def countFiles():
+    isfile = os.path.isfile
+    join = os.path.join
+
+    directory = './data/tmp/'
+    return sum(1 for item in os.listdir(directory) if isfile(join(directory, item)))
+
+
+def principal(n_files):
+    if countFiles() > 1:
+        for i in range(0, n_files):
+            indice_inicial = mergeDataFrames(i)
+            if indice_inicial == -1:
+                print("deu problema, dps muda pro contrario")
+                # runPearsonCorrelation(i=i, where_to_start=indice_inicial)
+        # principal(n_files)
+        print(f"viria a recursao: {n_files}")
+
+
 if __name__ == '__main__':
     start_time = time.time()
 
-    multipleProcessing = False
+    # garantir que a pasta tmp existe
+    if not os.path.isdir('./data/tmp/'):
+        os.mkdir('./data/tmp/')
 
-    if multipleProcessing:
-        proc1 = Process(target=runPearsonCorrelation, args=("euclidian_ratio_px_all", 0, 1, 0.99, 65070))
-        proc2 = Process(target=runPearsonCorrelation, args=("euclidian_ratio_px_all", 1, 2, 0.99, 70695))
+    # splitar o dataset inicial
+    splitDataFrame()
 
-        proc1.start()
-        proc2.start()
+    # fazer a primeira iteração do filtro
+    for i in range(countFiles()):
+        pass
+        # runPearsonCorrelation(i=i)
 
-        proc1.join()
-        proc2.join()
-    else:
-        X = pd.read_csv('./data/dlibHOG/casos_distances_all_px_eu.csv', delimiter=',')
-        X = X.drop(['img_name', 'id'], axis=1)
-        build_ratio_dataset(dataset=X, name='casos')
-
-        X = pd.read_csv('./data/dlibHOG/controles_distances_all_px_eu.csv', delimiter=',')
-        X = X.drop(['img_name', 'id'], axis=1)
-        build_ratio_dataset(dataset=X, name='controles')
-
+    # método recursivo pra automaticamente passar o filtro e mesclar os arquivos
+    n_files = countFiles()
+    print(n_files)
+    principal(n_files)
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

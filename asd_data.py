@@ -32,72 +32,41 @@ def load_by_chunks(file_name):
     return merge_frames(chunk_list)
 
 
-def load_data(lib='dlibHOG', dataset='distances_all_px_eu', ratio=False, labels=False, verbose=True):
+def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, ratio=False, verbose=True):
+    if classes is None or len(classes) == 1:
+        raise IOError(f'It is not possible to load a dataset with {classes} argument. Please insert two or more classes names')
 
     if verbose:
         log.info("Loading data from csv file")
 
-    casos_file = f'./data/{lib}/casos_{dataset}.csv'
-    controles_file = f'./data/{lib}/controles_{dataset}.csv'
+    X = pd.DataFrame()
+    y = np.array([])
 
-    if verbose:
-        log.info("Casos file: " + str(casos_file))
-        log.info("Controles file: " + str(controles_file))
+    label_count = 0
+    for classe in classes:
+        file_name = f'./data/{lib}/{classe}_{dataset}.csv'
+        if verbose:
+            log.info(f'[{label_count}] Classe {classe}: {file_name}')
+        if os.path.isfile(file_name):
+            if ratio:
+                data = load_by_chunks(file_name)
+            else:
+                data = pd.read_csv(file_name)
+                data = remove_feature(data, 'img_name')
+                data = remove_feature(data, 'id')
 
-    if os.path.isfile(casos_file) and os.path.isfile(controles_file):
-        if ratio:
-            casos = load_by_chunks(casos_file)
-            controles = load_by_chunks(controles_file)
+            log.info(f"Classe {classe}: {data.shape}")
+            label = label_count * np.ones(len(data), dtype=np.int)
+
+            X = merge_frames([X, data])
+            y = np.concatenate((y, label))
         else:
-            casos = pd.read_csv(casos_file, delimiter=',')
-            controles = pd.read_csv(controles_file, delimiter=',')
+            log.info("File not found for parameters: [{0}, {1}, {2}, {3}]".format(lib, dataset, classes, ratio))
 
-        casos_label = np.ones(len(casos), dtype=np.int)
-        controles_label = np.zeros(len(controles), dtype=np.int)
+        label_count += 1
 
-        if labels:
-            casos['class'] = casos_label
-            controles['class'] = controles_label
-
-        # merge dataframes
-        frames = [casos, controles]
-        X = merge_frames(frames)
-
-        # remove image paths
-        if not ratio:
-            X = remove_feature(X, 'img_name')
-            X = remove_feature(X, 'id')
-
-        target = np.concatenate((casos_label, controles_label))
-
-        if not __checkDimension(X, target):
-            raise ValueError("X and Y dimensions are not the same: {0} - {1}".format(X.shape, target.shape))
-
-        if labels:
-            return shuffle(X, random_state=random_state)
-        else:
-            X, target = shuffle(X, target, random_state=random_state)
-            return X, target
-    else:
-        raise IOError("File not found for parameters: [{0}, {1}, {2}]".format(lib, dataset, ratio))
-
-
-def load_wine():
-    dataset = pd.read_csv('./data/wine.csv', delimiter=',')
-    target = dataset['class_label'].values
-
-    X = remove_feature(dataset, 'class_label')
-
-    return X, target
-
-
-def load_glass():
-    dataset = pd.read_csv('./data/glass.csv', delimiter=',')
-    target = dataset['class_label'].values
-
-    X = remove_feature(dataset, 'class_label')
-
-    return X, target
+    X, y = shuffle(X, y, random_state=random_state)
+    return X, y.astype('int64')
 
 
 def load(folder='casos', dataset='distances_all_px_eu', label_name='labels'):

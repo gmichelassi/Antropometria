@@ -19,6 +19,28 @@ context.loadModules()
 log = logger.getLogger(__file__)
 
 
+def load(lib, dataset, filtro, min_max, verbose):
+    if dataset == 'distances_all_px_eu':
+        if lib == 'ratio':
+            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], ratio=True, verbose=verbose)
+        else:
+            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], ratio=False, verbose=verbose)
+    else:
+        X, y = asd.load(folder=lib, dataset=dataset, label_name='TEA.CTRL')
+
+    if 0.0 < filtro <= 0.99:
+        if verbose:
+            log.info("Applying pearson correlation filter")
+        X = apply_pearson_feature_selection(X, filtro)
+
+    if min_max:
+        if verbose:
+            log.info("Applying min_max normalization")
+        X = normalizacao_min_max(X)
+
+    return X, y
+
+
 def __dimensionality_reduction(red_dim, X, y, verbose):
     if red_dim is None:
         return X
@@ -32,28 +54,10 @@ def __dimensionality_reduction(red_dim, X, y, verbose):
 def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
     synthetic_X, synthetic_y = None, None
 
-    if dataset == 'distances_all_px_eu':
-        if lib == 'ratio':
-            X, y = asd.load_data(lib=lib, dataset=dataset, ratio=True, labels=False, verbose=verbose)
-        else:
-            X, y = asd.load_data(lib=lib, dataset=dataset, ratio=False, labels=False, verbose=verbose)
-    else:
-        X, y = asd.load(folder=lib, dataset=dataset, label_name='TEA.CTRL')
-
-    if verbose:
-        log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
+    X, y = load(lib, dataset, filtro, min_max, verbose)
 
     n_classes = len(unique_labels(y))
 
-    if 0.0 < filtro <= 0.99:
-        if verbose:
-            log.info("Applying pearson correlation filter")
-        X = apply_pearson_feature_selection(X, filtro)
-
-    if min_max:
-        if verbose:
-            log.info("Applying min_max normalization")
-        X = normalizacao_min_max(X)
     X = X.values
     instances, features = X.shape
 

@@ -60,7 +60,6 @@ def make_random_optimization_pipes(n_features):
 
 
 def make_estimator():
-    estimator_name = 'kneighborsclassifier'
     estimator = KNeighborsClassifier(
         n_neighbors=20,
         weights='uniform',
@@ -69,4 +68,4 @@ def make_estimator():
         n_jobs=-1
     )
 
-    return estimator, estimator_name
+    return estimator

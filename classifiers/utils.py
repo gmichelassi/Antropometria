@@ -122,6 +122,7 @@ def apply_pearson_feature_selection(samples, max_value=0.99):
     # plt.ylabel("Processing time duration (s)")
     # plt.title("Feature x Time to process")
     # plt.savefig("./output/featurexduration-pearson.png")
+    # pd.DataFrame(features_to_delete).T.to_csv(path_or_buf='./features_to_delete.csv', index=False)  # para salvar as features que precisam ser deletadas
     return samples.drop(features_to_delete, axis=1)  # Deletamos todas as features selecionadas e retornamos o DataFrame
 
 
