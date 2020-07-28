@@ -22,9 +22,9 @@ log = logger.getLogger(__file__)
 def load(lib, dataset, filtro, min_max, verbose):
     if dataset == 'distances_all_px_eu':
         if lib == 'ratio':
-            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], ratio=True, verbose=verbose)
+            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['tea', 'apert', 'down', 'controles'], ratio=True, verbose=verbose)
         else:
-            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], ratio=False, verbose=verbose)
+            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['tea', 'apert', 'down', 'controles'], ratio=False, verbose=verbose)
     else:
         X, y = asd.load(folder=lib, dataset=dataset, label_name='TEA.CTRL')
 
