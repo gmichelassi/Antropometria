@@ -229,5 +229,16 @@ def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    runGridSearch(lib='ratio', dataset='distances_all_px_eu')
+    X = pd.read_csv('./data/dlibHOG_semfaixa/casos_distances_all_px_eu.csv')
+    X = X.drop('img_name', axis=1)
+    X = X.drop('id', axis=1)
+    build_ratio_dataset(X, 'casos')
+    X = pd.read_csv('./data/dlibHOG_semfaixa/controles_distances_all_px_eu.csv')
+    X = X.drop('img_name', axis=1)
+    X = X.drop('id', axis=1)
+    build_ratio_dataset(X, 'controles')
+    X = None
+
+    # runGridSearch(lib='ratio', dataset='distances_all_px_eu')
+
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
