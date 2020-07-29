@@ -28,7 +28,7 @@ def __testToRun():
     isRandomForestDone = False
     dimensionality_reductions = ['None', 'RFSelect']  # , 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF'
     classifiers = {'randomforestclassifier': rf}  # , 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb
-    amostragens = [None, 'Smote']  # 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek'
+    amostragens = [None]  # 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek'
     filtros = [0.0]  # , 0.98, 0.99
     min_maxs = [False]  # , True
 
@@ -229,16 +229,7 @@ def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
-    X = pd.read_csv('./data/dlibHOG_semfaixa/casos_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'casos')
-    X = pd.read_csv('./data/dlibHOG_semfaixa/controles_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'controles')
-    X = None
 
-    # runGridSearch(lib='ratio', dataset='distances_all_px_eu')
+    runGridSearch(lib='ratio', dataset='distances_all_px_eu')
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
