@@ -99,5 +99,15 @@ def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', 
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_dimensionality_reductions(reduction='RFSelect')
+    X = pd.read_csv('./data/dlibHOG_multiclasse/down_distances_all_px_eu.csv')
+    X = X.drop('img_name', axis=1)
+    X = X.drop('id', axis=1)
+    build_ratio_dataset(X, 'down')
+
+    X = pd.read_csv('./data/dlibHOG_multiclasse/apert_distances_all_px_eu.csv')
+    X = X.drop('img_name', axis=1)
+    X = X.drop('id', axis=1)
+    build_ratio_dataset(X, 'apert')
+
+    # run_dimensionality_reductions(reduction='RFSelect')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
