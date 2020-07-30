@@ -27,7 +27,7 @@ def remove_feature(dataframe, feature):
 def load_by_chunks(file_name):
     chuncksize = 10
     chunk_list = []
-    for chunk in pd.read_csv(file_name, chunksize=chuncksize):
+    for chunk in pd.read_csv(file_name, chunksize=chuncksize, dtype=np.float64):
         chunk_list.append(chunk)
     return merge_frames(chunk_list)
 

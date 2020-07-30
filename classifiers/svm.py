@@ -71,21 +71,6 @@ def set_parameters(parameters):
                coef0=parameters['coef0'], probability=True, random_state=707878)
 
 
-def make_random_optimization_pipes(n_features):
-    estimator = SVC()
-
-    random_parameters = {
-        'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
-        'C': uniform(loc=(2 ** -15), scale=(2 ** 15 - 2 ** -15)),
-        'gamma': uniform(loc=(2 ** -15), scale=(2 ** 15 - 2 ** -15)),
-        'degree': randint(2, 7),
-        'coef0': [0],
-        'probability': [True]
-    }
-
-    return estimator, random_parameters
-
-
 def make_estimator():
     estimator = SVC(
         kernel='poly',

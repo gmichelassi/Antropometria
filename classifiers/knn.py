@@ -44,21 +44,6 @@ def set_parameters(parameters):
                                 algorithm=parameters['algorithm'], leaf_size=parameters['leaf_size'], n_jobs=-1)
 
 
-def make_random_optimization_pipes(n_features):
-    estimator = [KNeighborsClassifier()]
-    estimator_name = 'kneighborsclassifier'
-
-    random_parameters = {
-        'n_neighbors': randint(10, 40),
-        'weights': ['uniform'],
-        'algorithm': ['auto'],
-        'leaf_size': [30],
-        'n_jobs': [-1]
-    }
-
-    return estimator, random_parameters, estimator_name
-
-
 def make_estimator():
     estimator = KNeighborsClassifier(
         n_neighbors=20,

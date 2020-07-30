@@ -93,25 +93,6 @@ def set_parameters(parameters):
                                   bootstrap=True, n_jobs=-1, random_state=707878, class_weight=None)
 
 
-def make_random_optimization_pipes(n_features):
-    estimator = [RandomForestClassifier()]
-    estimator_name = 'randomforestclassifier'
-
-    random_parameters = {
-        'n_estimators': randint(500, 2000),
-        'criterion': ['gini'],
-        'max_depth': [None],
-        'min_samples_leaf': randint(1, 20),
-        'max_features': randint(11, 77),  # desvio padrão = 10 e média igual a n_features na distribuição normal
-        'bootstrap': [True],
-        'n_jobs': [-1],
-        'random_state': [707878],
-        'class_weight': [None]
-    }
-
-    return estimator, random_parameters, estimator_name
-
-
 def make_estimator():
     estimator = RandomForestClassifier(
         n_estimators=500,

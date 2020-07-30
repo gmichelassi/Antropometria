@@ -49,22 +49,6 @@ def set_parameters(parameters):
                          learning_rate_init=parameters['learning_rate_init'], max_iter=5000, random_state=707878)
 
 
-def make_random_optimization_pipes(n_features):
-    estimator = MLPClassifier()
-
-    random_parameters = {
-        'hidden_layer_sizes': [(100, ), (n_features, ), (n_features, n_features, n_features)],
-        'activation': ['identity', 'logistic', 'tanh', 'relu'],
-        'solver': ['lbfgs', 'sgd'],
-        'alpha': np.random.uniform(low=0.0001, high=1, size=50),
-        'learning_rate': ['adaptive'],
-        'learning_rate_init': [0.001],
-        'max_iter': [300]
-    }
-
-    return estimator, random_parameters
-
-
 def make_estimator():
     estimator = MLPClassifier(
         (22, 22, 22),
