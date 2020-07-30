@@ -174,13 +174,15 @@ def build_ratio_dataset(dataset, name):
 
                 for coluna_j in range(coluna_i + 1, n_columns):
                     valor_j = dataset.iloc[linha, coluna_j]
-
-                    if valor_i >= valor_j:
-                        ratio_dist = valor_i / valor_j
+                    if valor_i == 0.0 or valor_j == 0.0 or valor_i == np.nan or valor_j == np.nan or valor_i == np.Inf or valor_j == valor_j == np.Inf:
+                        ratio_dist = 0.0
                     else:
-                        ratio_dist = valor_j / valor_i
+                        if valor_i >= valor_j:
+                            ratio_dist = valor_i / valor_j
+                        else:
+                            ratio_dist = valor_j / valor_i
 
-                    linha_dataset_final.append(ratio_dist)
+                    linha_dataset_final.append(np.float(ratio_dist))
 
             writer.writerow(linha_dataset_final)
             linha_dataset_final.clear()
