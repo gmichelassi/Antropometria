@@ -175,6 +175,8 @@ def build_ratio_dataset(dataset, name):
                 for coluna_j in range(coluna_i + 1, n_columns):
                     valor_j = dataset.iloc[linha, coluna_j]
                     if valor_i == 0.0 or valor_j == 0.0 or valor_i == np.nan or valor_j == np.nan or valor_i == np.Inf or valor_j == valor_j == np.Inf:
+                        print(valor_j)
+                        print(valor_i)
                         ratio_dist = 0.0
                     else:
                         if valor_i >= valor_j:
