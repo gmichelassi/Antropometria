@@ -26,7 +26,7 @@ log = logger.getLogger(__file__)
 
 def __testToRun():
     isRandomForestDone = False
-    dimensionality_reductions = ['None', 'RFSelect']  # 'None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF'
+    dimensionality_reductions = ['RFSelect']  # 'None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF'
     classifiers = {'randomforestclassifier': rf}  # , 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb
     amostragens = [None, 'Smote']  # 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek'
     filtros = [0.0]  # , 0.98, 0.99
@@ -229,6 +229,20 @@ def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
 
 if __name__ == '__main__':
     start_time = time.time()
+    X = pd.read_csv('./data/dlibHOG_multiclasse/tea_distances_all_px_eu.csv')
+    X = X.drop('img_name', axis=1)
+    X = X.drop('id', axis=1)
+    build_ratio_dataset(X, 'tea')
+
+    X = pd.read_csv('./data/dlibHOG_multiclasse/down_distances_all_px_eu.csv')
+    X = X.drop('img_name', axis=1)
+    X = X.drop('id', axis=1)
+    build_ratio_dataset(X, 'down')
+
+    X = pd.read_csv('./data/dlibHOG_multiclasse/controles_distances_all_px_eu.csv')
+    X = X.drop('img_name', axis=1)
+    X = X.drop('id', axis=1)
+    build_ratio_dataset(X, 'controles')
 
     X = pd.read_csv('./data/dlibHOG_multiclasse/apert_distances_all_px_eu.csv')
     X = X.drop('img_name', axis=1)
