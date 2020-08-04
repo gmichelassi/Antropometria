@@ -86,9 +86,9 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
         y_predict = model.predict(folds[i][2])
 
         accuracy.append(accuracy_score(y_true=folds[i][3], y_pred=y_predict))
-        precision.append(precision_score(y_true=folds[i][3], y_pred=y_predict))
-        recall.append(recall_score(y_true=folds[i][3], y_pred=y_predict))
-        f1.append(f1_score(y_true=folds[i][3], y_pred=y_predict))
+        precision.append(precision_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
+        recall.append(recall_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
+        f1.append(f1_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
         tempo.append((time.time() - __start_time) / 60)
 
     mean_results = mean_scores({'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1, 'time': tempo})
@@ -223,33 +223,9 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                         log.info("Execution time: %s minutes" % ((time.time() - start_processing) / 60))
 
 
-def run_randomizedSearch(dataset='distances_all_px_eu', filtro=0.0):
-    pass
-
-
 if __name__ == '__main__':
     start_time = time.time()
-    X = pd.read_csv('./data/dlibHOG_multiclasse/tea_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'tea')
 
-    X = pd.read_csv('./data/dlibHOG_multiclasse/down_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'down')
-
-    X = pd.read_csv('./data/dlibHOG_multiclasse/controles_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'controles')
-
-    X = pd.read_csv('./data/dlibHOG_multiclasse/apert_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'apert')
-    X = None
-
-    runGridSearch(lib='ratio', dataset='distances_all_px_eu')
+    print('Teste')
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
