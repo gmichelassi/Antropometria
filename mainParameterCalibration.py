@@ -226,6 +226,6 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
 if __name__ == '__main__':
     start_time = time.time()
 
-    print('Teste')
+    runGridSearch('ratio', 'distances_all_px_eu')
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
