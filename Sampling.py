@@ -1,4 +1,3 @@
-import asd_data as asd
 import time
 import initContext as context
 import numpy as np

@@ -26,7 +26,7 @@ def load(lib, dataset, filtro, min_max, verbose):
         else:
             X, y = asd.load_data(lib=lib, dataset=dataset, classes=['tea', 'apert', 'down', 'controles'], ratio=False, verbose=verbose)
     else:
-        X, y = asd.load(folder=lib, dataset=dataset, label_name='TEA.CTRL')
+        X, y = asd.load_all(folder=lib, dataset=dataset, label_name='TEA.CTRL')
 
     if 0.0 < filtro <= 0.99:
         if verbose:
@@ -55,7 +55,7 @@ def __dimensionality_reduction(red_dim, X, y, verbose):
     return data
 
 
-def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
+def run_data_processing(lib='dlibHOG', dataset='distances_all_px_eu', reduction='None', filtro=0.0, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
     synthetic_X, synthetic_y = None, None
 
     X, y = load(lib, dataset, filtro, min_max, verbose)

@@ -5,7 +5,7 @@ from sklearn.decomposition import PCA
 from skrebate import ReliefF
 import joblib
 import numpy as np
-from DimensionalityReduction import run_dimensionality_reductions, load
+from DimensionalityReduction import run_data_processing, load
 
 from config import logger
 import initContext as context
@@ -42,7 +42,7 @@ def __saveReduction(lib='dlibHOG', dataset='distances_all_px_eu', reduction='', 
 
 
 def saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classifier=None, reduction=None, filtro=0.0, amostragem=None, min_max=False):
-    X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
+    X, y, synthetic_X, synthetic_y = run_data_processing(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
     estimator = classifier.make_estimator()
 
     if reduction is not None:

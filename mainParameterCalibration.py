@@ -1,6 +1,6 @@
 # Classifiers
 from utils.classifiers import svm, rf, knn, nnn, nb
-from DimensionalityReduction import run_dimensionality_reductions
+from DimensionalityReduction import run_data_processing
 
 # Classifiers evaluation methods
 from sklearn.model_selection import GridSearchCV
@@ -55,7 +55,7 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
     log.info("Running error estimation for current classifier with best parameters found")
 
     try:
-        X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
+        X, y, synthetic_X, synthetic_y = run_data_processing(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
     except RuntimeError as re:
         log.info("It was not possible run error estimation for this test")
         log.info("Error: " + str(re))
@@ -138,7 +138,7 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                         log.info("Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", lib, classifier.name, reduction, filtro, min_max, amostragem)
 
                         try:
-                            X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
+                            X, y, synthetic_X, synthetic_y = run_data_processing(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
                         except RuntimeError as re:
                             log.info("It was not possible run test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier.name, reduction, filtro, min_max, amostragem)
                             log.info("Error: " + str(re))
