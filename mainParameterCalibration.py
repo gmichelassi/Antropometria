@@ -1,16 +1,15 @@
 # Classifiers
-from classifiers import svm, rf, knn, nnn, nb
+from utils.classifiers import svm, rf, knn, nnn, nb
 from DimensionalityReduction import run_dimensionality_reductions
 
 # Classifiers evaluation methods
-from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
+from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # Utils
-from classifiers.utils import build_ratio_dataset
 import matplotlib as plt
-from classifiers.utils import mean_scores, sample_std
+from utils.utils import mean_scores, sample_std
 import csv
 import numpy as np
 import pandas as pd
@@ -26,11 +25,11 @@ log = logger.getLogger(__file__)
 
 def __testToRun():
     isRandomForestDone = False
-    dimensionality_reductions = ['RFSelect']  # 'None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF'
-    classifiers = {'randomforestclassifier': rf}  # , 'svc': svm, 'kneighborsclassifier': knn, 'mlpclassifier': nnn, 'gaussiannb': nb
-    amostragens = [None, 'Smote']  # 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek'
-    filtros = [0.0]  # , 0.98, 0.99
-    min_maxs = [False]  # , True
+    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF', 'RFSelect']
+    classifiers = [rf('randomforestclassifier'), svm('svc'), knn('kneighborsclassifier'), nnn('mlpclassifier'), nb('gaussiannb')]
+    amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
+    filtros = [0.0, 0.98, 0.99]
+    min_maxs = [False, True]
 
     return isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs
 
@@ -62,7 +61,7 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
         log.info("Error: " + str(re))
         return {'accuracy': "", 'IC': "", 'precision': "", 'recall': "", 'f1score': "", 'time': ""}
 
-    model = model.set_parameters(parameters)
+    model = model.make_estimator(parameters)
 
     n_splits = 10
     cv = StratifiedKFold(n_splits=n_splits)
@@ -121,14 +120,14 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
 
     isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs = __testToRun()
 
-    for classifier in classifiers.keys():
+    for classifier in classifiers:
         for reduction in dimensionality_reductions:
 
-            # if isRandomForestDone and classifier == 'randomforestclassifier':
+            # if isRandomForestDone and classifier.name == 'randomforestclassifier':
             #     continue
-            # elif not isRandomForestDone and classifier == 'randomforestclassifier':
+            # elif not isRandomForestDone and classifier.name == 'randomforestclassifier':
             #     isRandomForestDone = True
-            # elif classifier != 'randomforestclassifier' and reduction == 'None':
+            # elif classifier.name != 'randomforestclassifier' and reduction == 'None':
             #     continue
 
             for filtro in filtros:
@@ -136,28 +135,28 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                     for amostragem in amostragens:
                         start_processing = time.time()
 
-                        log.info("Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", lib, classifier, reduction, filtro, min_max, amostragem)
+                        log.info("Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", lib, classifier.name, reduction, filtro, min_max, amostragem)
 
                         try:
                             X, y, synthetic_X, synthetic_y = run_dimensionality_reductions(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
                         except RuntimeError as re:
-                            log.info("It was not possible run test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier, reduction, filtro, min_max, amostragem)
+                            log.info("It was not possible run test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier.name, reduction, filtro, min_max, amostragem)
                             log.info("Error: " + str(re))
                             continue
 
                         instances, features = X.shape
-                        if classifier == 'randomforestclassifier':
+                        if classifier.name == 'randomforestclassifier':
                             n_features_to_keep = int(np.sqrt(features))
                         else:
                             n_features_to_keep = features
 
                         n_splits = 10
                         scoring = {'accuracy': 'accuracy', 'precision_macro': 'precision_macro', 'recall_macro': 'recall_macro', 'f1_macro': 'f1_macro'}
-                        estimator, param_grid = classifiers[classifier].make_grid_optimization_pipes(n_features_to_keep)
+                        estimator, param_grid = classifier.make_grid(n_features_to_keep)
                         cv = StratifiedKFold(n_splits=n_splits)
 
                         try:
-                            log.info("Training Models for %s and %s", classifier, reduction)
+                            log.info("Training Models for %s and %s", classifier.name, reduction)
 
                             grd = GridSearchCV(
                                 estimator=estimator,
@@ -188,7 +187,7 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                             log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
 
                             try:
-                                errResults = __errorEstimation(lib=lib, dataset=dataset, model=classifiers[classifier], parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
+                                errResults = __errorEstimation(lib=lib, dataset=dataset, model=classifier, parameters=grid_results.best_params_, reduction=reduction, filtro=filtro, amostragem=amostragem, min_max=min_max)
                             except KeyError as ke:
                                 errResults = {'accuracy': '', 'IC': '', 'precision': '', 'recall': '', 'f1score': '', 'time': ''}
                                 log.info("It was not possible to run error estimation")
@@ -200,7 +199,7 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                                 writer = csv.DictWriter(csvfile, fieldnames=['biblioteca', 'classifier', 'reduction', 'filtro', 'min_max', 'par_amostragem', 'par_accuracy', 'err_accuracy', 'IC', 'err_precision', 'err_recall', 'err_f1score', 'err_time', 'parameters'])
                                 results = {
                                     'biblioteca': lib,
-                                    'classifier': classifier,
+                                    'classifier': classifier.name,
                                     'reduction': reduction,
                                     'filtro': filtro,
                                     'min_max': min_max,
@@ -217,7 +216,7 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
 
                             df_results = pd.DataFrame(grid_results.cv_results_)
                             df_results.drop('params', axis=1)
-                            path_results = './output/GridSearch/results_{0}_{1}_{2}_{3}_{4}_{5}_{6}.csv'.format(lib, dataset, classifier, reduction, filtro, min_max, amostragem)
+                            path_results = './output/GridSearch/results_{0}_{1}_{2}_{3}_{4}_{5}_{6}.csv'.format(lib, dataset, classifier.name, reduction, filtro, min_max, amostragem)
                             df_results.to_csv(path_results, index_label='id')
 
                         log.info("Execution time: %s minutes" % ((time.time() - start_processing) / 60))
@@ -226,6 +225,6 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
 if __name__ == '__main__':
     start_time = time.time()
 
-    runGridSearch('ratio', 'distances_all_px_eu')
+    runGridSearch()
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

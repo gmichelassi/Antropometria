@@ -1,5 +1,5 @@
 # Feature selection / Dimensionality reduction
-from classifiers.custom_feature_selection import mRMRProxy, FCBFProxy, CFSProxy, RFSProxy, RFSelect
+from utils.feature_selection import mRMRProxy, FCBFProxy, CFSProxy, RFSProxy, RFSelect
 from sklearn.decomposition import PCA
 from skrebate import ReliefF
 
@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import initContext as context
 import Sampling as sampling
-from classifiers.utils import apply_pearson_feature_selection, build_ratio_dataset, normalizacao_min_max
+from utils.utils import apply_pearson_feature_selection, build_ratio_dataset, normalizacao_min_max
 from sklearn.utils.multiclass import unique_labels
 from config import logger
 context.loadModules()
@@ -44,10 +44,14 @@ def load(lib, dataset, filtro, min_max, verbose):
 def __dimensionality_reduction(red_dim, X, y, verbose):
     if red_dim is None:
         return X
+
     reduction_name = red_dim.__class__.__name__
+
     if verbose:
         log.info("Applying {0} dimensionality reduction".format(reduction_name))
+
     data = red_dim.fit_transform(X, y)
+
     return data
 
 
@@ -99,14 +103,5 @@ def run_dimensionality_reductions(lib='dlibHOG', dataset='distances_all_px_eu', 
 
 if __name__ == '__main__':
     start_time = time.time()
-    X = pd.read_csv('./data/dlibHOG_multiclasse/down_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'down')
 
-    X = pd.read_csv('./data/dlibHOG_multiclasse/apert_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'apert')
-    # run_dimensionality_reductions(reduction='RFSelect')
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

@@ -1,21 +1,10 @@
-from sklearn.utils.multiclass import unique_labels
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sn
 import pandas as pd
 import csv
 import math
-import random
 from sklearn.decomposition import PCA
 from scipy import stats
-
-
-def code_test_samples(samples):
-    dim = len(samples.shape)
-    if dim > 1:
-        return np.concatenate((samples[0:10, 0:10], samples[-11:-1, -11:-1]), axis=0)
-    else:
-        return np.concatenate((samples[0:10], samples[-11:-1]), axis=0)
 
 
 def mean_scores(scores):
@@ -34,55 +23,8 @@ def sample_std(scores):
     return math.sqrt(std)
 
 
-def save_confusion_matrix(confusion_matrix, dataset, reduction, classifier):
-    fig = plt.figure()
-    plt.suptitle("Confusion Matrix - " + dataset + " - " + classifier + " and " + reduction)
-    cm = 1
-    for c_matrix in confusion_matrix.keys():
-        plot = fig.add_subplot(2, 2, cm)
-        sn.heatmap(confusion_matrix[c_matrix], annot=True, cmap="YlOrRd", square=True)
-        plt.yticks()
-        plot.set_title("CV - " + str(cm - 1), fontsize=10)
-        plot.set_xlabel("Predicted Classes")
-        plot.set_ylabel("Real Classes")
-        cm += 1
-    fig.subplots_adjust(hspace=.5, wspace=0.5)
-    plt.savefig("./output/" + dataset + "/cmatrix/bloco-" + classifier + "-"
-                + reduction + "-" + dataset + "-2019-" + str(id) + ".png")
-    plt.close()
-
-
-def save_cross_val_scores(id, dataset, precision, recall, f1_score, classifier, reduction):
-    columns = ['dataset', 'id', 'fold', 'precision', 'recall', 'f1_score', 'classifier', 'dimensionality_reduction']
-
-    with open("./output/bloco-" + classifier + "-" + dataset + "-2019.csv", 'a') as file:
-        writer = csv.DictWriter(file, fieldnames=columns)
-        if file.tell() == 0:
-            writer.writeheader()
-
-        for fold in range(4):
-            to_write = {
-                'dataset': dataset,
-                'id': id,
-                'fold': fold,
-                'precision': precision[fold],
-                'recall': recall[fold],
-                'f1_score': f1_score[fold],
-                'classifier': classifier,
-                'dimensionality_reduction': reduction
-            }
-
-            writer.writerow(to_write)
-
-
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.pearsonr.html
 def apply_pearson_feature_selection(samples, max_value=0.99):
-    """
-    samples: DataFrame with all features
-    max_value: The max value for pearson correlation with two columns
-
-    :return: DataFrame with the remaining features
-    """
     from datetime import datetime
 
     columns_name = samples.columns  # Salvamos os "nomes" de todas colunas para identifica-las
@@ -124,39 +66,6 @@ def apply_pearson_feature_selection(samples, max_value=0.99):
     # plt.savefig("./output/featurexduration-pearson.png")
     # pd.DataFrame(features_to_delete).T.to_csv(path_or_buf='./features_to_delete.csv', index=False)  # para salvar as features que precisam ser deletadas
     return samples.drop(features_to_delete, axis=1)  # Deletamos todas as features selecionadas e retornamos o DataFrame
-
-
-def calculate_metrics(confusion_matrix, labels):
-    #  Essa função foi baseada nesta imagem: https://imgur.com/a/C7jA9xy
-    # recebe um dict com várias matrizes de confusao (referentes a cada fold da cross validation)
-
-    df, n_classes = build_confusion_matrix(confusion_matrix, labels)  # juntamos todas matrizes de confusao
-
-    # definimos as métricas que serão calculadas para cada classe
-    metrics = pd.DataFrame(index=[i for i in unique_labels(labels)], columns=['precision', 'recall', 'f1-score'])
-    for class_i in range(n_classes):
-        # para cada classe calculamos tp, fn, fp, tn
-        tp = df.iloc[class_i, class_i]
-        fn = df.iloc[class_i].sum() - tp
-        fp = df.iloc[:, class_i].sum() - tp
-        tn = df.values.sum() - (tp + fn + fp)
-        recall, precision = tp/(tp+fn), tp/(tp+fp)
-
-        # logo adicionamos na matriz de métricas
-        metrics.iloc[class_i, 0] = recall
-        metrics.iloc[class_i, 1] = precision
-        metrics.iloc[class_i, 2] = 2 * (recall * precision)/(recall + precision)  # f1-score
-    print(metrics)
-
-
-def build_confusion_matrix(confusion_matrix, labels):
-    n_classes = len(unique_labels(labels))
-    df = pd.DataFrame(np.zeros(shape=(n_classes, n_classes)),
-                      index=[i for i in unique_labels(labels)], columns=[i for i in unique_labels(labels)],
-                      dtype=np.int)
-    for c_matrix in confusion_matrix.keys():
-        df = df.add(confusion_matrix[c_matrix])
-    return df, n_classes
 
 
 def build_ratio_dataset(dataset, name):
@@ -213,7 +122,7 @@ def varianciaAcumuladaPCA(samples, labels, verbose=False):
 
     if verbose:
         plt.figure(figsize=(8, 6))
-        plt.bar( range(1, len(cum_var_exp) + 1), var_exp, align='center', label='individual variance explained', alpha=0.7)
+        plt.bar(range(1, len(cum_var_exp) + 1), var_exp, align='center', label='individual variance explained', alpha=0.7)
         plt.step(range(1, len(cum_var_exp) + 1), cum_var_exp, where='mid', label='cumulative variance explained', color='red')
         plt.ylabel('Explained variance ratio')
         plt.xlabel('Principal components')
@@ -236,15 +145,3 @@ def normalizacao_min_max(df):
         df_final.append(columns)
 
     return pd.DataFrame(df_final).T
-
-
-def generateRandomNumbers(how_many=1, maximum=10):
-    numbers = []
-    random.seed(909898)
-    cont = 0
-    while cont < how_many:
-        nro = random.randint(0, maximum)
-        if nro not in numbers:
-            numbers.append(nro)
-            cont += 1
-    return numbers

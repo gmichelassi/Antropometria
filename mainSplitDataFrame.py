@@ -1,8 +1,8 @@
 import asd_data as asd
 
 # Utils
-from classifiers.utils import apply_pearson_feature_selection
-from classifiers.utils import build_ratio_dataset
+from utils.utils import apply_pearson_feature_selection
+from utils.utils import build_ratio_dataset
 from scipy import stats
 import os
 import time

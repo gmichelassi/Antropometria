@@ -1,6 +1,6 @@
-from classifiers import rf, svm, nb, nnn, knn
+from utils.classifiers import rf, svm, nb, nnn, knn
 import pickle
-from classifiers.custom_feature_selection import mRMRProxy, FCBFProxy, CFSProxy, RFSProxy, RFSelect
+from utils.feature_selection import mRMRProxy, FCBFProxy, CFSProxy, RFSProxy, RFSelect
 from sklearn.decomposition import PCA
 from skrebate import ReliefF
 import joblib
@@ -65,4 +65,4 @@ def saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classifier=None, red
 
 
 if __name__ == '__main__':
-    saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classifier=svm, reduction='PCA', filtro=0.98, amostragem='Tomek', min_max=False)
+    saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classifier=svm('svc'), reduction='PCA', filtro=0.98, amostragem='Tomek', min_max=False)
