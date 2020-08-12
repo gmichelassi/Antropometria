@@ -25,47 +25,21 @@ def sample_std(scores):
 
 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.pearsonr.html
 def apply_pearson_feature_selection(samples, max_value=0.99):
-    from datetime import datetime
-
-    columns_name = samples.columns  # Salvamos os "nomes" de todas colunas para identifica-las
-    features_to_delete = []
     n_features = samples.shape[1]
-
-    # features = []  # eixo X
-    # times = []  # eixo Y
+    features_to_delete = np.zeros(n_features, dtype=bool)
 
     for i in range(0, n_features):  # a função range indica um intervalo [0, n_features)
-        if columns_name[i] not in features_to_delete:  # Se a coluna i não está na lista de colunas a serem deletadas
+        if not features_to_delete[i]:  # Se a coluna i não é pra deletar
+            feature_i = samples.iloc[:, i].to_numpy()  # Pegamos o vetor relativo a coluna i
 
-            # features.append(i)  # adicionando feature no eixo x
-
-            feature_i = samples[columns_name[i]].to_numpy()  # Pegamos o vetor relativo a coluna i
-            # inicio = datetime.now()
-            # inicio_format = inicio.strftime('%d/%m/%Y %H:%M:%S')
-            # print(str(inicio_format) + " - Comparando feature " + str(i), flush=True)
-
-            # how_many_features = 0
             for j in range(i+1, n_features):
-                if columns_name[j] not in features_to_delete:  # Se a coluna j não está na lista de colunas a serem deletadas
-                    feature_j = samples[columns_name[j]].to_numpy()  # Pegamos o vetor relativo a coluna j
+                if not features_to_delete[j]:  # Se a coluna j não está na lista de colunas a serem deletadas
+                    feature_j = samples.iloc[:, j].to_numpy()  # Pegamos o vetor relativo a coluna j
                     pearson, pvalue = stats.pearsonr(feature_i, feature_j)  # Realizamos o calculo da correlação
                     if pearson >= max_value:  # Se a correlação for maior do que o valor máximo, incluimos na lista de features a serem deletadas
-                        features_to_delete.append(columns_name[j]) # a operação de inclusao na lista é O(1), então não afeta o desempenho do codigo
-                        # how_many_features += 1
-            # fim = datetime.now()
-            # fim_format = fim.strftime('%d/%m/%Y %H:%M:%S')
-            # print(str(fim_format) + " - Features deletadas para a feature " + str(i) + ": " + str(how_many_features), flush=True)
-            # duration = (fim - inicio).total_seconds()
+                        features_to_delete[j] = True
 
-            # times.append(duration)
-
-    # plt.plot(features, times)
-    # plt.xlabel("Features (index)")
-    # plt.ylabel("Processing time duration (s)")
-    # plt.title("Feature x Time to process")
-    # plt.savefig("./output/featurexduration-pearson.png")
-    # pd.DataFrame(features_to_delete).T.to_csv(path_or_buf='./features_to_delete.csv', index=False)  # para salvar as features que precisam ser deletadas
-    return samples.drop(features_to_delete, axis=1)  # Deletamos todas as features selecionadas e retornamos o DataFrame
+    return samples[samples.columns[~features_to_delete]]  # Deletamos todas as features selecionadas e retornamos o DataFrame
 
 
 def build_ratio_dataset(dataset, name):

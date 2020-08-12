@@ -33,8 +33,7 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, ratio=
                 data = pd.concat(chunklist)
             else:
                 data = pd.read_csv(file_name)
-                data = data.drop('img_name')
-                data = data.drop('id')
+                data = data.drop(['img_name', 'id'], axis=1)
 
             log.info(f"Classe {classe}: {data.shape}")
             label = label_count * np.ones(len(data), dtype=np.int)
@@ -60,7 +59,7 @@ def load_all(folder='casos', dataset='distances_all_px_eu', label_name='labels')
         data = pd.read_csv(path)
 
         labels = data[label_name].values
-        data = data.drop(label_name)
+        data = data.drop(label_name, axis=1)
 
         return data, labels
     else:
