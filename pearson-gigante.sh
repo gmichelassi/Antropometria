@@ -16,7 +16,7 @@ echo $SLURM_JOB_NODELIST	#File containing allocated hostnames
 echo $SLURM_NTASKS		#Total number of cores for job
 
 #module swap gnu intel/18.0.2.199
-module load numpy, pandas, sklearn
+#module load NOME_MODULO_NECESSAARIO
 
 #run the application:
 srun   nohup nice python3 mainSplitDataFrame.py &
