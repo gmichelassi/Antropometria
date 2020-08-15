@@ -10,7 +10,7 @@ log = logger.getLogger(__file__)
 random_state = 10000
 
 
-def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, ratio=False, verbose=True):
+def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, verbose=True):
     if classes is None or len(classes) == 1:
         raise IOError(f'It is not possible to load a dataset with {classes} argument. Please insert two or more classes names')
 
@@ -26,7 +26,7 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, ratio=
         if verbose:
             log.info(f'[{label_count}] Classe {classe}: {file_name}')
         if os.path.isfile(file_name):
-            if ratio:
+            if lib == 'ratio':
                 chuncksize, chunklist = 10, []
                 for chunk in pd.read_csv(file_name, chunksize=chuncksize, dtype=np.float64):
                     chunklist.append(chunk)

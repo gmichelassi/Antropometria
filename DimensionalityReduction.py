@@ -21,9 +21,9 @@ log = logger.getLogger(__file__)
 def load(lib, dataset, filtro, min_max, verbose):
     if dataset == 'distances_all_px_eu':
         if lib == 'ratio':
-            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], ratio=True, verbose=verbose)
+            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], verbose=verbose)
         else:
-            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], ratio=False, verbose=verbose)
+            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], verbose=verbose)
     else:
         X, y = asd.load_all(folder=lib, dataset=dataset, label_name='TEA.CTRL')
 
@@ -54,7 +54,7 @@ def __dimensionality_reduction(red_dim, X, y, verbose):
     return data
 
 
-def run_data_processing(lib='dlibHOG', dataset='distances_all_px_eu', reduction='None', filtro=0.99, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
+def run_pre_processing(lib='dlibHOG', dataset='distances_all_px_eu', reduction='None', filtro=0.99, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
     synthetic_X, synthetic_y = None, None
 
     X, y = load(lib, dataset, filtro, min_max, verbose)
@@ -102,5 +102,5 @@ def run_data_processing(lib='dlibHOG', dataset='distances_all_px_eu', reduction=
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_data_processing()
+    run_pre_processing()
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
