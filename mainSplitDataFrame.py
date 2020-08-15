@@ -46,7 +46,7 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=Fa
             where_to_start = mergeDataFrames(i, i+1)
             contador += 1
 
-        current_split = pd.read_csv(filepath_or_buffer=f'./data/subDataSets/distances_eu_{i}.csv')
+        current_split = pd.read_csv(filepath_or_buffer='./data/subDataSets/distances_eu_{0}.csv'.format(i))
 
         log.info("Applying pearson correlation filter")
         if where_to_start == 0:
@@ -55,17 +55,17 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=Fa
             samples = custom_pearson_feature_selection(current_split, filtro, where_to_start)
 
         log.info("Saving file!")
-        pd.DataFrame(data=samples).to_csv(path_or_buf=f'./data/subDataSets/processed-distances_eu_{i}.csv')
+        pd.DataFrame(data=samples).to_csv(path_or_buf='./data/subDataSets/processed-distances_eu_{0}.csv'.format(i))
 
         log.info("Removing unused files...")
-        os.remove(f'./data/subDataSets/distances_eu_{i}.csv')
+        os.remove('./data/subDataSets/distances_eu_{0}.csv'.format(i))
 
         log.info("Done...")
 
 
 def mergeDataFrames(i=0, j=1, indice=0):
-        file_name1 = f"distances_eu_{i}.csv"
-        file_name2 = f"distances_eu_{j}.csv"
+        file_name1 = "distances_eu_{0}.csv".format(i)
+        file_name2 = "distances_eu_{0}.csv".format(j)
 
         df1 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name1))
         df2 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name2))
@@ -77,7 +77,7 @@ def mergeDataFrames(i=0, j=1, indice=0):
 
         log.info("Saving file!")
 
-        final_df.to_csv(path_or_buf=f"./data/subDataSets/distances_eu_{indice}.csv")
+        final_df.to_csv(path_or_buf="./data/subDataSets/distances_eu_{0}.csv".format(indice))
 
         log.info("Removing unused files...")
         os.remove('./data/subDataSets/processed-{0}'.format(file_name1))
