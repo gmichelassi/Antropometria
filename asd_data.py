@@ -12,7 +12,7 @@ random_state = 10000
 
 def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, verbose=True):
     if classes is None or len(classes) == 1:
-        raise IOError(f'It is not possible to load a dataset with {classes} argument. Please insert two or more classes names')
+        raise IOError('It is not possible to load a dataset with {0} argument. Please insert two or more classes names'.format(classes))
 
     if verbose:
         log.info("Loading data from csv file")
@@ -22,9 +22,9 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, verbos
 
     label_count = 0
     for classe in classes:
-        file_name = f'./data/{lib}/{classe}_{dataset}.csv'
+        file_name = './data/{0}/{1}_{2}.csv'.format(lib, classe, dataset)
         if verbose:
-            log.info(f'[{label_count}] Classe {classe}: {file_name}')
+            log.info('[{0}] Classe {1}: {2}'.format(label_count, classe, file_name))
         if os.path.isfile(file_name):
             if lib == 'ratio':
                 chuncksize, chunklist = 10, []
@@ -35,13 +35,13 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, verbos
                 data = pd.read_csv(file_name)
                 data = data.drop(['img_name', 'id'], axis=1)
 
-            log.info(f"Classe {classe}: {data.shape}")
+            log.info("Classe {0}: {1}".format(classe, data.shape))
             label = label_count * np.ones(len(data), dtype=np.int)
 
             X = pd.concat([X, data])
             y = np.concatenate((y, label))
         else:
-            log.info("File not found for parameters: [{0}, {1}, {2}, {3}]".format(lib, dataset, classes, ratio))
+            log.info("File not found for parameters: [{0}, {1}, {2}]".format(lib, dataset, classes))
 
         label_count += 1
 
