@@ -33,7 +33,7 @@ def splitDataFrame():
 
     for subDataFrame, index in zip(dfs, indexes):
         print(subDataFrame.shape)
-        subDataFrame.to_csv(path_or_buf=f'./data/subDataSets/distances_eu_{index}.csv', index=False)
+        subDataFrame.to_csv(path_or_buf='./data/subDataSets/distances_eu_{0}.csv'.format(index), index=False)
 
 
 def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0):
