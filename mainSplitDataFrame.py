@@ -109,15 +109,15 @@ def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
 
 
 if __name__ == '__main__':
-    X = pd.read_csv('./data/dlibHOG/casos_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'casos')
-
-    X = pd.read_csv('./data/dlibHOG/controles_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'controles')
+    # X = pd.read_csv('./data/dlibHOG/casos_distances_all_px_eu.csv')
+    # X = X.drop('img_name', axis=1)
+    # X = X.drop('id', axis=1)
+    # build_ratio_dataset(X, 'casos')
+    #
+    # X = pd.read_csv('./data/dlibHOG/controles_distances_all_px_eu.csv')
+    # X = X.drop('img_name', axis=1)
+    # X = X.drop('id', axis=1)
+    # build_ratio_dataset(X, 'controles')
 
     splitDataFrame()
 
