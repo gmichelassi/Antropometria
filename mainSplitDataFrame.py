@@ -108,42 +108,38 @@ def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
     return samples.drop(features_to_delete, axis=1).values
 
 
+def build_data():
+    X = pd.read_csv('./data/dlibHOG/casos_distances_all_px_eu.csv')
+    X = X.drop('img_name', axis=1)
+    X = X.drop('id', axis=1)
+    build_ratio_dataset(X, 'casos')
+    X = pd.read_csv('./data/dlibHOG/controles_distances_all_px_eu.csv')
+    X = X.drop('img_name', axis=1)
+    X = X.drop('id', axis=1)
+    build_ratio_dataset(X, 'controles')
+
+
+def nivel7():
+    processes = [
+                 Process(target=runPearsonCorrelation, args=(0, 7, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(8, 15, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(16, 23, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(24, 31, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(32, 39, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(40, 47, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(48, 55, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(56, 63, 0.95, False, 0))
+                 ]
+    for p in processes:
+        p.start()
+
+    for p in processes:
+        p.join()
+
+
 if __name__ == '__main__':
-    # X = pd.read_csv('./data/dlibHOG/casos_distances_all_px_eu.csv')
-    # X = X.drop('img_name', axis=1)
-    # X = X.drop('id', axis=1)
-    # build_ratio_dataset(X, 'casos')
-    #
-    # X = pd.read_csv('./data/dlibHOG/controles_distances_all_px_eu.csv')
-    # X = X.drop('img_name', axis=1)
-    # X = X.drop('id', axis=1)
-    # build_ratio_dataset(X, 'controles')
+    # build_data()
 
     splitDataFrame()
 
-    proc1 = Process(target=runPearsonCorrelation, args=(0, 7, False, 0))
-    proc2 = Process(target=runPearsonCorrelation, args=(8, 15, False, 0))
-    proc3 = Process(target=runPearsonCorrelation, args=(16, 23, False, 0))
-    proc4 = Process(target=runPearsonCorrelation, args=(24, 31, False, 0))
-    proc5 = Process(target=runPearsonCorrelation, args=(32, 39, False, 0))
-    proc6 = Process(target=runPearsonCorrelation, args=(40, 47, False, 0))
-    proc7 = Process(target=runPearsonCorrelation, args=(48, 55, False, 0))
-    proc8 = Process(target=runPearsonCorrelation, args=(56, 63, False, 0))
-
-    proc1.start()
-    proc2.start()
-    proc3.start()
-    proc4.start()
-    proc5.start()
-    proc6.start()
-    proc7.start()
-    proc8.start()
-
-    proc1.join()
-    proc2.join()
-    proc3.join()
-    proc4.join()
-    proc5.join()
-    proc6.join()
-    proc7.join()
-    proc8.join()
+    nivel7()
