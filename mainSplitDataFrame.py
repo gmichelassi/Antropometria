@@ -36,15 +36,16 @@ def splitDataFrame():
         subDataFrame.to_csv(path_or_buf='./data/subDataSets/distances_eu_{0}.csv'.format(index), index=False)
 
 
-def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0):
+def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0):
     where_to_start = 0
 
     for i in range(starting_file, ending_file):
         log.info("Processing file {0} out of {1}".format(i, ending_file - 1))
 
         if merge:
-            where_to_start = mergeDataFrames(contador, contador+1)
+            where_to_start = mergeDataFrames(contador, contador+1, indice)
             contador += 2
+            indice += 1
 
         current_split = pd.read_csv(filepath_or_buffer='./data/subDataSets/distances_eu_{0}.csv'.format(i))
 
@@ -64,27 +65,27 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=Fa
 
 
 def mergeDataFrames(file_i=0, file_j=1, indice=0):
-        file_name1 = "distances_eu_{0}.csv".format(file_i)
-        file_name2 = "distances_eu_{0}.csv".format(file_j)
+    file_name1 = "distances_eu_{0}.csv".format(file_i)
+    file_name2 = "distances_eu_{0}.csv".format(file_j)
 
-        df1 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name1))
-        df2 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name2))
+    df1 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name1))
+    df2 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name2))
 
-        frames = [df1, df2]
+    frames = [df1, df2]
 
-        final_df = pd.concat(frames, axis=1, ignore_index=True)
-        print("file {0} - shape {1}".format(indice, final_df.shape))
+    final_df = pd.concat(frames, axis=1, ignore_index=True)
+    print("file {0} - shape {1}".format(indice, final_df.shape))
 
-        log.info("Saving file!")
+    log.info("Saving file!")
 
-        final_df.to_csv(path_or_buf="./data/subDataSets/distances_eu_{0}.csv".format(indice))
+    final_df.to_csv(path_or_buf="./data/subDataSets/distances_eu_{0}.csv".format(indice))
 
-        log.info("Removing unused files...")
-        os.remove('./data/subDataSets/processed-{0}'.format(file_name1))
-        os.remove('./data/subDataSets/processed-{0}'.format(file_name2))
+    log.info("Removing unused files...")
+    os.remove('./data/subDataSets/processed-{0}'.format(file_name1))
+    os.remove('./data/subDataSets/processed-{0}'.format(file_name2))
 
-        log.info("Done...")
-        return df1.shape[1]
+    log.info("Done...")
+    return df1.shape[1]
 
 
 def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
@@ -121,15 +122,15 @@ def build_data():
 
 def nivel7():
     processes = [
-                 Process(target=runPearsonCorrelation, args=(0, 8, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(8, 16, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(16, 24, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(24, 32, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(32, 40, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(40, 48, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(48, 56, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(56, 64, 0.95, False, 0))
-                 ]
+        Process(target=runPearsonCorrelation, args=(0, 8, 0.95, False, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(8, 16, 0.95, False, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(16, 24, 0.95, False, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(24, 32, 0.95, False, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(32, 40, 0.95, False, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(40, 48, 0.95, False, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(48, 56, 0.95, False, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(56, 64, 0.95, False, 0, 0))
+    ]
     for p in processes:
         p.start()
 
@@ -139,14 +140,14 @@ def nivel7():
 
 def nivel6():
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 7, 0.95, True, 0)),
-        Process(target=runPearsonCorrelation, args=(8, 15, 0.95, True, 0)),
-        Process(target=runPearsonCorrelation, args=(16, 23, 0.95, True, 0)),
-        Process(target=runPearsonCorrelation, args=(24, 31, 0.95, True, 0)),
-        Process(target=runPearsonCorrelation, args=(32, 39, 0.95, True, 0)),
-        Process(target=runPearsonCorrelation, args=(40, 47, 0.95, True, 0)),
-        Process(target=runPearsonCorrelation, args=(48, 55, 0.95, True, 0)),
-        Process(target=runPearsonCorrelation, args=(56, 63, 0.95, True, 0))
+        Process(target=runPearsonCorrelation, args=(0, 4, 0.95, True, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(4, 8, 0.95, True, 8, 4)),
+        Process(target=runPearsonCorrelation, args=(8, 12, 0.95, True, 16, 8)),
+        Process(target=runPearsonCorrelation, args=(12, 16, 0.95, True, 24, 12)),
+        Process(target=runPearsonCorrelation, args=(16, 20, 0.95, True, 32, 16)),
+        Process(target=runPearsonCorrelation, args=(20, 24, 0.95, True, 40, 20)),
+        Process(target=runPearsonCorrelation, args=(24, 28, 0.95, True, 48, 24)),
+        Process(target=runPearsonCorrelation, args=(28, 32, 0.95, True, 56, 28))
     ]
     for p in processes:
         p.start()
@@ -155,9 +156,23 @@ def nivel6():
         p.join()
 
 
+def nivel5():
+    pass
+
+
 if __name__ == '__main__':
     # build_data()
 
+    start_time = time.time()
+    log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
     splitDataFrame()
 
+    log.info("Processing nivel 7")
+    start_time = time.time()
     nivel7()
+    log.info("--- Total processing 7 time: %s minutes ---" % ((time.time() - start_time) / 60))
+
+    log.info("Processing nivel 6")
+    start_time = time.time()
+    nivel6()
+    log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
