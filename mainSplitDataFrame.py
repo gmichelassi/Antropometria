@@ -23,7 +23,7 @@ def splitDataFrame():
 
     X, y = asd.load_data(lib='ratio', dataset='distances_all_px_eu', classes=['casos', 'controles'], verbose=True)
 
-    N = 33780
+    N = 33785
     log.info("Splitting dataset")
 
     log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
@@ -43,8 +43,8 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=Fa
         log.info("Processing file {0} out of {1}".format(i, ending_file - 1))
 
         if merge:
-            where_to_start = mergeDataFrames(i, i+1)
-            contador += 1
+            where_to_start = mergeDataFrames(contador, contador+1)
+            contador += 2
 
         current_split = pd.read_csv(filepath_or_buffer='./data/subDataSets/distances_eu_{0}.csv'.format(i))
 
@@ -63,9 +63,9 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=Fa
         log.info("Done...")
 
 
-def mergeDataFrames(i=0, j=1, indice=0):
-        file_name1 = "distances_eu_{0}.csv".format(i)
-        file_name2 = "distances_eu_{0}.csv".format(j)
+def mergeDataFrames(file_i=0, file_j=1, indice=0):
+        file_name1 = "distances_eu_{0}.csv".format(file_i)
+        file_name2 = "distances_eu_{0}.csv".format(file_j)
 
         df1 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name1))
         df2 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name2))
@@ -121,15 +121,33 @@ def build_data():
 
 def nivel7():
     processes = [
-                 Process(target=runPearsonCorrelation, args=(0, 7, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(8, 15, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(16, 23, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(24, 31, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(32, 39, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(40, 47, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(48, 55, 0.95, False, 0)),
-                 Process(target=runPearsonCorrelation, args=(56, 63, 0.95, False, 0))
+                 Process(target=runPearsonCorrelation, args=(0, 8, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(8, 16, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(16, 24, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(24, 32, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(32, 40, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(40, 48, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(48, 56, 0.95, False, 0)),
+                 Process(target=runPearsonCorrelation, args=(56, 64, 0.95, False, 0))
                  ]
+    for p in processes:
+        p.start()
+
+    for p in processes:
+        p.join()
+
+
+def nivel6():
+    processes = [
+        Process(target=runPearsonCorrelation, args=(0, 7, 0.95, True, 0)),
+        Process(target=runPearsonCorrelation, args=(8, 15, 0.95, True, 0)),
+        Process(target=runPearsonCorrelation, args=(16, 23, 0.95, True, 0)),
+        Process(target=runPearsonCorrelation, args=(24, 31, 0.95, True, 0)),
+        Process(target=runPearsonCorrelation, args=(32, 39, 0.95, True, 0)),
+        Process(target=runPearsonCorrelation, args=(40, 47, 0.95, True, 0)),
+        Process(target=runPearsonCorrelation, args=(48, 55, 0.95, True, 0)),
+        Process(target=runPearsonCorrelation, args=(56, 63, 0.95, True, 0))
+    ]
     for p in processes:
         p.start()
 
