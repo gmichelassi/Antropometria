@@ -226,4 +226,5 @@ if __name__ == '__main__':
     start_time = time.time()
 
     runGridSearch()
+
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

@@ -164,8 +164,8 @@ if __name__ == '__main__':
     # build_data()
 
     start_time = time.time()
-    log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
     splitDataFrame()
+    log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
 
     log.info("Processing nivel 7")
     start_time = time.time()
