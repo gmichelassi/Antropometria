@@ -157,22 +157,121 @@ def nivel6():
 
 
 def nivel5():
-    pass
+    # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
+    processes = [
+        Process(target=runPearsonCorrelation, args=(0, 2, 0.95, True, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(2, 4, 0.95, True, 4, 2)),
+        Process(target=runPearsonCorrelation, args=(4, 6, 0.95, True, 8, 4)),
+        Process(target=runPearsonCorrelation, args=(6, 8, 0.95, True, 12, 6)),
+        Process(target=runPearsonCorrelation, args=(8, 10, 0.95, True, 16, 8)),
+        Process(target=runPearsonCorrelation, args=(10, 12, 0.95, True, 20, 10)),
+        Process(target=runPearsonCorrelation, args=(12, 14, 0.95, True, 24, 12)),
+        Process(target=runPearsonCorrelation, args=(14, 16, 0.95, True, 28, 14))
+    ]
+    for p in processes:
+        p.start()
+
+    for p in processes:
+        p.join()
+
+
+def nivel4():
+    # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
+    processes = [
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, True, 2, 1)),
+        Process(target=runPearsonCorrelation, args=(2, 3, 0.95, True, 4, 2)),
+        Process(target=runPearsonCorrelation, args=(3, 4, 0.95, True, 6, 3)),
+        Process(target=runPearsonCorrelation, args=(4, 5, 0.95, True, 8, 4)),
+        Process(target=runPearsonCorrelation, args=(5, 6, 0.95, True, 10, 5)),
+        Process(target=runPearsonCorrelation, args=(6, 7, 0.95, True, 12, 6)),
+        Process(target=runPearsonCorrelation, args=(7, 8, 0.95, True, 14, 7))
+    ]
+    for p in processes:
+        p.start()
+
+    for p in processes:
+        p.join()
+
+
+def nivel3():
+    # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
+    processes = [
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, True, 2, 1)),
+        Process(target=runPearsonCorrelation, args=(2, 3, 0.95, True, 4, 2)),
+        Process(target=runPearsonCorrelation, args=(3, 4, 0.95, True, 6, 3)),
+    ]
+    for p in processes:
+        p.start()
+
+    for p in processes:
+        p.join()
+
+
+def nivel2():
+    # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
+    processes = [
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, True, 2, 1)),
+    ]
+    for p in processes:
+        p.start()
+
+    for p in processes:
+        p.join()
+
+
+def nivel1():
+    # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
+    processes = [
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0, 0)),
+    ]
+    for p in processes:
+        p.start()
+
+    for p in processes:
+        p.join()
 
 
 if __name__ == '__main__':
     # build_data()
 
-    start_time = time.time()
-    splitDataFrame()
-    log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
+    # start_time = time.time()
+    # splitDataFrame()
+    # log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
+    #
+    # log.info("Processing nivel 7")
+    # start_time = time.time()
+    # nivel7()
+    # log.info("--- Total processing 7 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    #
+    # log.info("Processing nivel 6")
+    # start_time = time.time()
+    # nivel6()
+    # log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
 
-    log.info("Processing nivel 7")
+    log.info("Processing nivel 5")
     start_time = time.time()
-    nivel7()
-    log.info("--- Total processing 7 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    nivel5()
+    log.info("--- Total processing 5 time: %s minutes ---" % ((time.time() - start_time) / 60))
 
-    log.info("Processing nivel 6")
+    log.info("Processing nivel 4")
     start_time = time.time()
-    nivel6()
-    log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    nivel4()
+    log.info("--- Total processing 4 time: %s minutes ---" % ((time.time() - start_time) / 60))
+
+    log.info("Processing nivel 3")
+    start_time = time.time()
+    nivel3()
+    log.info("--- Total processing 3 time: %s minutes ---" % ((time.time() - start_time) / 60))
+
+    log.info("Processing nivel 2")
+    start_time = time.time()
+    nivel2()
+    log.info("--- Total processing 2 time: %s minutes ---" % ((time.time() - start_time) / 60))
+
+    log.info("Processing nivel 1")
+    start_time = time.time()
+    nivel1()
+    log.info("--- Total processing 1 time: %s minutes ---" % ((time.time() - start_time) / 60))
