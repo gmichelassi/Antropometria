@@ -36,35 +36,34 @@ def splitDataFrame():
         subDataFrame.to_csv(path_or_buf='./data/subDataSets/distances_eu_{0}.csv'.format(index), index=False)
 
 
-def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0):
+def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=False, file_i_to_merge=0):
     where_to_start = 0
 
-    for i in range(starting_file, ending_file):
-        log.info("Processing file {0} out of {1}".format(i, ending_file - 1))
+    for indice in range(starting_file, ending_file):
+        log.info("Processing file {0} out of {1}".format(indice, ending_file - 1))
 
         if merge:
-            where_to_start = mergeDataFrames(contador, contador+1, indice)
-            contador += 2
-            indice += 1
+            where_to_start = mergeDataFrames(file_i_to_merge, file_i_to_merge + 1, indice)
+            file_i_to_merge += 2
 
-        current_split = pd.read_csv(filepath_or_buffer='./data/subDataSets/distances_eu_{0}.csv'.format(i))
+        current_split = pd.read_csv(filepath_or_buffer='./data/subDataSets/distances_eu_{0}.csv'.format(indice))
 
-        log.info("Applying pearson correlation filter")
+        # log.info("Applying pearson correlation filter")
         if where_to_start == 0:
             samples = apply_pearson_feature_selection(current_split, filtro)
         else:
             samples = custom_pearson_feature_selection(current_split, filtro, where_to_start)
 
-        log.info("Saving file!")
-        pd.DataFrame(data=samples).to_csv(path_or_buf='./data/subDataSets/processed-distances_eu_{0}.csv'.format(i))
+        # log.info("Saving file!")
+        pd.DataFrame(data=samples).to_csv(path_or_buf='./data/subDataSets/processed-distances_eu_{0}.csv'.format(indice))
 
-        log.info("Removing unused files...")
-        os.remove('./data/subDataSets/distances_eu_{0}.csv'.format(i))
+        # log.info("Removing unused files...")
+        os.remove('./data/subDataSets/distances_eu_{0}.csv'.format(indice))
 
-        log.info("Done...")
+        # log.info("Done...")
 
 
-def mergeDataFrames(file_i=0, file_j=1, indice=0):
+def mergeDataFrames(file_i, file_j, indice):
     file_name1 = "distances_eu_{0}.csv".format(file_i)
     file_name2 = "distances_eu_{0}.csv".format(file_j)
 
@@ -76,15 +75,15 @@ def mergeDataFrames(file_i=0, file_j=1, indice=0):
     final_df = pd.concat(frames, axis=1, ignore_index=True)
     print("file {0} - shape {1}".format(indice, final_df.shape))
 
-    log.info("Saving file!")
+    # log.info("Saving file!")
 
     final_df.to_csv(path_or_buf="./data/subDataSets/distances_eu_{0}.csv".format(indice))
 
-    log.info("Removing unused files...")
+    # log.info("Removing unused files...")
     os.remove('./data/subDataSets/processed-{0}'.format(file_name1))
     os.remove('./data/subDataSets/processed-{0}'.format(file_name2))
 
-    log.info("Done...")
+    # log.info("Done...")
     return df1.shape[1]
 
 
@@ -99,6 +98,7 @@ def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
 
         if columns_name[i] not in features_to_delete:
             feature_i = samples[columns_name[i]].to_numpy()
+
             for j in range(where_to_start, n_features):
                 if columns_name[j] not in features_to_delete:
                     feature_j = samples[columns_name[j]].to_numpy()
@@ -122,14 +122,14 @@ def build_data():
 
 def nivel7():
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 8, 0.95, False, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(8, 16, 0.95, False, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(16, 24, 0.95, False, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(24, 32, 0.95, False, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(32, 40, 0.95, False, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(40, 48, 0.95, False, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(48, 56, 0.95, False, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(56, 64, 0.95, False, 0, 0))
+        Process(target=runPearsonCorrelation, args=( 0,  8, 0.95, False, 0)),
+        Process(target=runPearsonCorrelation, args=( 8, 16, 0.95, False, 0)),
+        Process(target=runPearsonCorrelation, args=(16, 24, 0.95, False, 0)),
+        Process(target=runPearsonCorrelation, args=(24, 32, 0.95, False, 0)),
+        Process(target=runPearsonCorrelation, args=(32, 40, 0.95, False, 0)),
+        Process(target=runPearsonCorrelation, args=(40, 48, 0.95, False, 0)),
+        Process(target=runPearsonCorrelation, args=(48, 56, 0.95, False, 0)),
+        Process(target=runPearsonCorrelation, args=(56, 64, 0.95, False, 0))
     ]
     for p in processes:
         p.start()
@@ -140,14 +140,14 @@ def nivel7():
 
 def nivel6():
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 4, 0.95, True, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(4, 8, 0.95, True, 8, 4)),
-        Process(target=runPearsonCorrelation, args=(8, 12, 0.95, True, 16, 8)),
-        Process(target=runPearsonCorrelation, args=(12, 16, 0.95, True, 24, 12)),
-        Process(target=runPearsonCorrelation, args=(16, 20, 0.95, True, 32, 16)),
-        Process(target=runPearsonCorrelation, args=(20, 24, 0.95, True, 40, 20)),
-        Process(target=runPearsonCorrelation, args=(24, 28, 0.95, True, 48, 24)),
-        Process(target=runPearsonCorrelation, args=(28, 32, 0.95, True, 56, 28))
+        Process(target=runPearsonCorrelation, args=( 0,  4, 0.95, True,  0)),
+        Process(target=runPearsonCorrelation, args=( 4,  8, 0.95, True,  8)),
+        Process(target=runPearsonCorrelation, args=( 8, 12, 0.95, True, 16)),
+        Process(target=runPearsonCorrelation, args=(12, 16, 0.95, True, 24)),
+        Process(target=runPearsonCorrelation, args=(16, 20, 0.95, True, 32)),
+        Process(target=runPearsonCorrelation, args=(20, 24, 0.95, True, 40)),
+        Process(target=runPearsonCorrelation, args=(24, 28, 0.95, True, 48)),
+        Process(target=runPearsonCorrelation, args=(28, 32, 0.95, True, 56))
     ]
     for p in processes:
         p.start()
@@ -159,14 +159,14 @@ def nivel6():
 def nivel5():
     # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 2, 0.95, True, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(2, 4, 0.95, True, 4, 2)),
-        Process(target=runPearsonCorrelation, args=(4, 6, 0.95, True, 8, 4)),
-        Process(target=runPearsonCorrelation, args=(6, 8, 0.95, True, 12, 6)),
-        Process(target=runPearsonCorrelation, args=(8, 10, 0.95, True, 16, 8)),
-        Process(target=runPearsonCorrelation, args=(10, 12, 0.95, True, 20, 10)),
-        Process(target=runPearsonCorrelation, args=(12, 14, 0.95, True, 24, 12)),
-        Process(target=runPearsonCorrelation, args=(14, 16, 0.95, True, 28, 14))
+        Process(target=runPearsonCorrelation, args=( 0,  2, 0.95, True,  0)),
+        Process(target=runPearsonCorrelation, args=( 2,  4, 0.95, True,  4)),
+        Process(target=runPearsonCorrelation, args=( 4,  6, 0.95, True,  8)),
+        Process(target=runPearsonCorrelation, args=( 6,  8, 0.95, True, 12)),
+        Process(target=runPearsonCorrelation, args=( 8, 10, 0.95, True, 16)),
+        Process(target=runPearsonCorrelation, args=(10, 12, 0.95, True, 20)),
+        Process(target=runPearsonCorrelation, args=(12, 14, 0.95, True, 24)),
+        Process(target=runPearsonCorrelation, args=(14, 16, 0.95, True, 28))
     ]
     for p in processes:
         p.start()
@@ -178,14 +178,14 @@ def nivel5():
 def nivel4():
     # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, True, 2, 1)),
-        Process(target=runPearsonCorrelation, args=(2, 3, 0.95, True, 4, 2)),
-        Process(target=runPearsonCorrelation, args=(3, 4, 0.95, True, 6, 3)),
-        Process(target=runPearsonCorrelation, args=(4, 5, 0.95, True, 8, 4)),
-        Process(target=runPearsonCorrelation, args=(5, 6, 0.95, True, 10, 5)),
-        Process(target=runPearsonCorrelation, args=(6, 7, 0.95, True, 12, 6)),
-        Process(target=runPearsonCorrelation, args=(7, 8, 0.95, True, 14, 7))
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True,  0)),
+        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, True,  2)),
+        Process(target=runPearsonCorrelation, args=(2, 3, 0.95, True,  4)),
+        Process(target=runPearsonCorrelation, args=(3, 4, 0.95, True,  6)),
+        Process(target=runPearsonCorrelation, args=(4, 5, 0.95, True,  8)),
+        Process(target=runPearsonCorrelation, args=(5, 6, 0.95, True, 10)),
+        Process(target=runPearsonCorrelation, args=(6, 7, 0.95, True, 12)),
+        Process(target=runPearsonCorrelation, args=(7, 8, 0.95, True, 14))
     ]
     for p in processes:
         p.start()
@@ -197,10 +197,10 @@ def nivel4():
 def nivel3():
     # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, True, 2, 1)),
-        Process(target=runPearsonCorrelation, args=(2, 3, 0.95, True, 4, 2)),
-        Process(target=runPearsonCorrelation, args=(3, 4, 0.95, True, 6, 3)),
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0)),
+        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, True, 2)),
+        Process(target=runPearsonCorrelation, args=(2, 3, 0.95, True, 4)),
+        Process(target=runPearsonCorrelation, args=(3, 4, 0.95, True, 6)),
     ]
     for p in processes:
         p.start()
@@ -212,8 +212,8 @@ def nivel3():
 def nivel2():
     # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0, 0)),
-        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, True, 2, 1)),
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0)),
+        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, True, 2)),
     ]
     for p in processes:
         p.start()
@@ -225,7 +225,7 @@ def nivel2():
 def nivel1():
     # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0, 0)),
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0)),
     ]
     for p in processes:
         p.start()
@@ -235,7 +235,7 @@ def nivel1():
 
 
 if __name__ == '__main__':
-    build_data()
+    # build_data()
 
     start_time = time.time()
     splitDataFrame()
@@ -246,32 +246,32 @@ if __name__ == '__main__':
     nivel7()
     log.info("--- Total processing 7 time: %s minutes ---" % ((time.time() - start_time) / 60))
 
-    log.info("Processing nivel 6")
-    start_time = time.time()
-    nivel6()
-    log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    log.info("Processing nivel 5")
-    start_time = time.time()
-    nivel5()
-    log.info("--- Total processing 5 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    log.info("Processing nivel 4")
-    start_time = time.time()
-    nivel4()
-    log.info("--- Total processing 4 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    log.info("Processing nivel 3")
-    start_time = time.time()
-    nivel3()
-    log.info("--- Total processing 3 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    log.info("Processing nivel 2")
-    start_time = time.time()
-    nivel2()
-    log.info("--- Total processing 2 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    log.info("Processing nivel 1")
-    start_time = time.time()
-    nivel1()
-    log.info("--- Total processing 1 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    # log.info("Processing nivel 6")
+    # start_time = time.time()
+    # nivel6()
+    # log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    #
+    # log.info("Processing nivel 5")
+    # start_time = time.time()
+    # nivel5()
+    # log.info("--- Total processing 5 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    #
+    # log.info("Processing nivel 4")
+    # start_time = time.time()
+    # nivel4()
+    # log.info("--- Total processing 4 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    #
+    # log.info("Processing nivel 3")
+    # start_time = time.time()
+    # nivel3()
+    # log.info("--- Total processing 3 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    #
+    # log.info("Processing nivel 2")
+    # start_time = time.time()
+    # nivel2()
+    # log.info("--- Total processing 2 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    #
+    # log.info("Processing nivel 1")
+    # start_time = time.time()
+    # nivel1()
+    # log.info("--- Total processing 1 time: %s minutes ---" % ((time.time() - start_time) / 60))
