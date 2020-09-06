@@ -235,21 +235,21 @@ def nivel1():
 
 
 if __name__ == '__main__':
-    # build_data()
+    build_data()
 
-    # start_time = time.time()
-    # splitDataFrame()
-    # log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    # log.info("Processing nivel 7")
-    # start_time = time.time()
-    # nivel7()
-    # log.info("--- Total processing 7 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    log.info("Processing nivel 6")
     start_time = time.time()
-    nivel6()
-    log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    splitDataFrame()
+    log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
+
+    log.info("Processing nivel 7")
+    start_time = time.time()
+    nivel7()
+    log.info("--- Total processing 7 time: %s minutes ---" % ((time.time() - start_time) / 60))
+
+    # log.info("Processing nivel 6")
+    # start_time = time.time()
+    # nivel6()
+    # log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
 
     # log.info("Processing nivel 5")
     # start_time = time.time()
