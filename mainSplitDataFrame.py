@@ -235,7 +235,7 @@ def nivel1():
 
 
 if __name__ == '__main__':
-    build_data()
+    # build_data()
 
     start_time = time.time()
     splitDataFrame()
