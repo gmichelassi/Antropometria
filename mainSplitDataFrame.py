@@ -36,55 +36,39 @@ def splitDataFrame():
         subDataFrame.to_csv(path_or_buf='./data/subDataSets/distances_eu_{0}.csv'.format(index), index=False)
 
 
-def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, merge=False, file_i_to_merge=0):
-    where_to_start = 0
+def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to_start=None):
 
     for indice in range(starting_file, ending_file):
         log.info("Processing file {0} out of {1}".format(indice, ending_file - 1))
 
-        if merge:
-            where_to_start = mergeDataFrames(file_i_to_merge, file_i_to_merge + 1, indice)
-            file_i_to_merge += 2
-
         current_split = pd.read_csv(filepath_or_buffer='./data/subDataSets/distances_eu_{0}.csv'.format(indice))
 
-        # log.info("Applying pearson correlation filter")
-        if where_to_start == 0:
+        if where_to_start is None:
             samples = apply_pearson_feature_selection(current_split, filtro)
         else:
-            samples = custom_pearson_feature_selection(current_split, filtro, where_to_start)
+            samples = custom_pearson_feature_selection(current_split, filtro, where_to_start[indice])
 
-        # log.info("Saving file!")
         pd.DataFrame(data=samples).to_csv(path_or_buf='./data/subDataSets/processed-distances_eu_{0}.csv'.format(indice))
-
-        # log.info("Removing unused files...")
         os.remove('./data/subDataSets/distances_eu_{0}.csv'.format(indice))
 
-        # log.info("Done...")
 
-
-def mergeDataFrames(file_i, file_j, indice):
-    file_name1 = "distances_eu_{0}.csv".format(file_i)
-    file_name2 = "distances_eu_{0}.csv".format(file_j)
+def mergeDataFrames(indice_i, indice_j, new_indice):
+    file_name1 = "distances_eu_{0}.csv".format(indice_i)
+    file_name2 = "distances_eu_{0}.csv".format(indice_j)
 
     df1 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name1))
     df2 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name2))
 
+    where_to_start = df1.shape[1]
     frames = [df1, df2]
-
     final_df = pd.concat(frames, axis=1, ignore_index=True)
-    print("file {0} - shape {1}".format(indice, final_df.shape))
 
-    # log.info("Saving file!")
+    final_df.to_csv(path_or_buf="./data/subDataSets/distances_eu_{0}.csv".format(new_indice))
 
-    final_df.to_csv(path_or_buf="./data/subDataSets/distances_eu_{0}.csv".format(indice))
-
-    # log.info("Removing unused files...")
     os.remove('./data/subDataSets/processed-{0}'.format(file_name1))
     os.remove('./data/subDataSets/processed-{0}'.format(file_name2))
 
-    # log.info("Done...")
-    return df1.shape[1]
+    return where_to_start
 
 
 def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
@@ -122,14 +106,14 @@ def build_data():
 
 def nivel7():
     processes = [
-        Process(target=runPearsonCorrelation, args=( 0,  8, 0.95, False, 0)),
-        Process(target=runPearsonCorrelation, args=( 8, 16, 0.95, False, 0)),
-        Process(target=runPearsonCorrelation, args=(16, 24, 0.95, False, 0)),
-        Process(target=runPearsonCorrelation, args=(24, 32, 0.95, False, 0)),
-        Process(target=runPearsonCorrelation, args=(32, 40, 0.95, False, 0)),
-        Process(target=runPearsonCorrelation, args=(40, 48, 0.95, False, 0)),
-        Process(target=runPearsonCorrelation, args=(48, 56, 0.95, False, 0)),
-        Process(target=runPearsonCorrelation, args=(56, 64, 0.95, False, 0))
+        Process(target=runPearsonCorrelation, args=( 0,  8, 0.95, None)),
+        Process(target=runPearsonCorrelation, args=( 8, 16, 0.95, None)),
+        Process(target=runPearsonCorrelation, args=(16, 24, 0.95, None)),
+        Process(target=runPearsonCorrelation, args=(24, 32, 0.95, None)),
+        Process(target=runPearsonCorrelation, args=(32, 40, 0.95, None)),
+        Process(target=runPearsonCorrelation, args=(40, 48, 0.95, None)),
+        Process(target=runPearsonCorrelation, args=(48, 56, 0.95, None)),
+        Process(target=runPearsonCorrelation, args=(56, 64, 0.95, None))
     ]
     for p in processes:
         p.start()
@@ -139,15 +123,20 @@ def nivel7():
 
 
 def nivel6():
+    where_to_start, new_indice = [], 0
+    for i in range(0, 64, 2):
+        where_to_start.append(mergeDataFrames(i, i+1, new_indice))
+        new_indice += 1
+
     processes = [
-        Process(target=runPearsonCorrelation, args=( 0,  4, 0.95, True,  0)),
-        Process(target=runPearsonCorrelation, args=( 4,  8, 0.95, True,  8)),
-        Process(target=runPearsonCorrelation, args=( 8, 12, 0.95, True, 16)),
-        Process(target=runPearsonCorrelation, args=(12, 16, 0.95, True, 24)),
-        Process(target=runPearsonCorrelation, args=(16, 20, 0.95, True, 32)),
-        Process(target=runPearsonCorrelation, args=(20, 24, 0.95, True, 40)),
-        Process(target=runPearsonCorrelation, args=(24, 28, 0.95, True, 48)),
-        Process(target=runPearsonCorrelation, args=(28, 32, 0.95, True, 56))
+        Process(target=runPearsonCorrelation, args=( 0,  4, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=( 4,  8, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=( 8, 12, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(12, 16, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(16, 20, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(20, 24, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(24, 28, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(28, 32, 0.95, where_to_start))
     ]
     for p in processes:
         p.start()
@@ -237,19 +226,19 @@ def nivel1():
 if __name__ == '__main__':
     # build_data()
 
-    start_time = time.time()
-    splitDataFrame()
-    log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    log.info("Processing nivel 7")
-    start_time = time.time()
-    nivel7()
-    log.info("--- Total processing 7 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    # log.info("Processing nivel 6")
     # start_time = time.time()
-    # nivel6()
-    # log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    # splitDataFrame()
+    # log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
+    #
+    # log.info("Processing nivel 7")
+    # start_time = time.time()
+    # nivel7()
+    # log.info("--- Total processing 7 time: %s minutes ---" % ((time.time() - start_time) / 60))
+
+    log.info("Processing nivel 6")
+    start_time = time.time()
+    nivel6()
+    log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
 
     # log.info("Processing nivel 5")
     # start_time = time.time()
