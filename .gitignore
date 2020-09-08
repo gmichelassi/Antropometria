@@ -6,3 +6,4 @@ nohup.out
 output/*
 !output/GridSearch/.gitkeep
 data/ratio/
+data/backup/
