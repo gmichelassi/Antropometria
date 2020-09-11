@@ -213,10 +213,15 @@ def nivel3():
 
 
 def nivel2():
-    # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
+    where_to_start, new_indice = [], 0
+    for i in range(0, 4, 2):
+        where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
+        new_indice += 1
+    print(where_to_start)
+
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0)),
-        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, True, 2)),
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, where_to_start)),
     ]
     for p in processes:
         p.start()
@@ -226,7 +231,12 @@ def nivel2():
 
 
 def nivel1():
-    # starting_file=0, ending_file=64, filtro=0.99, merge=False, contador=0, indice=0
+    where_to_start, new_indice = [], 0
+    for i in range(0, 2, 2):
+        where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
+        new_indice += 1
+    print(where_to_start)
+
     processes = [
         Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0)),
     ]
@@ -264,17 +274,17 @@ if __name__ == '__main__':
     # nivel4()
     # log.info("--- Total processing 4 time: %s minutes ---" % ((time.time() - start_time) / 60))
 
-    log.info("Processing nivel 3")
-    start_time = time.time()
-    nivel3()
-    log.info("--- Total processing 3 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    # log.info("Processing nivel 3")
+    # start_time = time.time()
+    # nivel3()
+    # log.info("--- Total processing 3 time: %s minutes ---" % ((time.time() - start_time) / 60))
 
-    # log.info("Processing nivel 2")
-    # start_time = time.time()
-    # nivel2()
-    # log.info("--- Total processing 2 time: %s minutes ---" % ((time.time() - start_time) / 60))
-    #
-    # log.info("Processing nivel 1")
-    # start_time = time.time()
-    # nivel1()
-    # log.info("--- Total processing 1 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    log.info("Processing nivel 2")
+    start_time = time.time()
+    nivel2()
+    log.info("--- Total processing 2 time: %s minutes ---" % ((time.time() - start_time) / 60))
+
+    log.info("Processing nivel 1")
+    start_time = time.time()
+    nivel1()
+    log.info("--- Total processing 1 time: %s minutes ---" % ((time.time() - start_time) / 60))
