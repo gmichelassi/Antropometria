@@ -231,14 +231,14 @@ def nivel2():
 
 
 def nivel1():
-    where_to_start, new_indice = [], 0
-    for i in range(0, 2, 2):
-        where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
-        new_indice += 1
-    print(where_to_start)
+    # where_to_start, new_indice = [], 0
+    # for i in range(0, 2, 2):
+    #     where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
+    #     new_indice += 1
+    # print(where_to_start)
 
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, True, 0)),
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, 80015)),
     ]
     for p in processes:
         p.start()
@@ -279,10 +279,10 @@ if __name__ == '__main__':
     # nivel3()
     # log.info("--- Total processing 3 time: %s minutes ---" % ((time.time() - start_time) / 60))
 
-    log.info("Processing nivel 2")
-    start_time = time.time()
-    nivel2()
-    log.info("--- Total processing 2 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    # log.info("Processing nivel 2")
+    # start_time = time.time()
+    # nivel2()
+    # log.info("--- Total processing 2 time: %s minutes ---" % ((time.time() - start_time) / 60))
 
     log.info("Processing nivel 1")
     start_time = time.time()
