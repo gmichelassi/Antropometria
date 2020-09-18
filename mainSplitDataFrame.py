@@ -238,7 +238,7 @@ def nivel1():
     # print(where_to_start)
 
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, 80015)),
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, [80015])),
     ]
     for p in processes:
         p.start()
