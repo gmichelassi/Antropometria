@@ -160,7 +160,7 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                             n_features_to_keep = features
 
                         n_splits = 10
-                        scoring = {'accuracy': 'accuracy', 'precision_macro': 'precision_macro', 'recall_macro': 'recall_macro', 'f1_macro': 'f1_macro'}
+                        scoring = 'accuracy'
                         estimator, param_grid = classifier.make_grid(n_features_to_keep)
                         cv = StratifiedKFold(n_splits=n_splits)
 
