@@ -76,7 +76,7 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
         folds.append((X_train, y_train, X_test, y_test))
         current_fold += 1
 
-    accuracy, precision, recall, f1, tempo = [], [], [], [], []
+    accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro, tempo = [], [], [], [], [], [], [], []
 
     # Antes, somente geramos as folds, agora vamos utilizadas para cada modelo
     for i in range(n_splits):
@@ -85,12 +85,18 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
         y_predict = model.predict(folds[i][2])
 
         accuracy.append(accuracy_score(y_true=folds[i][3], y_pred=y_predict))
-        precision.append(precision_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
-        recall.append(recall_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
-        f1.append(f1_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
+
+        precision_micro.append(precision_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
+        recall_micro.append(recall_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
+        f1_micro.append(f1_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
+
+        precision_macro.append(precision_score(y_true=folds[i][3], y_pred=y_predict, average='macro'))
+        recall_macro.append(recall_score(y_true=folds[i][3], y_pred=y_predict, average='macro'))
+        f1_macro.append(f1_score(y_true=folds[i][3], y_pred=y_predict, average='macro'))
+
         tempo.append((time.time() - __start_time) / 60)
 
-    mean_results = mean_scores({'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1, 'time': tempo})
+    mean_results = mean_scores({'accuracy': accuracy, 'precision_micro': precision_micro, 'recall_micro': recall_micro, 'f1_micro': f1_micro, 'precision_macro': precision_macro, 'recall_macro': recall_macro, 'f1_macro': f1_macro, 'time': tempo})
 
     tc = 2.262  # valor na tabela da distribuição t-student com k-1 graus de liberdade e p = ?
     s = sample_std(accuracy)
@@ -101,17 +107,20 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
 
     log.info("Accuracy found: {0}".format(mean_results['accuracy']))
     log.info("Confidence interval: {0}".format(IC))
-    log.info("Precision found: {0}".format(mean_results['precision']))
-    log.info("Recall found: {0}".format(mean_results['recall']))
-    log.info("F1 Score found: {0}".format(mean_results['f1']))
+    # log.info("Precision found: {0}".format(mean_results['precision']))
+    # log.info("Recall found: {0}".format(mean_results['recall']))
+    # log.info("F1 Score found: {0}".format(mean_results['f1']))
 
     return {
-        'accuracy': mean_results['accuracy'],
-        'IC': IC,
-        'precision': mean_results['precision'],
-        'recall': mean_results['recall'],
-        'f1score': mean_results['f1'],
-        'time': mean_results['time']
+        'err_accuracy': mean_results['accuracy'],
+        'err_IC': IC,
+        'err_precision_micro': mean_results['precision_micro'],
+        'err_recall_micro': mean_results['recall_micro'],
+        'err_f1score_micro': mean_results['f1_micro'],
+        'err_precision_macro': mean_results['precision_macro'],
+        'err_recall_macro': mean_results['recall_macro'],
+        'err_f1score_macro': mean_results['f1_macro'],
+        'err_time': mean_results['time']
     }
 
 
@@ -196,7 +205,7 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                             log.info("Saving results!")
 
                             with open(f"./output/GridSearch/{lib}_best_results.csv", "a") as csvfile:
-                                writer = csv.DictWriter(csvfile, fieldnames=['biblioteca', 'classifier', 'reduction', 'filtro', 'min_max', 'par_amostragem', 'par_accuracy', 'err_accuracy', 'IC', 'err_precision', 'err_recall', 'err_f1score', 'err_time', 'parameters'])
+                                writer = csv.DictWriter(csvfile, fieldnames=['biblioteca', 'classifier', 'reduction', 'filtro', 'min_max', 'par_amostragem', 'par_accuracy', 'parameters', 'err_accuracy', 'err_IC', 'err_precision_micro', 'err_recall_micro', 'err_f1score_micro', 'err_precision_macro', 'err_recall_macro', 'err_f1score_macro', 'err_time'])
                                 results = {
                                     'biblioteca': lib,
                                     'classifier': classifier.name,
@@ -205,13 +214,8 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                                     'min_max': min_max,
                                     'par_amostragem': amostragem,
                                     'par_accuracy': grid_results.best_score_,
-                                    'err_accuracy': errResults['accuracy'],
-                                    'IC': errResults['IC'],
-                                    'err_precision': errResults['precision'],
-                                    'err_recall': errResults['recall'],
-                                    'err_f1score': errResults['f1score'],
-                                    'err_time': errResults['time'],
                                     'parameters': grid_results.best_params_}
+                                results.update(errResults)
                                 writer.writerow(results)
 
                             df_results = pd.DataFrame(grid_results.cv_results_)
