@@ -229,6 +229,8 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
 if __name__ == '__main__':
     start_time = time.time()
 
-    runGridSearch()
+    # runGridSearch()
+    X = pd.read_csv('./data/subDataSets/processed-distances_eu_0.csv')
+    print(X.shape)
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
