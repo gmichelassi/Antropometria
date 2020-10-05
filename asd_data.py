@@ -59,7 +59,7 @@ def load_all(lib='casos', dataset='distances_all_px_eu', label_name='labels'):
         data = pd.read_csv(path)
 
         if label_name is None:
-            labels = pd.read_csv('./data/{0}/{1}_labels.csv'.format(lib, dataset))
+            labels = pd.read_csv('./data/{0}/{1}_labels.csv'.format(lib, dataset), header=None)
             labels = labels.to_numpy()[0]
         else:
             labels = data[label_name].values
