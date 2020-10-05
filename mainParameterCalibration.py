@@ -1,6 +1,6 @@
 # Classifiers
 from utils.classifiers import svm, rf, knn, nnn, nb
-from DimensionalityReduction import run_pre_processing
+from PreProcessing import run_pre_processing
 
 # Classifiers evaluation methods
 from sklearn.model_selection import GridSearchCV
@@ -28,7 +28,7 @@ def __testToRun():
     dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF', 'RFSelect']
     classifiers = [rf('randomforestclassifier'), svm('svc'), knn('kneighborsclassifier'), nnn('mlpclassifier'), nb('gaussiannb')]
     amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
-    filtros = [0.0, 0.98, 0.99]
+    filtros = [0.0]  # , 0.98, 0.99
     min_maxs = [False, True]
 
     return isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs
@@ -132,12 +132,13 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
     for classifier in classifiers:
         for reduction in dimensionality_reductions:
 
-            # if isRandomForestDone and classifier.name == 'randomforestclassifier':
-            #     continue
-            # elif not isRandomForestDone and classifier.name == 'randomforestclassifier':
-            #     isRandomForestDone = True
-            # elif classifier.name != 'randomforestclassifier' and reduction == 'None':
-            #     continue
+            if isRandomForestDone and classifier.name == 'randomforestclassifier':
+                if reduction != 'RFSelect':
+                    continue
+            elif not isRandomForestDone and classifier.name == 'randomforestclassifier':
+                isRandomForestDone = True
+            elif classifier.name != 'randomforestclassifier' and reduction == 'None':
+                continue
 
             for filtro in filtros:
                 for min_max in min_maxs:
@@ -229,8 +230,6 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
 if __name__ == '__main__':
     start_time = time.time()
 
-    # runGridSearch()
-    X = pd.read_csv('./data/subDataSets/processed-distances_eu_0.csv')
-    print(X.shape)
+    runGridSearch(lib='dlibHOG_semfaixa_0.95', dataset='all_distances_eu')
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

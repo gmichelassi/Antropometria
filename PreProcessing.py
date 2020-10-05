@@ -25,7 +25,7 @@ def load(lib, dataset, filtro, min_max, verbose):
         else:
             X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], verbose=verbose)
     else:
-        X, y = asd.load_all(folder=lib, dataset=dataset, label_name='TEA.CTRL')
+        X, y = asd.load_all(lib=lib, dataset=dataset, label_name=None)
 
     if 0.0 < filtro <= 0.99:
         if verbose:
@@ -102,5 +102,5 @@ def run_pre_processing(lib='dlibHOG', dataset='distances_all_px_eu', reduction='
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_pre_processing()
+
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

@@ -5,7 +5,7 @@ from sklearn.decomposition import PCA
 from skrebate import ReliefF
 import joblib
 import numpy as np
-from DimensionalityReduction import run_pre_processing, load
+from PreProcessing import run_pre_processing, load
 
 from config import logger
 import initContext as context

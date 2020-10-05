@@ -49,17 +49,21 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, verbos
     return X, y.astype('int64')
 
 
-def load_all(folder='casos', dataset='distances_all_px_eu', label_name='labels'):
-    if folder == '':
+def load_all(lib='casos', dataset='distances_all_px_eu', label_name='labels'):
+    if lib == '':
         path = "./{0}.csv".format(dataset)
     else:
-        path = "./data/{0}/{1}.csv".format(folder, dataset)
+        path = "./data/{0}/{1}.csv".format(lib, dataset)
 
     if os.path.isfile(path):
         data = pd.read_csv(path)
 
-        labels = data[label_name].values
-        data = data.drop(label_name, axis=1)
+        if label_name is None:
+            labels = pd.read_csv('./data/{0}/{1}_labels.csv'.format(lib, dataset))
+            labels = labels.to_numpy()[0]
+        else:
+            labels = data[label_name].values
+            data = data.drop(label_name, axis=1)
 
         return data, labels
     else:
