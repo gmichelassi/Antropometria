@@ -6,4 +6,4 @@ nohup.out
 output/*
 !output/GridSearch/.gitkeep
 data/ratio/
-data/backup/
+data/dlibHOG_semfaixa_0.95/all_distances_eu.csv
