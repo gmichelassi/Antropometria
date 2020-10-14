@@ -73,7 +73,7 @@ def run_pre_processing(lib='dlibHOG', dataset='distances_all_px_eu', reduction='
         log.info("Not applying any dimensionality reduction")
         red_dim = None
     elif reduction == 'PCA':
-        if n_features_to_keep > min(instances, features):
+        if n_features_to_keep < min(instances, features):
             red_dim = PCA(n_components=n_features_to_keep, whiten=True)
         else:
             log.error("It was not possible possible to run PCA with n_components={0}".format(n_features_to_keep))
