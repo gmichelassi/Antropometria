@@ -153,6 +153,10 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                             log.info("It was not possible run test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier.name, reduction, filtro, min_max, amostragem)
                             log.info("Error: " + str(re))
                             continue
+                        except MemoryError as me:
+                            log.info("It was not possible run test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier.name, reduction, filtro, min_max, amostragem)
+                            log.info("Error: " + str(me))
+                            continue
 
                         instances, features = X.shape
                         if classifier.name == 'randomforestclassifier':
@@ -192,7 +196,7 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                             grid_results = None
 
                         if grid_results is not None:
-                            log.info("Best result presented accuracy %.2f%% for test [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", grid_results.best_score_ * 100, classifier, reduction, filtro, min_max, amostragem)
+                            log.info("Best result presented accuracy %.2f%% for test [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", grid_results.best_score_ * 100, classifier.name, reduction, filtro, min_max, amostragem)
                             log.info("Best parameters found: {0}".format(grid_results.best_params_))
                             log.info("Best parameters were found on index: {0}".format(grid_results.best_index_))
 
