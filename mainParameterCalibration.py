@@ -24,10 +24,9 @@ log = logger.getLogger(__file__)
 
 
 def __testToRun():
-    # Esse último teste foi somente para o ReliefF com o svm
     isRandomForestDone = False
-    dimensionality_reductions = ['ReliefF', 'RFSelect'] # 'None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS',
-    classifiers = [svm('svc')]  # , knn('kneighborsclassifier'), nnn('mlpclassifier'), nb('gaussiannb') # rf('randomforestclassifier'),
+    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'ReliefF', 'RFSelect']  # 'RFS',
+    classifiers = [knn('kneighborsclassifier'), nnn('mlpclassifier'), nb('gaussiannb')]  # rf('randomforestclassifier'), svm('svc'),
     amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
     filtros = [0.0]  # , 0.98, 0.99
     min_maxs = [False, True]
