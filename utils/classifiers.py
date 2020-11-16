@@ -36,7 +36,7 @@ class nb:
 
         return estimator, grid_parameters
 
-    def make_estimator(parameters):
+    def make_estimator(self, parameters):
         return GaussianNB()
 
 
