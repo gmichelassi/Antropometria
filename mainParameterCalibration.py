@@ -18,17 +18,16 @@ import math
 import initContext as context
 from config import logger
 
-plt.set_loglevel("info")
 context.loadModules()
 log = logger.getLogger(__file__)
 
 
 def __testToRun():
-    isRandomForestDone = False
-    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'ReliefF', 'RFSelect']  # 'RFS',
-    classifiers = [nb('gaussiannb')]  # rf('randomforestclassifier'), svm('svc'), knn('kneighborsclassifier'), nnn('mlpclassifier'),
+    isRandomForestDone = False  # Sempre manter como False
+    dimensionality_reductions = ['None', 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF', 'RFSelect']
+    classifiers = [rf('randomforestclassifier'), svm('svc'), knn('kneighborsclassifier'), nnn('mlpclassifier'), nb('gaussiannb')]
     amostragens = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
-    filtros = [0.0]  # , 0.98, 0.99
+    filtros = [0.0, 0.98, 0.99]
     min_maxs = [False, True]
 
     return isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs
@@ -104,6 +103,8 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
     IC_1 = mean_results['accuracy'] - tc * (s / math.sqrt(n_splits))
 
     IC = (IC_1, IC_2)
+
+    log.info('All accuracy values found: {0}'.format(accuracy))
 
     log.info("Accuracy found: {0}".format(mean_results['accuracy']))
     log.info("Confidence interval: {0}".format(IC))
@@ -234,6 +235,6 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
 if __name__ == '__main__':
     start_time = time.time()
 
-    runGridSearch(lib='dlibHOG_semfaixa_0.95', dataset='all_distances_eu')
+    runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu')
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
