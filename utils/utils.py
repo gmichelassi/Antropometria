@@ -45,7 +45,8 @@ def apply_pearson_feature_selection(samples, max_value=0.99):
 def build_ratio_dataset(dataset, name):
     n_linhas, n_columns = dataset.shape  # obtemos o tamanho do dataset
     linha_dataset_final = []  # lista auxiliar que conterá as linhas do dataset final
-    columns = combine_columns_names(n_columns=n_columns)
+    # columns = combine_columns_names(n_columns=n_columns, columns_names=dataset.columns, mode='default')
+    columns = combine_columns_names(n_columns=n_columns, columns_names=dataset.columns, mode='complete')
 
     with open(f'./data/ratio/{name}_distances_all_px_eu.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
@@ -75,11 +76,16 @@ def build_ratio_dataset(dataset, name):
             print("Linha {0} concluida".format(linha), flush=True)
 
 
-def combine_columns_names(n_columns):
+def combine_columns_names(n_columns, columns_names, mode='default'):
     names = []
-    for i in range(0, n_columns):
-        for j in range(i+1, n_columns):
-            names.append("f{0}/f{1}".format(i, j))
+    if mode == 'default':
+        for i in range(0, n_columns):
+            for j in range(i+1, n_columns):
+                names.append(f"{i}/{j}")
+    elif mode == 'complete':
+        for i in range(0, n_columns):
+            for j in range(i+1, n_columns):
+                names.append(f"{columns_names[i]}/{columns_names[j]}")
 
     return names
 
