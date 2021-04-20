@@ -248,7 +248,10 @@ def nivel1():
 
 
 if __name__ == '__main__':
-    build_data()
+    X, y = asd.load_data(lib='ratio', dataset='distances_all_px_eu', classes=['casos', 'controles'], verbose=True)
+    print(X[X.columns[0:10]].head(20))
+
+    # build_data()
 
     # start_time = time.time()
     # splitDataFrame()
