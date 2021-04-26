@@ -15,25 +15,34 @@ from config import logger
 context.loadModules()
 log = logger.getLogger(__file__)
 
+# Constants
+# file name should have the following format
+# file_name = f'./data/{folder}/{class_name}_{dataset_name}.csv'
+# desirable one class per csv file
+folder = 'ratio'
+dataset_name = 'distances_all_px_eu'
+classes = ['casos', 'controles']
 
-def splitDataFrame():
+
+def splitDataFrame(num_of_columns_per_split=33785):
     #  https://stackoverflow.com/questions/48476629/how-to-split-dataframe-vertically-having-n-columns-in-each-resulting-df#comment83947161_48476787
     #  https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.split.html
     #  https://docs.scipy.org/doc/numpy/reference/generated/numpy.arange.html
 
-    X, y = asd.load_data(lib='ratio', dataset='distances_all_px_eu', classes=['casos', 'controles'], verbose=True)
+    X, y = asd.load_data(folder=folder, dataset_name=dataset_name, classes=classes, verbose=True)
 
-    N = 33785
     log.info("Splitting dataset")
 
-    log.info("X.shape %s, y.shape %s", str(X.shape), str(y.shape))
-
-    dfs = np.split(X, np.arange(N, len(X.columns), N), axis=1)
+    dfs = np.split(X, np.arange(num_of_columns_per_split, len(X.columns), num_of_columns_per_split), axis=1)
     indexes = list(range(0, len(dfs)))
 
     for subDataFrame, index in zip(dfs, indexes):
-        # print(subDataFrame.shape)
-        subDataFrame.to_csv(path_or_buf='./data/subDataSets/distances_eu_{0}.csv'.format(index), index=False)
+        if not os.path.exists(f'./data/{folder}/subDataSet'):
+            os.mkdir(f'./data/{folder}/subDataSet')
+
+        subDataFrame.to_csv(path_or_buf=f'./data/{folder}/subDataSet/{dataset_name}_{index}.csv', index=False)
+
+    log.info("Splitting complete")
 
 
 def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to_start=None):
@@ -41,32 +50,32 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to
     for indice in range(starting_file, ending_file):
         log.info("Processing file {0} out of {1}".format(indice, ending_file - 1))
 
-        current_split = pd.read_csv(filepath_or_buffer='./data/subDataSets/distances_eu_{0}.csv'.format(indice))
+        current_split = pd.read_csv(filepath_or_buffer=f'./data/{folder}/subDataSet/{dataset_name}_{indice}.csv')
 
         if where_to_start is None:
             samples = apply_pearson_feature_selection(current_split, filtro)
         else:
             samples = custom_pearson_feature_selection(current_split, filtro, where_to_start[indice])
 
-        pd.DataFrame(data=samples).to_csv(path_or_buf='./data/subDataSets/processed-distances_eu_{0}.csv'.format(indice))
-        os.remove('./data/subDataSets/distances_eu_{0}.csv'.format(indice))
+        pd.DataFrame(data=samples).to_csv(path_or_buf=f'./data/{folder}/subDataSets/processed_{dataset_name}_{indice}.csv', index=False)
+        os.remove(f'./data/{folder}/subDataSet/{dataset_name}_{indice}.csv')
 
 
 def mergeDataFrames(indice_i, indice_j, new_indice):
-    file_name1 = "distances_eu_{0}.csv".format(indice_i)
-    file_name2 = "distances_eu_{0}.csv".format(indice_j)
+    file_name1 = f"{dataset_name}_{indice_i}.csv"
+    file_name2 = f"{dataset_name}_{indice_j}.csv"
 
-    df1 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name1))
-    df2 = pd.read_csv(filepath_or_buffer='./data/subDataSets/processed-{0}'.format(file_name2))
+    df1 = pd.read_csv(filepath_or_buffer=f'./data/{folder}/subDataSets/processed_{file_name1}')
+    df2 = pd.read_csv(filepath_or_buffer=f'./data/{folder}/subDataSets/processed_{file_name2}')
 
     where_to_start = df1.shape[1]
     frames = [df1, df2]
     final_df = pd.concat(frames, axis=1, ignore_index=True)
 
-    final_df.to_csv(path_or_buf="./data/subDataSets/distances_eu_{0}.csv".format(new_indice))
+    final_df.to_csv(path_or_buf=f"./data/{folder}/subDataSets/{dataset_name}_{new_indice}.csv", index=False)
 
-    os.remove('./data/subDataSets/processed-{0}'.format(file_name1))
-    os.remove('./data/subDataSets/processed-{0}'.format(file_name2))
+    os.remove(f'./data/{folder}/subDataSets/processed_{file_name1}')
+    os.remove(f'./data/{folder}/subDataSets/processed_{file_name2}')
 
     return where_to_start
 
@@ -94,14 +103,15 @@ def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
 
 
 def build_data():
-    X = pd.read_csv('./data/dlibHOG_semfaixa/casos_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'casos')
-    X = pd.read_csv('./data/dlibHOG_semfaixa/controles_distances_all_px_eu.csv')
-    X = X.drop('img_name', axis=1)
-    X = X.drop('id', axis=1)
-    build_ratio_dataset(X, 'controles')
+    # './data/dlibHOG_semfaixa/controles_distances_all_px_eu.csv'
+    for class_name in classes:
+        file_name = f'./data/{folder}/{class_name}_{dataset_name}.csv'
+
+        X = pd.read_csv(file_name)
+        if 'dlibHOG' in folder:
+            X = X.drop('img_name', axis=1)
+            X = X.drop('id', axis=1)
+        build_ratio_dataset(X, class_name)
 
 
 def nivel7():
@@ -231,12 +241,6 @@ def nivel2():
 
 
 def nivel1():
-    # where_to_start, new_indice = [], 0
-    # for i in range(0, 2, 2):
-    #     where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
-    #     new_indice += 1
-    # print(where_to_start)
-
     processes = [
         Process(target=runPearsonCorrelation, args=(0, 1, 0.95, [80015])),
     ]
@@ -248,15 +252,15 @@ def nivel1():
 
 
 if __name__ == '__main__':
-    X, y = asd.load_data(lib='ratio', dataset='distances_all_px_eu', classes=['casos', 'controles'], verbose=True)
-    print(X[X.columns[0:10]].head(20))
+    # X, y = asd.load_data(lib='ratio', dataset='distances_all_px_eu', classes=['casos', 'controles'], verbose=True)
+    # print(X[X.columns[0:10]].head(20))
 
     # build_data()
 
-    # start_time = time.time()
-    # splitDataFrame()
-    # log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
-    #
+    start_time = time.time()
+    splitDataFrame()
+    log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
+
     # log.info("Processing nivel 7")
     # start_time = time.time()
     # nivel7()
