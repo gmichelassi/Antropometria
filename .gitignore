@@ -7,3 +7,4 @@ output/*
 !output/GridSearch/.gitkeep
 data/ratio/
 data/dlibHOG_semfaixa_0.95/all_distances_eu.csv
+data/dumb_data
