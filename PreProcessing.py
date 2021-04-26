@@ -18,9 +18,9 @@ context.loadModules()
 log = logger.getLogger(__file__)
 
 
-def load(lib, dataset, filtro, min_max, verbose):
-    if dataset == 'distances_all_px_eu':
-        X, y = asd.load_data(folder=lib, dataset_name=dataset, classes=['casos', 'controles'], verbose=verbose)
+def load(lib, dataset, classes, filtro, min_max, verbose):
+    if classes is None:
+        X, y = asd.load_data(folder=lib, dataset_name=dataset, classes=classes, verbose=verbose)
     else:
         X, y = asd.load_all(folder=lib, dataset_name=dataset, label_column='label')
 
@@ -51,10 +51,10 @@ def __dimensionality_reduction(red_dim, X, y, verbose):
     return data
 
 
-def run_pre_processing(lib='dlibHOG', dataset='distances_all_px_eu', reduction='None', filtro=0.99, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
+def run_pre_processing(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, reduction='None', filtro=0.99, amostragem=None, split_synthetic=False, min_max=False, verbose=True):
     synthetic_X, synthetic_y = None, None
 
-    X, y = load(lib, dataset, filtro, min_max, verbose)
+    X, y = load(lib, dataset, classes, filtro, min_max, verbose)
 
     n_classes = len(unique_labels(y))
 

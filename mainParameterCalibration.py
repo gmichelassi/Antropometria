@@ -46,7 +46,7 @@ def __completeFrame(X, y, synthetic_X, synthetic_y, n_splits=10, current_fold=0)
     return X, y
 
 
-def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, parameters=None, reduction='None', filtro=0.0, amostragem=None, min_max=False):
+def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, model=None, parameters=None, reduction='None', filtro=0.0, amostragem=None, min_max=False):
     if parameters is None or model is None:
         log.info("It was not possible run error estimation for this test")
         return {'accuracy': "", 'IC': "", 'precision': "", 'recall': "", 'f1score': "", 'time': ""}
@@ -54,7 +54,7 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
     log.info("Running error estimation for current classifier with best parameters found")
 
     try:
-        X, y, synthetic_X, synthetic_y = run_pre_processing(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
+        X, y, synthetic_X, synthetic_y = run_pre_processing(lib=lib, dataset=dataset, classes=classes, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=True, min_max=min_max, verbose=False)
     except RuntimeError as re:
         log.info("It was not possible run error estimation for this test")
         log.info("Error: " + str(re))
@@ -125,7 +125,7 @@ def __errorEstimation(lib='dlibHOG', dataset='distances_all_px_eu', model=None, 
     }
 
 
-def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
+def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu', classes=None):
     log.info("Running Grid Search for %s dataset", dataset)
 
     isRandomForestDone, dimensionality_reductions, classifiers, amostragens, filtros, min_maxs = __testToRun()
@@ -149,7 +149,7 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
                         log.info("Running test for [lib: %s, classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", lib, classifier.name, reduction, filtro, min_max, amostragem)
 
                         try:
-                            X, y, synthetic_X, synthetic_y = run_pre_processing(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
+                            X, y, synthetic_X, synthetic_y = run_pre_processing(lib=lib, dataset=dataset, classes=classes, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
                         except RuntimeError as re:
                             log.info("It was not possible run test for [classifier: %s, reduction: %s, filter: %s, min_max: %s, sampling: %s]", classifier.name, reduction, filtro, min_max, amostragem)
                             log.info("Error: " + str(re))
@@ -235,6 +235,6 @@ def runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu'):
 if __name__ == '__main__':
     start_time = time.time()
 
-    runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu')
+    runGridSearch(lib='dlibHOG', dataset='distances_all_px_eu', classes=['casos', 'controles'])
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

@@ -13,8 +13,8 @@ context.loadModules()
 log = logger.getLogger(__file__)
 
 
-def __saveReduction(lib='dlibHOG', dataset='distances_all_px_eu', reduction='', filtro=0.0, min_max=False):
-    X, y = load(lib, dataset, filtro, min_max, False)
+def __saveReduction(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, reduction='', filtro=0.0, min_max=False):
+    X, y = load(lib, dataset, classes, filtro, min_max, False)
     X = X.values
     instances, features = X.shape
     n_features_to_keep = int(np.sqrt(features))
@@ -41,9 +41,12 @@ def __saveReduction(lib='dlibHOG', dataset='distances_all_px_eu', reduction='', 
     pickle.dump(red_dim, open('red_dim.sav', 'wb'))
 
 
-def saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classifier=None, reduction=None, filtro=0.0, amostragem=None, min_max=False):
-    X, y, synthetic_X, synthetic_y = run_pre_processing(lib=lib, dataset=dataset, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
-    estimator = classifier.make_estimator()
+def saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, classifier=None, reduction=None, filtro=0.0, amostragem=None, min_max=False, parameters=None):
+    X, y, synthetic_X, synthetic_y = run_pre_processing(lib=lib, dataset=dataset, classes=classes, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
+    if parameters is None:
+        raise ValueError('É preciso definir os parâmetros!')
+
+    estimator = classifier.make_estimator(parameters)
 
     if reduction is not None:
         try:
@@ -56,7 +59,7 @@ def saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classifier=None, red
         estimator.fit(X, y)  # training the model
 
         log.info("Saving selected model")
-        pickle.dump(estimator, open('model.sav', 'wb'))
+        pickle.dump(estimator, open('./output/model.sav', 'wb'))
         # joblib.dump(estimator, 'model.joblib')
 
         log.info("Done without errors!")
@@ -65,4 +68,43 @@ def saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classifier=None, red
 
 
 if __name__ == '__main__':
-    saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classifier=svm('svc'), reduction='PCA', filtro=0.98, amostragem='Tomek', min_max=False)
+    knn_parameters = {
+        'n_neighbors': 1,
+        'weights': 'uniform',
+        'algorithm': 'auto',
+        'leaf_size': 1,
+        'n_jobs': -1
+    }
+    nb_parameters = {}
+    nnn_parameters = {
+        'hidden_layer_sizes': (50, 50, 50),
+        'activation': 'logistic',
+        'solver': 'lbfgs',
+        'alpha': 0.0001,
+        'learning_rate': 'adaptive',
+        'learning_rate_init': 0.001,
+        'max_iter': 5000,
+        'random_state': 707878
+    }
+    rf_parameters = {
+        'n_estimators': 500,
+        'criterion': 'gini',
+        'max_depth': None,
+        'min_samples_leaf': 1,
+        'max_features': 50,
+        'bootstrap': True,
+        'n_jobs': -1,
+        'random_state': 707878,
+        'class_weight': None
+    }
+    svm_parameters = {
+        'kernel': 'linear',
+        'C': 0.01,
+        'gamma': 'scale',
+        'degree': 2,
+        'coef0': 0,
+        'probability': True,
+        'random_state': 707878
+    }
+
+    saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classes=['casos', 'controles'], classifier=svm('svc'), reduction='PCA', filtro=0.98, amostragem='Tomek', min_max=False, parameters=svm_parameters)
