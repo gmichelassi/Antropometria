@@ -27,7 +27,7 @@ def load_data(folder='dlibHOG', dataset_name='distances_all_px_eu', classes=None
             log.info(f'[{label_count}] Classe {classe}: {file_name}')
 
         if os.path.isfile(file_name):
-            if 'ratio' in 'folder':
+            if 'ratio' in folder:
                 log.info("Using chunk method to open big files")
                 chuncksize, chunklist = 10, []
                 for chunk in pd.read_csv(file_name, chunksize=chuncksize, dtype=np.float64):
