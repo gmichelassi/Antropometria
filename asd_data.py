@@ -10,9 +10,9 @@ log = logger.getLogger(__file__)
 random_state = 10000
 
 
-def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, verbose=True):
-    if classes is None or len(classes) == 1:
-        raise IOError('It is not possible to load a dataset with {0} argument. Please insert two or more classes names'.format(classes))
+def load_data(folder='dlibHOG', dataset_name='distances_all_px_eu', classes=None, verbose=True):
+    if classes is None or len(classes) <= 1:
+        raise IOError('It is not possible to load a dataset with {0} argument. Please insert two or more classes names or use method load_all().'.format(classes))
 
     if verbose:
         log.info("Loading data from csv file")
@@ -22,18 +22,20 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, verbos
 
     label_count = 0
     for classe in classes:
-        file_name = './data/{0}/{1}_{2}.csv'.format(lib, classe, dataset)
+        file_name = f'./data/{folder}/{classe}_{dataset_name}.csv'
         if verbose:
-            log.info('[{0}] Classe {1}: {2}'.format(label_count, classe, file_name))
+            log.info(f'[{label_count}] Classe {classe}: {file_name}')
+
         if os.path.isfile(file_name):
-            if lib == 'ratio':
+            if 'ratio' in 'folder':
                 chuncksize, chunklist = 10, []
                 for chunk in pd.read_csv(file_name, chunksize=chuncksize, dtype=np.float64):
                     chunklist.append(chunk)
                 data = pd.concat(chunklist)
             else:
                 data = pd.read_csv(file_name)
-                data = data.drop(['img_name', 'id'], axis=1)
+                if 'dlibHOG' in folder:
+                    data = data.drop(['img_name', 'id'], axis=1)
 
             log.info("Classe {0}: {1}".format(classe, data.shape))
             label = label_count * np.ones(len(data), dtype=np.int)
@@ -41,7 +43,7 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, verbos
             X = pd.concat([X, data])
             y = np.concatenate((y, label))
         else:
-            log.info("File not found for parameters: [{0}, {1}, {2}]".format(lib, dataset, classes))
+            log.info("File not found for parameters: [{0}, {1}, {2}]".format(folder, dataset_name, classes))
 
         label_count += 1
 
@@ -49,22 +51,18 @@ def load_data(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, verbos
     return X, y.astype('int64')
 
 
-def load_all(lib='casos', dataset='distances_all_px_eu', label_name='labels'):
-    if lib == '':
-        path = "./{0}.csv".format(dataset)
-    else:
-        path = "./data/{0}/{1}.csv".format(lib, dataset)
+def load_all(folder='casos', dataset_name='distances_all_px_eu', label_column='labels'):
+    path = f"./data/{folder}/{dataset_name}.csv"
 
     if os.path.isfile(path):
         data = pd.read_csv(path)
 
         if label_name is None:
-            labels = pd.read_csv('./data/{0}/{1}_labels.csv'.format(lib, dataset), header=None)
-            labels = labels.to_numpy()[0]
+            raise ValueError('It is not possible to load a dataset without a column for its label. If you have one file for each class, try method load_data().')
         else:
-            labels = data[label_name].values
-            data = data.drop(label_name, axis=1)
+            labels = data[label_column].values
+            data = data.drop(label_column, axis=1)
 
         return data, labels
     else:
-        raise IOError("File not found")
+        raise IOError(f'File not found for params {folder} and {dataset_name}.')

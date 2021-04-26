@@ -20,12 +20,9 @@ log = logger.getLogger(__file__)
 
 def load(lib, dataset, filtro, min_max, verbose):
     if dataset == 'distances_all_px_eu':
-        if lib == 'ratio':
-            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], verbose=verbose)
-        else:
-            X, y = asd.load_data(lib=lib, dataset=dataset, classes=['casos', 'controles'], verbose=verbose)
+        X, y = asd.load_data(folder=lib, dataset_name=dataset, classes=['casos', 'controles'], verbose=verbose)
     else:
-        X, y = asd.load_all(lib=lib, dataset=dataset, label_name=None)
+        X, y = asd.load_all(folder=lib, dataset_name=dataset, label_column='label')
 
     if 0.0 < filtro <= 0.99:
         if verbose:
