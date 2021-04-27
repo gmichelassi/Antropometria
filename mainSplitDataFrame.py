@@ -56,7 +56,7 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to
         else:
             samples = custom_pearson_feature_selection(current_split, filtro, where_to_start[indice])
 
-        pd.DataFrame(data=samples).to_csv(path_or_buf=f'./data/{folder}/subDataSets/processed_{dataset_name}_{indice}.csv', index=False)
+        pd.DataFrame(data=samples).to_csv(path_or_buf=f'./data/{folder}/subDataSet/processed_{dataset_name}_{indice}.csv', index=False)
         os.remove(f'./data/{folder}/subDataSet/{dataset_name}_{indice}.csv')
 
 
@@ -64,17 +64,17 @@ def mergeDataFrames(indice_i, indice_j, new_indice):
     file_name1 = f"{dataset_name}_{indice_i}.csv"
     file_name2 = f"{dataset_name}_{indice_j}.csv"
 
-    df1 = pd.read_csv(filepath_or_buffer=f'./data/{folder}/subDataSets/processed_{file_name1}')
-    df2 = pd.read_csv(filepath_or_buffer=f'./data/{folder}/subDataSets/processed_{file_name2}')
+    df1 = pd.read_csv(filepath_or_buffer=f'./data/{folder}/subDataSet/processed_{file_name1}')
+    df2 = pd.read_csv(filepath_or_buffer=f'./data/{folder}/subDataSet/processed_{file_name2}')
 
     where_to_start = df1.shape[1]
     frames = [df1, df2]
     final_df = pd.concat(frames, axis=1, ignore_index=True)
 
-    final_df.to_csv(path_or_buf=f"./data/{folder}/subDataSets/{dataset_name}_{new_indice}.csv", index=False)
+    final_df.to_csv(path_or_buf=f"./data/{folder}/subDataSet/{dataset_name}_{new_indice}.csv", index=False)
 
-    os.remove(f'./data/{folder}/subDataSets/processed_{file_name1}')
-    os.remove(f'./data/{folder}/subDataSets/processed_{file_name2}')
+    os.remove(f'./data/{folder}/subDataSet/processed_{file_name1}')
+    os.remove(f'./data/{folder}/subDataSet/processed_{file_name2}')
 
     return where_to_start
 
