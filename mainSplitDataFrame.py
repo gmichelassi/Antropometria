@@ -1,6 +1,5 @@
 import asd_data as asd
-
-# Utils
+import sys
 from utils.utils import apply_pearson_feature_selection, build_ratio_dataset
 from scipy import stats
 import os
@@ -8,7 +7,6 @@ import time
 import numpy as np
 import pandas as pd
 import initContext as context
-
 from multiprocessing import Process
 from config import logger
 
@@ -253,46 +251,50 @@ def nivel1():
 
 
 if __name__ == '__main__':
-    # X, y = asd.load_data(lib='ratio', dataset='distances_all_px_eu', classes=['casos', 'controles'], verbose=True)
-    # print(X[X.columns[0:10]].head(20))
+    args = sys.argv
 
-    # build_data()
-
-    start_time = time.time()
-    splitDataFrame()
-    log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    log.info("Processing nivel 7")
-    start_time = time.time()
-    nivel7()
-    log.info("--- Total processing 7 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    # log.info("Processing nivel 6")
-    # start_time = time.time()
-    # nivel6()
-    # log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    # log.info("Processing nivel 5")
-    # start_time = time.time()
-    # nivel5()
-    # log.info("--- Total processing 5 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    # log.info("Processing nivel 4")
-    # start_time = time.time()
-    # nivel4()
-    # log.info("--- Total processing 4 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    # log.info("Processing nivel 3")
-    # start_time = time.time()
-    # nivel3()
-    # log.info("--- Total processing 3 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    # log.info("Processing nivel 2")
-    # start_time = time.time()
-    # nivel2()
-    # log.info("--- Total processing 2 time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-    # log.info("Processing nivel 1")
-    # start_time = time.time()
-    # nivel1()
-    # log.info("--- Total processing 1 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    if args[1] == 'buildata':
+        build_data()
+    elif args[1] == 'split':
+        start_time = time.time()
+        splitDataFrame()
+        log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
+    elif args[1] == 'nivel7':
+        log.info("Processing nivel 7")
+        start_time = time.time()
+        nivel7()
+        log.info("--- Total processing 7 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    elif args[1] == 'nivel6':
+        log.info("Processing nivel 6")
+        start_time = time.time()
+        nivel6()
+        log.info("--- Total processing 6 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    elif args[1] == 'nivel5':
+        log.info("Processing nivel 5")
+        start_time = time.time()
+        nivel5()
+        log.info("--- Total processing 5 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    elif args[1] == 'nivel4':
+        log.info("Processing nivel 4")
+        start_time = time.time()
+        nivel4()
+        log.info("--- Total processing 4 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    elif args[1] == 'nivel3':
+        log.info("Processing nivel 3")
+        start_time = time.time()
+        nivel3()
+        log.info("--- Total processing 3 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    elif args[1] == 'nivel2':
+        log.info("Processing nivel 2")
+        start_time = time.time()
+        nivel2()
+        log.info("--- Total processing 2 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    elif args[1] == 'nivel1':
+        log.info("Processing nivel 1")
+        start_time = time.time()
+        nivel1()
+        log.info("--- Total processing 1 time: %s minutes ---" % ((time.time() - start_time) / 60))
+    elif args[1] == 'test':
+        log.info('Parâmetros estão sendo recebidos com sucesso')
+    else:
+        log.error('Parâmetro não encontrado')
