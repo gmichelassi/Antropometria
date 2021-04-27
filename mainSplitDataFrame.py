@@ -42,6 +42,7 @@ def splitDataFrame(num_of_columns_per_split=33785):
 
         subDataFrame.to_csv(path_or_buf=f'./data/{folder}/subDataSet/{dataset_name}_{index}.csv', index=False)
 
+    pd.DataFrame(y).to_csv(f'./data/{folder}/subDataSet/label_{dataset_name}.csv', index=False)
     log.info("Splitting complete")
 
 
@@ -257,9 +258,9 @@ if __name__ == '__main__':
 
     # build_data()
 
-    # start_time = time.time()
-    # splitDataFrame()
-    # log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
+    start_time = time.time()
+    splitDataFrame()
+    log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
 
     log.info("Processing nivel 7")
     start_time = time.time()
