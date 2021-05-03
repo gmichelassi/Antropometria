@@ -296,5 +296,7 @@ if __name__ == '__main__':
         log.info("--- Total processing 1 time: %s minutes ---" % ((time.time() - start_time) / 60))
     elif args[1] == 'test':
         log.info('Parâmetros estão sendo recebidos com sucesso')
+        X = pd.read_csv('./data/ratio/subDataSet/processed_distances_all_px_eu_0.csv')
+        print(X.head())
     else:
         log.error('Parâmetro não encontrado')
