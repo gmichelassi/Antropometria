@@ -19,7 +19,7 @@ log = logger.getLogger(__file__)
 
 
 def load(lib, dataset, classes, filtro, min_max, verbose):
-    if classes is None:
+    if classes is not None:
         X, y = asd.load_data(folder=lib, dataset_name=dataset, classes=classes, verbose=verbose)
     else:
         X, y = asd.load_all(folder=lib, dataset_name=dataset, label_column='label')

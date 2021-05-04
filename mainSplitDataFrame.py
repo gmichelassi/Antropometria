@@ -69,7 +69,7 @@ def mergeDataFrames(indice_i, indice_j, new_indice):
 
     where_to_start = df1.shape[1]
     frames = [df1, df2]
-    final_df = pd.concat(frames, axis=1, ignore_index=True)
+    final_df = pd.concat(frames, axis=1)
 
     final_df.to_csv(path_or_buf=f"./data/{folder}/subDataSet/{dataset_name}_{new_indice}.csv", index=False)
 
