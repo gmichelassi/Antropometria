@@ -98,7 +98,7 @@ def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
                     if pearson >= max_value:
                         features_to_delete.append(columns_name[j])
 
-    return samples.drop(features_to_delete, axis=1).values
+    return samples.drop(features_to_delete, axis=1)
 
 
 def build_data():
