@@ -240,8 +240,14 @@ def nivel2():
 
 
 def nivel1():
+    where_to_start, new_indice = [], 0
+    for i in range(0, 2, 2):
+        where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
+        new_indice += 1
+    print(where_to_start)
+
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, [80015])),
+        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, where_to_start)),
     ]
     for p in processes:
         p.start()
