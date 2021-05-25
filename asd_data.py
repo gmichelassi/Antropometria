@@ -12,7 +12,8 @@ random_state = 10000
 
 def load_data(folder='dlibHOG', dataset_name='distances_all_px_eu', classes=None, verbose=True):
     if classes is None or len(classes) <= 1:
-        raise IOError('It is not possible to load a dataset with {0} argument. Please insert two or more classes names or use method load_all().'.format(classes))
+        raise IOError('It is not possible to load a dataset with {0} argument. Please insert two or more classes '
+                      'names or use method load_all().'.format(classes))
 
     if verbose:
         log.info("Loading data from csv file")
@@ -58,8 +59,9 @@ def load_all(folder='casos', dataset_name='distances_all_px_eu', label_column='l
     if os.path.isfile(path):
         data = pd.read_csv(path)
 
-        if label_name is None:
-            raise ValueError('It is not possible to load a dataset without a column for its label. If you have one file for each class, try method load_data().')
+        if label_column is None:
+            raise ValueError('It is not possible to load a dataset without a column for its label. If you have one '
+                             'file for each class, try method load_data().')
         else:
             labels = data[label_column].values
             data = data.drop(label_column, axis=1)

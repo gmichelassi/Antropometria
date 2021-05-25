@@ -41,8 +41,11 @@ def __saveReduction(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, 
     pickle.dump(red_dim, open('red_dim.sav', 'wb'))
 
 
-def saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, classifier=None, reduction=None, filtro=0.0, amostragem=None, min_max=False, parameters=None):
-    X, y, synthetic_X, synthetic_y = run_pre_processing(lib=lib, dataset=dataset, classes=classes, reduction=reduction, filtro=filtro, amostragem=amostragem, split_synthetic=False, min_max=min_max)
+def saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classes=None, classifier=None, reduction=None, filtro=0.0,
+              amostragem=None, min_max=False, parameters=None):
+    X, y, synthetic_X, synthetic_y = run_pre_processing(lib=lib, dataset=dataset, classes=classes, reduction=reduction,
+                                                        filtro=filtro, amostragem=amostragem, split_synthetic=False,
+                                                        min_max=min_max)
     if parameters is None:
         raise ValueError('É preciso definir os parâmetros!')
 
@@ -107,4 +110,5 @@ if __name__ == '__main__':
         'random_state': 707878
     }
 
-    saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classes=['casos', 'controles'], classifier=svm('svc'), reduction='PCA', filtro=0.98, amostragem='Tomek', min_max=False, parameters=svm_parameters)
+    saveModel(lib='dlibHOG', dataset='distances_all_px_eu', classes=['casos', 'controles'], classifier=svm('svc'),
+              reduction='PCA', filtro=0.98, amostragem='Tomek', min_max=False, parameters=svm_parameters)

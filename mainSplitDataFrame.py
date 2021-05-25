@@ -23,10 +23,6 @@ classes = ['casos', 'controles']
 
 
 def splitDataFrame(num_of_columns_per_split=33785):
-    #  https://stackoverflow.com/questions/48476629/how-to-split-dataframe-vertically-having-n-columns-in-each-resulting-df#comment83947161_48476787
-    #  https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.split.html
-    #  https://docs.scipy.org/doc/numpy/reference/generated/numpy.arange.html
-
     X, y = asd.load_data(folder=folder, dataset_name=dataset_name, classes=classes, verbose=True)
 
     log.info("Splitting dataset")
@@ -56,7 +52,8 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to
         else:
             samples = custom_pearson_feature_selection(current_split, filtro, where_to_start[indice])
 
-        pd.DataFrame(data=samples).to_csv(path_or_buf=f'./data/{folder}/subDataSet/processed_{dataset_name}_{indice}.csv', index=False)
+        pd.DataFrame(data=samples).to_csv(
+            path_or_buf=f'./data/{folder}/subDataSet/processed_{dataset_name}_{indice}.csv', index=False)
         os.remove(f'./data/{folder}/subDataSet/{dataset_name}_{indice}.csv')
 
 

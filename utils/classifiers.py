@@ -23,7 +23,8 @@ class knn:
         return estimator, grid_parameters
 
     def make_estimator(self, parameters):
-        return KNeighborsClassifier(n_neighbors=parameters['n_neighbors'], weights=parameters['weights'], algorithm=parameters['algorithm'], leaf_size=parameters['leaf_size'], n_jobs=-1)
+        return KNeighborsClassifier(n_neighbors=parameters['n_neighbors'], weights=parameters['weights'],
+                                    algorithm=parameters['algorithm'], leaf_size=parameters['leaf_size'], n_jobs=-1)
 
 
 class nb:

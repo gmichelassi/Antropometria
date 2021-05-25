@@ -23,29 +23,28 @@ def sample_std(scores):
     return math.sqrt(std)
 
 
-# https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.pearsonr.html
 def apply_pearson_feature_selection(samples, max_value=0.99):
     n_features = samples.shape[1]
     features_to_delete = np.zeros(n_features, dtype=bool)
 
-    for i in range(0, n_features):  # a função range indica um intervalo [0, n_features)
-        if not features_to_delete[i]:  # Se a coluna i não é pra deletar
-            feature_i = samples.iloc[:, i].to_numpy()  # Pegamos o vetor relativo a coluna i
+    for i in range(0, n_features):
+        if not features_to_delete[i]:
+            feature_i = samples.iloc[:, i].to_numpy()
 
             for j in range(i+1, n_features):
-                if not features_to_delete[j]:  # Se a coluna j não está na lista de colunas a serem deletadas
-                    feature_j = samples.iloc[:, j].to_numpy()  # Pegamos o vetor relativo a coluna j
-                    pearson, pvalue = stats.pearsonr(feature_i, feature_j)  # Realizamos o calculo da correlação
-                    if pearson >= max_value:  # Se a correlação for maior do que o valor máximo, incluimos na lista de features a serem deletadas
+                if not features_to_delete[j]:
+                    feature_j = samples.iloc[:, j].to_numpy()
+                    pearson, pvalue = stats.pearsonr(feature_i, feature_j)
+                    if pearson >= max_value:
                         features_to_delete[j] = True
 
-    return samples[samples.columns[~features_to_delete]]  # Deletamos todas as features selecionadas e retornamos o DataFrame
+    return samples[samples.columns[~features_to_delete]]
 
 
 def build_ratio_dataset(dataset, name):
     n_linhas, n_columns = dataset.shape  # obtemos o tamanho do dataset
-    linha_dataset_final = []  # lista auxiliar que conterá as linhas do dataset final
-    # columns = combine_columns_names(n_columns=n_columns, columns_names=dataset.columns, mode='default')
+    linha_dataset_final = []
+
     columns = combine_columns_names(n_columns=n_columns, columns_names=dataset.columns, mode='complete')
 
     with open(f'./data/ratio/{name}_distances_all_px_eu.csv', 'w') as csvfile:
@@ -58,7 +57,8 @@ def build_ratio_dataset(dataset, name):
 
                 for coluna_j in range(coluna_i + 1, n_columns):
                     valor_j = dataset.iloc[linha, coluna_j]
-                    if valor_i == 0.0 or valor_j == 0.0 or valor_i == np.nan or valor_j == np.nan or valor_i == np.Inf or valor_j == valor_j == np.Inf:
+                    if valor_i == 0.0 or valor_j == 0.0 or valor_i == np.nan or valor_j == np.nan or valor_i == np.Inf \
+                            or valor_j == valor_j == np.Inf:
                         print(valor_j)
                         print(valor_i)
                         ratio_dist = 0.0
@@ -102,8 +102,10 @@ def varianciaAcumuladaPCA(samples, labels, verbose=False):
 
     if verbose:
         plt.figure(figsize=(8, 6))
-        plt.bar(range(1, len(cum_var_exp) + 1), var_exp, align='center', label='individual variance explained', alpha=0.7)
-        plt.step(range(1, len(cum_var_exp) + 1), cum_var_exp, where='mid', label='cumulative variance explained', color='red')
+        plt.bar(range(1, len(cum_var_exp) + 1), var_exp, align='center', label='individual variance explained',
+                alpha=0.7)
+        plt.step(range(1, len(cum_var_exp) + 1), cum_var_exp, where='mid', label='cumulative variance explained',
+                 color='red')
         plt.ylabel('Explained variance ratio')
         plt.xlabel('Principal components')
         plt.xticks(np.arange(1, len(var_exp) + 1, 1))
