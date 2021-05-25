@@ -66,12 +66,29 @@ Finalmente, vá até a linha 110 do arquivo SaveModels.py e indique no último p
 Se tudo ocorrer bem, um arquivo chamado output.sav será salvo na pasta de outputs!
 ~~~
 
-### Algumas recomendações
+### Recomendações gerais
 
-1. Não altere os códigos caso não tenha conhecimento de Machine Learning, eles já estão com uma configuração padrão para rodarem sem problemas
-2. O arquivo mainSplitDataFrame.py foi criado única e exclusivamente para lidar com um caso específico que ocorreu durante a Iniciação Científica
+1. Não altere os códigos caso não tenha conhecimento de Machine Learning, eles já estão com uma configuração padrão para rodarem sem problemas.
+2. O arquivo mainSplitDataFrame.py foi criado única e exclusivamente para lidar com um caso específico que ocorreu durante a Iniciação Científica.
 
 Caso queira aprender melhor sobre machine learning ou este projeto, consulte:
 - o relatório dessa IC (disponível por e-mail)
 - a ementa e a bibliografia das disciplinas [Inteligência Artificial - ACH2016](https://uspdigital.usp.br/jupiterweb/obterDisciplina?sgldis=ACH2016) e [Reconhecimento de Padrões - SIN5007](https://uspdigital.usp.br/janus/componente/disciplinasOferecidasInicial.jsf?action=3&sgldis=SIN5007)
+
+
+### Para desenvolvedores
+
+Sinta-se livre para criar uma _branch_ deste projeto, _Pull requests_ serão cuidadosamente avaliados.
+Os códigos devem seguir as seguintes instrucões:
+
+1. Nomes de classe devem estar em _CamelCase_. Ex: classExample;
+2. Nome de métodos devem estar em _lower case_ e as palavras separadas por _. Ex: call_method();
+3. Nomes de variaveis devem estar em _lower case_ e as palavras separadas por _. Ex: num_of_features = 10;
+4. Nomes de constantes devem estar em _upper case_ e as palavras separadas por _. Ex: CONSTANT = 10;
+
+Durante seus _commits_, as mensagens devem ser claras e explicativas do que foi alterado.
+
+A principal regra que deve ser obedecida aqui é que tudo que for escrito deve estar claro em seu propósito. Não deve haver comentários, a menos que sejam extremamente necessários.
+
+#### Sobre testes
 
