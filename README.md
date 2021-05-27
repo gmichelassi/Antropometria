@@ -66,7 +66,7 @@ Finalmente, vá até a linha 110 do arquivo SaveModels.py e indique no último p
 Se tudo ocorrer bem, um arquivo chamado output.sav será salvo na pasta de outputs!
 ~~~
 
-### Recomendações gerais
+### Para usuários
 
 1. Não altere os códigos caso não tenha conhecimento de Machine Learning, eles já estão com uma configuração padrão para rodarem sem problemas.
 2. O arquivo mainSplitDataFrame.py foi criado única e exclusivamente para lidar com um caso específico que ocorreu durante a Iniciação Científica.
@@ -78,17 +78,29 @@ Caso queira aprender melhor sobre machine learning ou este projeto, consulte:
 
 ### Para desenvolvedores
 
-Sinta-se livre para criar uma _branch_ deste projeto, _Pull requests_ serão cuidadosamente avaliados.
-Os códigos devem seguir as seguintes instrucões:
+Sinta-se livre para criar uma `branch` deste projeto, `pull requests` serão cuidadosamente avaliados.
 
-1. Nomes de classe devem estar em _CamelCase_. Ex: classExample;
-2. Nome de métodos devem estar em _lower case_ e as palavras separadas por _. Ex: call_method();
-3. Nomes de variaveis devem estar em _lower case_ e as palavras separadas por _. Ex: num_of_features = 10;
-4. Nomes de constantes devem estar em _upper case_ e as palavras separadas por _. Ex: CONSTANT = 10;
+As nomenclaturas devem seguir as seguintes instrucões:
 
-Durante seus _commits_, as mensagens devem ser claras e explicativas do que foi alterado.
+Classes, métodos e variáveis
+- Nomes de classe devem estar em _camel case_. Ex: `ClassExample`;
+- Nome de métodos devem estar em _lower case_ e as palavras separadas por _. Ex: `call_method()`;
+- Nomes de variaveis devem estar em _lower case_ e as palavras separadas por _. Ex: `num_of_features = 10`;
+- Nomes de constantes devem estar em _upper case_ e as palavras separadas por _. Ex: `CONSTANT = 10`;
+  
+Arquivos e diretórios
+- Arquivos de classe devem estar em _camel case_;
+- Arquivos no diretório do projeto devem iniciar com _main_ seguido do seu propósito. Ex: `mainParameterCalibration.py`;  
+- Arquivos `.py` que não estão nas categorias listadas devem estar em _lower case_;
+- Diretorios de projeto devem estar em _lower case_
 
-A principal regra que deve ser obedecida aqui é que tudo que for escrito deve estar claro em seu propósito. Não deve haver comentários, a menos que sejam extremamente necessários.
+Commits
+- Durante seus _commits_, as mensagens devem ser claras e explicativas do que foi alterado.
 
-#### Sobre testes
+Testes
+- ...
 
+OBS: O arquivo `mainSplitDataFrame.py` não tende a seguir a organização do resto do projeto por realizar uma tarefa muito específica e não comum a maioria dos demais conjuntos de dados;
+
+Deve-se ter em mente que tudo que for escrito deve estar claro em seu propósito.
+Comentários devem ser evitados.

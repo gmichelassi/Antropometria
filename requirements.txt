@@ -17,6 +17,7 @@ pytz==2021.1
 scikit-learn==0.24.2
 scipy==1.6.2
 six==1.15.0
+skfeature-chappers==1.0.3
 skrebate==0.62
 threadpoolctl==2.1.0
 tornado==6.1

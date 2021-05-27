@@ -1,29 +1,24 @@
-import asd_data as asd
-import sys
-from utils.utils import apply_pearson_feature_selection, build_ratio_dataset
-from scipy import stats
-import os
-import time
 import numpy as np
 import pandas as pd
-import initContext as context
-from multiprocessing import Process
+import os
+import sys
+import time
+
 from config import logger
+from multiprocessing import Process
+from scipy import stats
+from utils.dataset.load import LoadData
+from utils.dataset.manipulation import apply_pearson_feature_selection, build_ratio_dataset
 
-context.loadModules()
-log = logger.getLogger(__file__)
+log = logger.get_logger(__file__)
 
-# Constants
-# file name should have the following format
-# file_name = f'./data/{folder}/{class_name}_{dataset_name}.csv'
-# desirable one class per csv file
-folder = 'ratio'
-dataset_name = 'distances_all_px_eu'
-classes = ['casos', 'controles']
+FOLDER = 'ratio'
+DATASET_NAME = 'distances_all_px_eu'
+CLASSES = ['casos', 'controles']
 
 
 def splitDataFrame(num_of_columns_per_split=33785):
-    X, y = asd.load_data(folder=folder, dataset_name=dataset_name, classes=classes, verbose=True)
+    x, y = LoadData(FOLDER, DATASET_NAME, CLASSES).load()
 
     log.info("Splitting dataset")
 
@@ -31,12 +26,12 @@ def splitDataFrame(num_of_columns_per_split=33785):
     indexes = list(range(0, len(dfs)))
 
     for subDataFrame, index in zip(dfs, indexes):
-        if not os.path.exists(f'./data/{folder}/subDataSet'):
-            os.mkdir(f'./data/{folder}/subDataSet')
+        if not os.path.exists(f'./data/{FOLDER}/subDataSet'):
+            os.mkdir(f'./data/{FOLDER}/subDataSet')
 
-        subDataFrame.to_csv(path_or_buf=f'./data/{folder}/subDataSet/{dataset_name}_{index}.csv', index=False)
+        subDataFrame.to_csv(path_or_buf=f'./data/{FOLDER}/subDataSet/{DATASET_NAME}_{index}.csv', index=False)
 
-    pd.DataFrame(y).to_csv(f'./data/{folder}/subDataSet/label_{dataset_name}.csv', index=False)
+    pd.DataFrame(y).to_csv(f'./data/{FOLDER}/subDataSet/label_{DATASET_NAME}.csv', index=False)
     log.info("Splitting complete")
 
 
@@ -45,7 +40,7 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to
     for indice in range(starting_file, ending_file):
         log.info("Processing file {0} out of {1}".format(indice, ending_file - 1))
 
-        current_split = pd.read_csv(filepath_or_buffer=f'./data/{folder}/subDataSet/{dataset_name}_{indice}.csv')
+        current_split = pd.read_csv(filepath_or_buffer=f'./data/{FOLDER}/subDataSet/{DATASET_NAME}_{indice}.csv')
 
         if where_to_start is None:
             samples = apply_pearson_feature_selection(current_split, filtro)
@@ -53,25 +48,25 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to
             samples = custom_pearson_feature_selection(current_split, filtro, where_to_start[indice])
 
         pd.DataFrame(data=samples).to_csv(
-            path_or_buf=f'./data/{folder}/subDataSet/processed_{dataset_name}_{indice}.csv', index=False)
-        os.remove(f'./data/{folder}/subDataSet/{dataset_name}_{indice}.csv')
+            path_or_buf=f'./data/{FOLDER}/subDataSet/processed_{DATASET_NAME}_{indice}.csv', index=False)
+        os.remove(f'./data/{FOLDER}/subDataSet/{DATASET_NAME}_{indice}.csv')
 
 
 def mergeDataFrames(indice_i, indice_j, new_indice):
-    file_name1 = f"{dataset_name}_{indice_i}.csv"
-    file_name2 = f"{dataset_name}_{indice_j}.csv"
+    file_name1 = f"{DATASET_NAME}_{indice_i}.csv"
+    file_name2 = f"{DATASET_NAME}_{indice_j}.csv"
 
-    df1 = pd.read_csv(filepath_or_buffer=f'./data/{folder}/subDataSet/processed_{file_name1}')
-    df2 = pd.read_csv(filepath_or_buffer=f'./data/{folder}/subDataSet/processed_{file_name2}')
+    df1 = pd.read_csv(filepath_or_buffer=f'./data/{FOLDER}/subDataSet/processed_{file_name1}')
+    df2 = pd.read_csv(filepath_or_buffer=f'./data/{FOLDER}/subDataSet/processed_{file_name2}')
 
     where_to_start = df1.shape[1]
     frames = [df1, df2]
     final_df = pd.concat(frames, axis=1)
 
-    final_df.to_csv(path_or_buf=f"./data/{folder}/subDataSet/{dataset_name}_{new_indice}.csv", index=False)
+    final_df.to_csv(path_or_buf=f"./data/{FOLDER}/subDataSet/{DATASET_NAME}_{new_indice}.csv", index=False)
 
-    os.remove(f'./data/{folder}/subDataSet/processed_{file_name1}')
-    os.remove(f'./data/{folder}/subDataSet/processed_{file_name2}')
+    os.remove(f'./data/{FOLDER}/subDataSet/processed_{file_name1}')
+    os.remove(f'./data/{FOLDER}/subDataSet/processed_{file_name2}')
 
     return where_to_start
 
@@ -99,21 +94,20 @@ def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
 
 
 def build_data():
-    # './data/dlibHOG_semfaixa/controles_distances_all_px_eu.csv'
-    for class_name in classes:
-        file_name = f'./data/{folder}/{class_name}_{dataset_name}.csv'
+    for class_name in CLASSES:
+        file_name = f'./data/{FOLDER}/{class_name}_{DATASET_NAME}.csv'
 
-        X = pd.read_csv(file_name)
-        if 'dlibHOG' in folder:
-            X = X.drop('img_name', axis=1)
-            X = X.drop('id', axis=1)
-        build_ratio_dataset(X, class_name)
+        df = pd.read_csv(file_name)
+        if 'dlibHOG' in FOLDER:
+            df = df.drop('img_name', axis=1)
+            df = df.drop('id', axis=1)
+        build_ratio_dataset(df, class_name)
 
 
 def nivel7():
     processes = [
-        Process(target=runPearsonCorrelation, args=( 0,  8, 0.95, None)),
-        Process(target=runPearsonCorrelation, args=( 8, 16, 0.95, None)),
+        Process(target=runPearsonCorrelation, args=(0,  8, 0.95, None)),
+        Process(target=runPearsonCorrelation, args=(8, 16, 0.95, None)),
         Process(target=runPearsonCorrelation, args=(16, 24, 0.95, None)),
         Process(target=runPearsonCorrelation, args=(24, 32, 0.95, None)),
         Process(target=runPearsonCorrelation, args=(32, 40, 0.95, None)),
@@ -135,9 +129,9 @@ def nivel6():
         new_indice += 1
 
     processes = [
-        Process(target=runPearsonCorrelation, args=( 0,  4, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=( 4,  8, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=( 8, 12, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(0,  4, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(4,  8, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(8, 12, 0.95, where_to_start)),
         Process(target=runPearsonCorrelation, args=(12, 16, 0.95, where_to_start)),
         Process(target=runPearsonCorrelation, args=(16, 20, 0.95, where_to_start)),
         Process(target=runPearsonCorrelation, args=(20, 24, 0.95, where_to_start)),
@@ -158,11 +152,11 @@ def nivel5():
         new_indice += 1
     print(where_to_start)
     processes = [
-        Process(target=runPearsonCorrelation, args=( 0,  2, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=( 2,  4, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=( 4,  6, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=( 6,  8, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=( 8, 10, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(0,  2, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(2,  4, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(4,  6, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(6,  8, 0.95, where_to_start)),
+        Process(target=runPearsonCorrelation, args=(8, 10, 0.95, where_to_start)),
         Process(target=runPearsonCorrelation, args=(10, 12, 0.95, where_to_start)),
         Process(target=runPearsonCorrelation, args=(12, 14, 0.95, where_to_start)),
         Process(target=runPearsonCorrelation, args=(14, 16, 0.95, where_to_start))

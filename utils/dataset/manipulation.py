@@ -1,26 +1,11 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
 import csv
 import math
-from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
 from scipy import stats
-
-
-def mean_scores(scores):
-    mean_score = {}
-    for score_key, score_value in scores.items():
-        mean_score[score_key] = np.mean(score_value, axis=0)
-    return mean_score
-
-
-def sample_std(scores):
-    mean = np.mean(scores)
-    std = 0
-    for i in scores:
-        std += (i - mean) ** 2
-    std = std/(len(scores) - 1)
-    return math.sqrt(std)
+from sklearn.decomposition import PCA
 
 
 def apply_pearson_feature_selection(samples, max_value=0.99):
@@ -41,6 +26,20 @@ def apply_pearson_feature_selection(samples, max_value=0.99):
     return samples[samples.columns[~features_to_delete]]
 
 
+def combine_columns_names(n_columns, columns_names, mode='default'):
+    names = []
+    if mode == 'default':
+        for i in range(0, n_columns):
+            for j in range(i+1, n_columns):
+                names.append(f"{i}/{j}")
+    elif mode == 'complete':
+        for i in range(0, n_columns):
+            for j in range(i+1, n_columns):
+                names.append(f"{columns_names[i]}/{columns_names[j]}")
+
+    return names
+
+
 def build_ratio_dataset(dataset, name):
     n_linhas, n_columns = dataset.shape  # obtemos o tamanho do dataset
     linha_dataset_final = []
@@ -59,8 +58,6 @@ def build_ratio_dataset(dataset, name):
                     valor_j = dataset.iloc[linha, coluna_j]
                     if valor_i == 0.0 or valor_j == 0.0 or valor_i == np.nan or valor_j == np.nan or valor_i == np.Inf \
                             or valor_j == valor_j == np.Inf:
-                        print(valor_j)
-                        print(valor_i)
                         ratio_dist = 0.0
                     else:
                         if valor_i >= valor_j:
@@ -76,18 +73,20 @@ def build_ratio_dataset(dataset, name):
             print("Linha {0} concluida".format(linha), flush=True)
 
 
-def combine_columns_names(n_columns, columns_names, mode='default'):
-    names = []
-    if mode == 'default':
-        for i in range(0, n_columns):
-            for j in range(i+1, n_columns):
-                names.append(f"{i}/{j}")
-    elif mode == 'complete':
-        for i in range(0, n_columns):
-            for j in range(i+1, n_columns):
-                names.append(f"{columns_names[i]}/{columns_names[j]}")
+def apply_min_max_normalization(df):
+    df_final = []
 
-    return names
+    max_dist = math.ceil(df.max(axis=1).max())
+    min_dist = 0
+
+    for (feature, data) in df.iteritems():
+        columns = []
+        for i in data.values:
+            xi = (i - min_dist)/(max_dist - min_dist)
+            columns.append(xi)
+        df_final.append(columns)
+
+    return pd.DataFrame(df_final).T
 
 
 def varianciaAcumuladaPCA(samples, labels, verbose=False):
@@ -113,17 +112,8 @@ def varianciaAcumuladaPCA(samples, labels, verbose=False):
         plt.savefig("./output/pca-explained-variance.png")
 
 
-def normalizacao_min_max(df):
-    df_final = []
+def get_difference_of_classes(y):
+    n_positive = np.count_nonzero(y == 1)
+    n_negative = np.count_nonzero(y == 0)
 
-    max_dist = math.ceil(df.max(axis=1).max())
-    min_dist = 0
-
-    for (feature, data) in df.iteritems():
-        columns = []
-        for i in data.values:
-            xi = (i - min_dist)/(max_dist - min_dist)
-            columns.append(xi)
-        df_final.append(columns)
-
-    return pd.DataFrame(df_final).T
+    return abs(n_positive - n_negative)
