@@ -26,7 +26,7 @@
 Todos os dados devem ser incluídos dentro da pasta data/ e devem estar organizados de uma das formas a seguir
 
 1. Um arquivo .csv para cada classe
-2. Um único arquivo .csv para todas as classes com uma coluna para as labels chamada 'label'
+2. Um único arquivo .csv para todas as classes com uma coluna para as labels chamada 'class_label'
 
 Abaixo está descrito como devem ser organizados os arquivos
 

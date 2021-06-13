@@ -5,6 +5,7 @@ nohup.out
 antropometria/output/*
 !antropometria/output/GridSearch/.gitkeep
 antropometria/data/*
-!antropometria/data/.gitkeep
-.pytest_cache
+!antropometria/data/dlibHOG
+!antropometria/data/dumb
+.pytest_cache/
 .DS_Store
