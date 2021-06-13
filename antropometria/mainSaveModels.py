@@ -77,7 +77,7 @@ def saveModel(folder, dataset_name, classes, model, p_filter, reduction, samplin
     model.fit(x, y)
 
     log.info("Saving selected model")
-    pickle.dump(model, open('./output/model.sav', 'wb'))
+    pickle.dump(model, open('output/model.sav', 'wb'))
     log.info("Done without errors!")
 
 

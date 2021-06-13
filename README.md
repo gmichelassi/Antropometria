@@ -1,4 +1,4 @@
-![image](./config/header.png)
+![image](antropometria/config/header.png)
 
 [![image](https://img.shields.io/badge/gabrielmichelassi@usp.br-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:gabrielmichelassi@usp.br) \
 [![image](https://img.shields.io/badge/GabrielMichelassi-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/gabrielmichelassi/)

@@ -3,8 +3,8 @@ import numpy as np
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import StratifiedKFold
-from utils.metrics import calculate_mean, calculate_std
-from utils.dataset.manipulation import get_difference_of_classes
+from antropometria.utils.metrics import calculate_mean, calculate_std
+from antropometria.utils.dataset.manipulation import get_difference_of_classes
 
 
 N_SPLITS = 10

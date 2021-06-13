@@ -26,12 +26,12 @@ def splitDataFrame(num_of_columns_per_split=33785):
     indexes = list(range(0, len(dfs)))
 
     for subDataFrame, index in zip(dfs, indexes):
-        if not os.path.exists(f'./data/{FOLDER}/subDataSet'):
-            os.mkdir(f'./data/{FOLDER}/subDataSet')
+        if not os.path.exists(f'data/{FOLDER}/subDataSet'):
+            os.mkdir(f'data/{FOLDER}/subDataSet')
 
-        subDataFrame.to_csv(path_or_buf=f'./data/{FOLDER}/subDataSet/{DATASET_NAME}_{index}.csv', index=False)
+        subDataFrame.to_csv(path_or_buf=f'data/{FOLDER}/subDataSet/{DATASET_NAME}_{index}.csv', index=False)
 
-    pd.DataFrame(y).to_csv(f'./data/{FOLDER}/subDataSet/label_{DATASET_NAME}.csv', index=False)
+    pd.DataFrame(y).to_csv(f'data/{FOLDER}/subDataSet/label_{DATASET_NAME}.csv', index=False)
     log.info("Splitting complete")
 
 
@@ -40,7 +40,7 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to
     for indice in range(starting_file, ending_file):
         log.info("Processing file {0} out of {1}".format(indice, ending_file - 1))
 
-        current_split = pd.read_csv(filepath_or_buffer=f'./data/{FOLDER}/subDataSet/{DATASET_NAME}_{indice}.csv')
+        current_split = pd.read_csv(filepath_or_buffer=f'data/{FOLDER}/subDataSet/{DATASET_NAME}_{indice}.csv')
 
         if where_to_start is None:
             samples = apply_pearson_feature_selection(current_split, filtro)
@@ -48,25 +48,25 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to
             samples = custom_pearson_feature_selection(current_split, filtro, where_to_start[indice])
 
         pd.DataFrame(data=samples).to_csv(
-            path_or_buf=f'./data/{FOLDER}/subDataSet/processed_{DATASET_NAME}_{indice}.csv', index=False)
-        os.remove(f'./data/{FOLDER}/subDataSet/{DATASET_NAME}_{indice}.csv')
+            path_or_buf=f'data/{FOLDER}/subDataSet/processed_{DATASET_NAME}_{indice}.csv', index=False)
+        os.remove(f'data/{FOLDER}/subDataSet/{DATASET_NAME}_{indice}.csv')
 
 
 def mergeDataFrames(indice_i, indice_j, new_indice):
     file_name1 = f"{DATASET_NAME}_{indice_i}.csv"
     file_name2 = f"{DATASET_NAME}_{indice_j}.csv"
 
-    df1 = pd.read_csv(filepath_or_buffer=f'./data/{FOLDER}/subDataSet/processed_{file_name1}')
-    df2 = pd.read_csv(filepath_or_buffer=f'./data/{FOLDER}/subDataSet/processed_{file_name2}')
+    df1 = pd.read_csv(filepath_or_buffer=f'data/{FOLDER}/subDataSet/processed_{file_name1}')
+    df2 = pd.read_csv(filepath_or_buffer=f'data/{FOLDER}/subDataSet/processed_{file_name2}')
 
     where_to_start = df1.shape[1]
     frames = [df1, df2]
     final_df = pd.concat(frames, axis=1)
 
-    final_df.to_csv(path_or_buf=f"./data/{FOLDER}/subDataSet/{DATASET_NAME}_{new_indice}.csv", index=False)
+    final_df.to_csv(path_or_buf=f"data/{FOLDER}/subDataSet/{DATASET_NAME}_{new_indice}.csv", index=False)
 
-    os.remove(f'./data/{FOLDER}/subDataSet/processed_{file_name1}')
-    os.remove(f'./data/{FOLDER}/subDataSet/processed_{file_name2}')
+    os.remove(f'data/{FOLDER}/subDataSet/processed_{file_name1}')
+    os.remove(f'data/{FOLDER}/subDataSet/processed_{file_name2}')
 
     return where_to_start
 
@@ -95,7 +95,7 @@ def custom_pearson_feature_selection(samples, max_value=0.99, where_to_start=1):
 
 def build_data():
     for class_name in CLASSES:
-        file_name = f'./data/{FOLDER}/{class_name}_{DATASET_NAME}.csv'
+        file_name = f'data/{FOLDER}/{class_name}_{DATASET_NAME}.csv'
 
         df = pd.read_csv(file_name)
         if 'dlibHOG' in FOLDER:
@@ -293,7 +293,7 @@ if __name__ == '__main__':
         log.info("--- Total processing 1 time: %s minutes ---" % ((time.time() - start_time) / 60))
     elif args[1] == 'test':
         log.info('Parâmetros estão sendo recebidos com sucesso')
-        X = pd.read_csv('./data/ratio/subDataSet/processed_distances_all_px_eu_0.csv')
+        X = pd.read_csv('data/ratio/subDataSet/processed_distances_all_px_eu_0.csv')
         print(X.head())
     else:
         log.error('Parâmetro não encontrado')
