@@ -12,7 +12,7 @@ from mainPreprocessing import run_preprocessing
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedKFold
 from utils.training.retraining import error_estimation
-from utils.training.training_settings import stop_running_rf, skip_current_test
+from utils.training.settings import stop_running_rf, skip_current_test
 
 log = logger.get_logger(__file__)
 
