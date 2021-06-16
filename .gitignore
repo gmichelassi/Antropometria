@@ -6,3 +6,4 @@ output/*
 !output/GridSearch/.gitkeep
 data/*
 !data/.gitkeep
+.DS_Store
