@@ -91,7 +91,7 @@ def runGridSearch(folder: str, dataset_name: str, classes: list = np.array([])):
                                      f'{min_max}] with accuracy {(accuracy * 100):.2f}%.')
                             log.info(f'Best parameters found: {grid_results.best_params_}')
 
-                            if sampling is not None and sampling is not 'Random':
+                            if sampling is not None and sampling != 'Random':
                                 log.info(f'Running error estimation')
                                 error_estimation_results = error_estimation(x, y, grid_results.estimator)
                             else:
@@ -125,5 +125,5 @@ def runGridSearch(folder: str, dataset_name: str, classes: list = np.array([])):
 
 if __name__ == '__main__':
     start_time = time.time()
-    runGridSearch('dlibHOG', 'distances_all_px_eu', ['casos', 'controles'])
+    runGridSearch('dlibHOG_Pearson95', 'distances_eu', ['single_file'])
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
