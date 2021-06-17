@@ -17,7 +17,7 @@ from utils.training.training_settings import stop_running_rf, skip_current_test
 log = logger.get_logger(__file__)
 
 CLASSIFIERS = [Knn, Nb, Nn, Rf, Svm]
-FILTERS = [0.0, 0.98, 0.99]
+FILTERS = [0.0]
 MIN_MAX_NORMALIZATION = [False, True]
 REDUCTIONS = [None, 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF', 'RFSelect']
 SAMPLINGS = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
