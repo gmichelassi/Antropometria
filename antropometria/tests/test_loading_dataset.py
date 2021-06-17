@@ -1,4 +1,4 @@
-from tests_context import set_tests_context
+from context import set_tests_context
 set_tests_context()
 
 import pytest
