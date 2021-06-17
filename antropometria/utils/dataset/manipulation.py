@@ -8,7 +8,10 @@ from scipy import stats
 from sklearn.decomposition import PCA
 
 
-def apply_pearson_feature_selection(samples, max_value=0.99):
+def apply_pearson_feature_selection(samples, threshold=0.99) -> pd.DataFrame:
+    if threshold >= 1.0 or threshold <= 0.0:
+        raise ValueError(f'Expected values 0.0 < x < 1.0, received x={threshold}')
+
     n_features = samples.shape[1]
     features_to_delete = np.zeros(n_features, dtype=bool)
 
@@ -20,7 +23,7 @@ def apply_pearson_feature_selection(samples, max_value=0.99):
                 if not features_to_delete[j]:
                     feature_j = samples.iloc[:, j].to_numpy()
                     pearson, pvalue = stats.pearsonr(feature_i, feature_j)
-                    if pearson >= max_value:
+                    if abs(pearson) >= threshold:
                         features_to_delete[j] = True
 
     return samples[samples.columns[~features_to_delete]]
