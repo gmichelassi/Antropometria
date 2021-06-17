@@ -55,7 +55,7 @@ def runGridSearch(folder: str, dataset_name: str, classes: list = np.array([])):
                         if data is None:
                             continue
 
-                        x, y = data
+                        x, y, classes_count = data
                         instances, features = x.shape
 
                         model = classifier(n_features=features)
@@ -93,7 +93,7 @@ def runGridSearch(folder: str, dataset_name: str, classes: list = np.array([])):
 
                             if sampling is not None and sampling != 'Random':
                                 log.info(f'Running error estimation')
-                                error_estimation_results = error_estimation(x, y, grid_results.estimator)
+                                error_estimation_results = error_estimation(x, y, classes_count, grid_results.estimator)
                             else:
                                 error_estimation_results = {'err_accuracy': '-',
                                                             'err_IC': '-',

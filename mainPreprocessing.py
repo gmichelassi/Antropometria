@@ -4,7 +4,6 @@ from config import logger
 from feature_selectors.utils.getter import get_feature_selector
 from sampling.OverSampling import OverSampling
 from sampling.UnderSampling import UnderSampling
-from sklearn.utils.multiclass import unique_labels
 from utils.dataset.load import LoadData
 from utils.dataset.manipulation import apply_pearson_feature_selection, apply_min_max_normalization
 
@@ -18,17 +17,17 @@ def run_preprocessing(folder: str,
                       reduction: str,
                       sampling: str,
                       apply_min_max: bool,
-                      verbose: bool = True) -> (np.array, np.array):
+                      verbose: bool = True) -> (np.array, np.array, list):
     try:
         if verbose:
             log.info(f'Loading data from data/{folder}/{dataset_name}')
         x, y = LoadData(folder, dataset_name, classes).load()
-        n_classes = len(unique_labels(y))
+        n_classes, classes_count = np.unique(y, return_counts=True)
         instances, features = x.shape
         n_features_to_keep = int(np.sqrt(features))
 
         if verbose:
-            log.info(f'Data has {n_classes} classes, {instances} instances and {features} features')
+            log.info(f'Data has {len(n_classes)} classes, {instances} instances and {features} features')
 
         if 0.0 < p_filter <= 0.99:
             if verbose:
@@ -52,11 +51,11 @@ def run_preprocessing(folder: str,
             if verbose:
                 log.info(f'Applying {sampling} sampling')
             if sampling == 'random':
-                return UnderSampling().fit_transform(x, y)
+                x, y = UnderSampling().fit_transform(x, y)
             else:
-                return OverSampling(sampling).fit_transform(x, y)
+                x, y = OverSampling(sampling).fit_transform(x, y)
 
-        return x, y
+        return x, y, classes_count
 
     except IOError as ioe:
         log.error(f'Error: {ioe}')

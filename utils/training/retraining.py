@@ -25,8 +25,8 @@ def complete_frame(x, y, synthetic_x, synthetic_y, current_fold: int):
     return x, y
 
 
-def error_estimation(x, y, estimator):
-    n = get_difference_of_classes(y)
+def error_estimation(x, y, classes_count, estimator):
+    n = get_difference_of_classes(classes_count)
     synthetic_x = x[-n:]
     synthetic_y = y[-n:]
     x = x[:-n]

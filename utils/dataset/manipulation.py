@@ -112,8 +112,8 @@ def varianciaAcumuladaPCA(samples, labels, verbose=False):
         plt.savefig("./output/pca-explained-variance.png")
 
 
-def get_difference_of_classes(y):
-    n_positive = np.count_nonzero(y == 1)
-    n_negative = np.count_nonzero(y == 0)
+def get_difference_of_classes(classes_count: list):
+    if len(classes_count) != 2:
+        raise ValueError(f'Should have maximum 2 unique labels (binary), {len(classes_count)} unique labels given')
 
-    return abs(n_positive - n_negative)
+    return abs(classes_count[0] - classes_count[1])
