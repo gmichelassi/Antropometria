@@ -2,6 +2,7 @@ import csv
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pandas as pd
 
 from scipy import stats
@@ -44,12 +45,16 @@ def combine_columns_names(n_columns, columns_names, mode='default'):
 
 
 def build_ratio_dataset(dataset, name):
-    n_linhas, n_columns = dataset.shape  # obtemos o tamanho do dataset
+    n_linhas, n_columns = dataset.shape
     linha_dataset_final = []
 
     columns = combine_columns_names(n_columns=n_columns, columns_names=dataset.columns, mode='complete')
+    folder_name = './antropometria/data/ratio'
 
-    with open(f'./data/ratio/{name}_distances_all_px_eu.csv', 'w') as csvfile:
+    if not os.path.isdir(folder_name):
+        os.mkdir(folder_name)
+
+    with open(f'{folder_name}/{name}.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(columns)
 
@@ -68,12 +73,12 @@ def build_ratio_dataset(dataset, name):
                         else:
                             ratio_dist = valor_j / valor_i
 
-                    linha_dataset_final.append(np.float(ratio_dist))
+                    linha_dataset_final.append(np.float64(ratio_dist))
 
             writer.writerow(linha_dataset_final)
             linha_dataset_final.clear()
 
-            print("Linha {0} concluida".format(linha), flush=True)
+            # print("Linha {0} concluida".format(linha), flush=True)
 
 
 def apply_min_max_normalization(df):
