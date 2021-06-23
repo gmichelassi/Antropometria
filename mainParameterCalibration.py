@@ -33,7 +33,7 @@ FIELDNAMES = ['biblioteca', 'classifier', 'reduction', 'filtro', 'min_max', 'bal
               'err_precision_macro', 'err_recall_macro', 'err_f1score_macro']
 
 
-def runGridSearch(folder: str, dataset_name: str, classes: list = np.array([])):
+def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])):
     log.info(f'Running grid search for {folder}/{dataset_name}')
 
     is_random_forest_done = False
@@ -125,5 +125,5 @@ def runGridSearch(folder: str, dataset_name: str, classes: list = np.array([])):
 
 if __name__ == '__main__':
     start_time = time.time()
-    runGridSearch('dlibHOG_Pearson95', 'distances_eu', ['single_file'])
+    run_grid_search('dlibHOG_Pearson95', 'distances_eu', ['single_file'])
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
