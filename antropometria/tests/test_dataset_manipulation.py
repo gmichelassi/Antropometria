@@ -81,6 +81,7 @@ class TestDatasetManipulation:
 
         assert difference_of_num_of_labels == 200 - 100
 
+    def test_get_the_difference_of_number_of_labels_in_non_binary_dataset(self):
         with pytest.raises(ValueError):
             get_difference_of_classes([100])
 

@@ -78,8 +78,6 @@ def build_ratio_dataset(dataset, name):
             writer.writerow(linha_dataset_final)
             linha_dataset_final.clear()
 
-            # print("Linha {0} concluida".format(linha), flush=True)
-
 
 def apply_min_max_normalization(df):
     df_final = []
@@ -97,7 +95,7 @@ def apply_min_max_normalization(df):
     return pd.DataFrame(df_final).T
 
 
-def varianciaAcumuladaPCA(samples, labels, verbose=False):
+def pca_cumulative_variance(samples, labels, verbose=False):
     pca = PCA()
 
     pca.fit(samples, labels)
