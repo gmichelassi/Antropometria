@@ -3,7 +3,7 @@ from skfeature.function.statistical_based.CFS import cfs
 
 
 class CFS(BaseEstimator, TransformerMixin):
-    def __init__(self, n_features_to_select=None, mode='rank', verbose=True):
+    def __init__(self, n_features_to_select=None, mode='rank', verbose=False):
         self.n_features_to_select = n_features_to_select
         self.mode = mode
         self.verbose = verbose

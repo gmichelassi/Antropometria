@@ -3,7 +3,7 @@ from skfeature.function.information_theoretical_based.FCBF import fcbf
 
 
 class FCBF(BaseEstimator, TransformerMixin):
-    def __init__(self, n_features_to_select=2, mode='rank', delta=0.0, verbose=True):
+    def __init__(self, n_features_to_select=2, mode='rank', delta=0.0, verbose=False):
         self.n_features_to_select = n_features_to_select
         self.delta = delta
         self.mode = mode

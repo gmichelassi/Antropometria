@@ -3,7 +3,7 @@ from skfeature.function.information_theoretical_based.MRMR import mrmr
 
 
 class MRMR(BaseEstimator, TransformerMixin):
-    def __init__(self, n_features_to_select=2, mode='rank', verbose=True):
+    def __init__(self, n_features_to_select=2, mode='rank', verbose=False):
         self.n_features_to_select = n_features_to_select
         self.mode = mode
         self.verbose = verbose

@@ -3,7 +3,7 @@ from skfeature.function.sparse_learning_based.RFS import rfs
 
 
 class RFS(BaseEstimator, TransformerMixin):
-    def __init__(self, n_features_to_select=None, mode='rank', gamma=1, verbose=True):
+    def __init__(self, n_features_to_select=None, mode='rank', gamma=1, verbose=False):
         self.n_features_to_select = n_features_to_select
         self.mode = mode
         self.verbose = verbose

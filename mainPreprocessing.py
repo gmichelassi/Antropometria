@@ -46,7 +46,7 @@ def run_preprocessing(folder: str,
                 log.info(f'Applying {reduction} reduction')
             feature_selector = get_feature_selector(reduction, n_features_to_keep, instances, features)
 
-            x, y = feature_selector.fit_transform(x, y)
+            x = feature_selector.fit_transform(x, y)
 
         if sampling is not None:
             if len(classes_count) == 2:
