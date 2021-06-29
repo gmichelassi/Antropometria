@@ -27,6 +27,13 @@ def complete_frame(x, y, synthetic_x, synthetic_y, current_fold: int):
 
 def error_estimation(x, y, classes_count, estimator):
     n = get_difference_of_classes(classes_count)
+
+    if n == 0:
+        return {
+            'err_accuracy': '-', 'err_IC': '-', 'err_precision_micro': '-', 'err_recall_micro': '-',
+            'err_f1score_micro': '-', 'err_precision_macro': '-', 'err_recall_macro': '-', 'err_f1score_macro': '-'
+        }
+
     synthetic_x = x[-n:]
     synthetic_y = y[-n:]
     x = x[:-n]

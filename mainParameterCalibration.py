@@ -80,20 +80,19 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
 
                         if grid_results is not None:
                             accuracy = grid_results.best_score_
-                            precision = grid_results.cv_results_['mean_test_precision'][grid_results.cv_results_[
-                                'rank_test_precision'][0]]
-                            recall = grid_results.cv_results_['mean_test_recall'][grid_results.cv_results_[
-                                'rank_test_recall'][0]]
-                            f1 = grid_results.cv_results_['mean_test_f1'][grid_results.cv_results_['rank_test_f1'][0]]
+                            precision = grid_results.cv_results_['mean_test_precision'][grid_results.best_index_]
+                            recall = grid_results.cv_results_['mean_test_recall'][grid_results.best_index_]
+                            f1 = grid_results.cv_results_['mean_test_f1'][grid_results.best_index_]
                             parameters = grid_results.best_params_
 
                             log.info(f'Best result for test [{model.name}, {reduction}, {sampling}, {p_filter}, '
                                      f'{min_max}] with accuracy {(accuracy * 100):.2f}%.')
-                            log.info(f'Best parameters found: {grid_results.best_params_}')
+                            log.info(f'Best parameters found: {parameters}')
 
                             if sampling is not None and sampling != 'Random':
                                 log.info(f'Running error estimation')
-                                error_estimation_results = error_estimation(x, y, classes_count, grid_results.estimator)
+                                error_estimation_results = error_estimation(x, y, classes_count,
+                                                                            grid_results.best_estimator_)
                             else:
                                 error_estimation_results = {'err_accuracy': '-',
                                                             'err_IC': '-',

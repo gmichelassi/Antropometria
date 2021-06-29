@@ -45,9 +45,15 @@ def run_preprocessing(folder: str,
             if verbose:
                 log.info(f'Applying {reduction} reduction')
             feature_selector = get_feature_selector(reduction, n_features_to_keep, instances, features)
-            feature_selector.fit_transform(x, y)
+
+            x, y = feature_selector.fit_transform(x, y)
 
         if sampling is not None:
+            if len(classes_count) == 2:
+                if abs(classes_count[0] - classes_count[1]) == 0:
+                    log.warning('Your binary dataset is balanced, please keep only `None` on SAMPLINGS constant on '
+                                'mainParameterCalibration. The algoritms will be executed and can slow the training '
+                                'by a significant amount of time.')
             if verbose:
                 log.info(f'Applying {sampling} sampling')
             if sampling == 'random':
