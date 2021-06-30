@@ -4,7 +4,6 @@ from config import logger
 from feature_selectors.utils.getter import get_feature_selector
 from sampling.OverSampling import OverSampling
 from sampling.UnderSampling import UnderSampling
-from typing import Union
 from utils.dataset.load import LoadData
 from utils.dataset.manipulation import apply_pearson_feature_selection, apply_min_max_normalization
 
@@ -20,7 +19,7 @@ def run_preprocessing(
         sampling: str,
         apply_min_max: bool,
         verbose: bool = True
-) -> Union[tuple[np.array, np.array, list], None]:
+) -> tuple[np.array, np.array, list]:
 
     if verbose:
         log.info(f'Loading data from data/{folder}/{dataset_name}')
