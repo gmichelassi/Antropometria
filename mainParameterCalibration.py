@@ -50,9 +50,17 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
                         if skip_current_test(is_random_forest_done, classifier, reduction, Rf):
                             continue
 
-                        data = run_preprocessing(folder, dataset_name, classes, p_filter, reduction, sampling, min_max)
+                        log.info(f'Running test with '
+                                 f'classifier: {classifier}, '
+                                 f'reduction: {reduction}, '
+                                 f'sampling: {sampling}, '
+                                 f'filtro: {p_filter}, '
+                                 f'min_max: {min_max}')
 
-                        if data is None:
+                        try:
+                            data = run_preprocessing(folder, dataset_name, classes, p_filter, reduction, sampling, min_max)
+                        except (IOError, ValueError, MemoryError) as error:
+                            log.error(f'Could not run current test due to error: {error}')
                             continue
 
                         x, y, classes_count = data
@@ -71,11 +79,8 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
                                 n_jobs=-1)
 
                             grid_results = grd.fit(x, y)
-                        except ValueError as ve:
-                            log.info(f'Could not run cross validation: {ve}')
-                            grid_results = None
-                        except KeyError as ke:
-                            log.info(f'Could not run cross validation: {ke}')
+                        except (KeyError, ValueError) as error:
+                            log.error(f'Could not run cross validation: {error}')
                             grid_results = None
 
                         if grid_results is not None:
@@ -103,6 +108,7 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
                                                             'err_recall_macro': '-',
                                                             'err_f1score_macro': '-'}
 
+                            log.info('Saving results!')
                             with open(f'./output/GridSearch/{folder}_{dataset_name}_best_results.csv', 'a') as csvfile:
                                 writer = csv.DictWriter(csvfile, fieldnames=FIELDNAMES)
                                 row = {'biblioteca': folder,
