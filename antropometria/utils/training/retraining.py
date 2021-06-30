@@ -83,26 +83,30 @@ def error_estimation(
         recall_macro.append(recall_score(y_true=folds[i][3], y_pred=y_predict, average='macro'))
         f1_macro.append(f1_score(y_true=folds[i][3], y_pred=y_predict, average='macro'))
 
-    mean_results = calculate_mean({'accuracy': accuracy,
-                                   'precision_micro': precision_micro,
-                                   'recall_micro': recall_micro,
-                                   'f1_micro': f1_micro,
-                                   'precision_macro': precision_macro,
-                                   'recall_macro': recall_macro,
-                                   'f1_macro': f1_macro})
+    mean_results = calculate_mean({
+        'accuracy': accuracy,
+        'precision_micro': precision_micro,
+        'recall_micro': recall_micro,
+        'f1_micro': f1_micro,
+        'precision_macro': precision_macro,
+        'recall_macro': recall_macro,
+        'f1_macro': f1_macro
+    })
 
     tc = 2.262
-    std = calculate_std(accuracy)
+    std = calculate_std(np.array(accuracy))
     ic_upper = mean_results['accuracy'] + tc * (std / math.sqrt(N_SPLITS))
     ic_lower = mean_results['accuracy'] - tc * (std / math.sqrt(N_SPLITS))
 
     ic = (ic_lower, ic_upper)
 
-    return {'err_accuracy': mean_results['accuracy'],
-            'err_IC': ic,
-            'err_precision_micro': mean_results['precision_micro'],
-            'err_recall_micro': mean_results['recall_micro'],
-            'err_f1score_micro': mean_results['f1_micro'],
-            'err_precision_macro': mean_results['precision_macro'],
-            'err_recall_macro': mean_results['recall_macro'],
-            'err_f1score_macro': mean_results['f1_macro']}
+    return {
+        'err_accuracy': mean_results['accuracy'],
+        'err_IC': ic,
+        'err_precision_micro': mean_results['precision_micro'],
+        'err_recall_micro': mean_results['recall_micro'],
+        'err_f1score_micro': mean_results['f1_micro'],
+        'err_precision_macro': mean_results['precision_macro'],
+        'err_recall_macro': mean_results['recall_macro'],
+        'err_f1score_macro': mean_results['f1_macro']
+    }
