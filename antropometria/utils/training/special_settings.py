@@ -1,5 +1,5 @@
-from typing import Any, Union
 from antropometria.classifiers.RandomForests import RandomForests
+from typing import Any, Union
 
 
 def stop_running_rf(

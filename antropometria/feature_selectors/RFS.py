@@ -1,5 +1,5 @@
-from sklearn.base import BaseEstimator, TransformerMixin
 from skfeature.function.sparse_learning_based.RFS import rfs
+from sklearn.base import BaseEstimator, TransformerMixin
 
 
 class RFS(BaseEstimator, TransformerMixin):

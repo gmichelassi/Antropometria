@@ -7,13 +7,14 @@ import pandas as pd
 import pytest
 
 from antropometria.utils.dataset.manipulation import apply_pearson_feature_selection, combine_columns_names, \
-    build_ratio_dataset, get_difference_of_classes
+    build_ratio_dataset, get_difference_of_classes, apply_min_max_normalization
 
 
-COLUMNS_NAMES = ['this', 'is', 'a', 'test']
+COLUMNS_NAMES = pd.Index(['this', 'is', 'a', 'test'])
 DF_HIGH_CORRELATION = pd.DataFrame([[1, -1], [2, -2], [3, -3]])
 DF_AVERAGE_CORRELATION = pd.DataFrame([[1, 3], [3, 1], [4, 5]])
 DF_TO_CREATE_RATIO_DF = pd.DataFrame([[1, 2, 3], [5, 6, 7]])
+DF_MIN_MAX = pd.DataFrame([[1, 2], [3, 4]])
 
 
 class TestDatasetManipulation:
@@ -43,7 +44,7 @@ class TestDatasetManipulation:
                                   f'{COLUMNS_NAMES[1]}/{COLUMNS_NAMES[3]}', f'{COLUMNS_NAMES[2]}/{COLUMNS_NAMES[3]}']
 
     def test_combine_columns_using_list_with_one_element(self):
-        combined_names = combine_columns_names(1, ['only_one'])
+        combined_names = combine_columns_names(1, pd.Index(['only_one']))
 
         assert combined_names == []
 
@@ -87,3 +88,8 @@ class TestDatasetManipulation:
 
         with pytest.raises(ValueError):
             get_difference_of_classes([1, 2, 3])
+
+    def test_applies_min_max_normalization(self):
+        assert apply_min_max_normalization(DF_MIN_MAX).equals(
+            pd.DataFrame([[0/3, 1/3], [2/3, 3/3]], dtype=float)
+        )

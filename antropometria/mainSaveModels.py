@@ -8,8 +8,8 @@ from classifiers.NeuralNetwork import NeuralNetwork as Nn
 from classifiers.RandomForests import RandomForests as Rf
 from classifiers.SupportVectorMachine import SupportVectorMachine as Svm
 from config import logger
-from mainPreprocessing import run_preprocessing
 from feature_selectors.utils.getter import get_feature_selector
+from mainPreprocessing import run_preprocessing
 from utils.dataset.manipulation import apply_pearson_feature_selection, apply_min_max_normalization, \
     get_difference_of_classes
 

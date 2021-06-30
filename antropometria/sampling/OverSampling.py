@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 
-from sklearn.cluster import KMeans
-from imblearn.over_sampling import SMOTE, BorderlineSMOTE, KMeansSMOTE, SVMSMOTE
 from imblearn.combine import SMOTETomek
+from imblearn.over_sampling import SMOTE, BorderlineSMOTE, KMeansSMOTE, SVMSMOTE
+from sklearn.cluster import KMeans
 
 RANDOM_STATE = 10000
 

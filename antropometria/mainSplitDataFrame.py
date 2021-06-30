@@ -1,6 +1,6 @@
 import numpy as np
-import pandas as pd
 import os
+import pandas as pd
 import sys
 import time
 
@@ -17,7 +17,7 @@ DATASET_NAME = 'distances_all_px_eu'
 CLASSES = ['casos', 'controles']
 
 
-def splitDataFrame(num_of_columns_per_split=33785):
+def split_data_frame(num_of_columns_per_split=33785):
     x, y = LoadData(FOLDER, DATASET_NAME, CLASSES).load()
 
     log.info("Splitting dataset")
@@ -35,7 +35,7 @@ def splitDataFrame(num_of_columns_per_split=33785):
     log.info("Splitting complete")
 
 
-def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to_start=None):
+def run_pearson_correlation(starting_file=0, ending_file=64, filtro=0.99, where_to_start=None):
 
     for indice in range(starting_file, ending_file):
         log.info("Processing file {0} out of {1}".format(indice, ending_file - 1))
@@ -52,7 +52,7 @@ def runPearsonCorrelation(starting_file=0, ending_file=64, filtro=0.99, where_to
         os.remove(f'data/{FOLDER}/subDataSet/{DATASET_NAME}_{indice}.csv')
 
 
-def mergeDataFrames(indice_i, indice_j, new_indice):
+def merge_data_frames(indice_i, indice_j, new_indice):
     file_name1 = f"{DATASET_NAME}_{indice_i}.csv"
     file_name2 = f"{DATASET_NAME}_{indice_j}.csv"
 
@@ -106,14 +106,14 @@ def build_data():
 
 def nivel7():
     processes = [
-        Process(target=runPearsonCorrelation, args=(0,  8, 0.95, None)),
-        Process(target=runPearsonCorrelation, args=(8, 16, 0.95, None)),
-        Process(target=runPearsonCorrelation, args=(16, 24, 0.95, None)),
-        Process(target=runPearsonCorrelation, args=(24, 32, 0.95, None)),
-        Process(target=runPearsonCorrelation, args=(32, 40, 0.95, None)),
-        Process(target=runPearsonCorrelation, args=(40, 48, 0.95, None)),
-        Process(target=runPearsonCorrelation, args=(48, 56, 0.95, None)),
-        Process(target=runPearsonCorrelation, args=(56, 64, 0.95, None))
+        Process(target=run_pearson_correlation, args=(0, 8, 0.95, None)),
+        Process(target=run_pearson_correlation, args=(8, 16, 0.95, None)),
+        Process(target=run_pearson_correlation, args=(16, 24, 0.95, None)),
+        Process(target=run_pearson_correlation, args=(24, 32, 0.95, None)),
+        Process(target=run_pearson_correlation, args=(32, 40, 0.95, None)),
+        Process(target=run_pearson_correlation, args=(40, 48, 0.95, None)),
+        Process(target=run_pearson_correlation, args=(48, 56, 0.95, None)),
+        Process(target=run_pearson_correlation, args=(56, 64, 0.95, None))
     ]
     for p in processes:
         p.start()
@@ -125,18 +125,18 @@ def nivel7():
 def nivel6():
     where_to_start, new_indice = [], 0
     for i in range(0, 64, 2):
-        where_to_start.append(mergeDataFrames(i, i+1, new_indice))
+        where_to_start.append(merge_data_frames(i, i + 1, new_indice))
         new_indice += 1
 
     processes = [
-        Process(target=runPearsonCorrelation, args=(0,  4, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(4,  8, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(8, 12, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(12, 16, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(16, 20, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(20, 24, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(24, 28, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(28, 32, 0.95, where_to_start))
+        Process(target=run_pearson_correlation, args=(0, 4, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(4, 8, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(8, 12, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(12, 16, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(16, 20, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(20, 24, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(24, 28, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(28, 32, 0.95, where_to_start))
     ]
     for p in processes:
         p.start()
@@ -148,18 +148,18 @@ def nivel6():
 def nivel5():
     where_to_start, new_indice = [], 0
     for i in range(0, 32, 2):
-        where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
+        where_to_start.append(merge_data_frames(i, i + 1, new_indice))
         new_indice += 1
     print(where_to_start)
     processes = [
-        Process(target=runPearsonCorrelation, args=(0,  2, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(2,  4, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(4,  6, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(6,  8, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(8, 10, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(10, 12, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(12, 14, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(14, 16, 0.95, where_to_start))
+        Process(target=run_pearson_correlation, args=(0, 2, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(2, 4, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(4, 6, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(6, 8, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(8, 10, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(10, 12, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(12, 14, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(14, 16, 0.95, where_to_start))
     ]
     for p in processes:
         p.start()
@@ -171,19 +171,19 @@ def nivel5():
 def nivel4():
     where_to_start, new_indice = [], 0
     for i in range(0, 16, 2):
-        where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
+        where_to_start.append(merge_data_frames(i, i + 1, new_indice))
         new_indice += 1
     print(where_to_start)
 
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(2, 3, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(3, 4, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(4, 5, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(5, 6, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(6, 7, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(7, 8, 0.95, where_to_start))
+        Process(target=run_pearson_correlation, args=(0, 1, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(1, 2, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(2, 3, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(3, 4, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(4, 5, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(5, 6, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(6, 7, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(7, 8, 0.95, where_to_start))
     ]
     for p in processes:
         p.start()
@@ -195,15 +195,15 @@ def nivel4():
 def nivel3():
     where_to_start, new_indice = [], 0
     for i in range(0, 8, 2):
-        where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
+        where_to_start.append(merge_data_frames(i, i + 1, new_indice))
         new_indice += 1
     print(where_to_start)
 
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(2, 3, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(3, 4, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(0, 1, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(1, 2, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(2, 3, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(3, 4, 0.95, where_to_start)),
     ]
     for p in processes:
         p.start()
@@ -215,13 +215,13 @@ def nivel3():
 def nivel2():
     where_to_start, new_indice = [], 0
     for i in range(0, 4, 2):
-        where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
+        where_to_start.append(merge_data_frames(i, i + 1, new_indice))
         new_indice += 1
     print(where_to_start)
 
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, where_to_start)),
-        Process(target=runPearsonCorrelation, args=(1, 2, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(0, 1, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(1, 2, 0.95, where_to_start)),
     ]
     for p in processes:
         p.start()
@@ -233,12 +233,12 @@ def nivel2():
 def nivel1():
     where_to_start, new_indice = [], 0
     for i in range(0, 2, 2):
-        where_to_start.append(mergeDataFrames(i, i + 1, new_indice))
+        where_to_start.append(merge_data_frames(i, i + 1, new_indice))
         new_indice += 1
     print(where_to_start)
 
     processes = [
-        Process(target=runPearsonCorrelation, args=(0, 1, 0.95, where_to_start)),
+        Process(target=run_pearson_correlation, args=(0, 1, 0.95, where_to_start)),
     ]
     for p in processes:
         p.start()
@@ -254,7 +254,7 @@ if __name__ == '__main__':
         build_data()
     elif args[1] == 'split':
         start_time = time.time()
-        splitDataFrame()
+        split_data_frame()
         log.info("--- Total splitting time: %s minutes ---" % ((time.time() - start_time) / 60))
     elif args[1] == 'nivel7':
         log.info("Processing nivel 7")

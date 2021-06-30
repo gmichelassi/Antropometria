@@ -1,5 +1,5 @@
-from sklearn.base import BaseEstimator, TransformerMixin
 from skfeature.function.statistical_based.CFS import cfs
+from sklearn.base import BaseEstimator, TransformerMixin
 
 
 class CFS(BaseEstimator, TransformerMixin):

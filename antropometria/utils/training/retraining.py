@@ -5,6 +5,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.model_selection import StratifiedKFold
 from antropometria.utils.metrics import calculate_mean, calculate_std
 from antropometria.utils.dataset.manipulation import get_difference_of_classes
+from typing import Any
 
 
 N_SPLITS = 10
@@ -12,7 +13,13 @@ SCORING = ['accuracy', 'precision', 'recall', 'f1']
 CV = StratifiedKFold(n_splits=N_SPLITS)
 
 
-def complete_frame(x, y, synthetic_x, synthetic_y, current_fold: int):
+def complete_frame(
+        x: np.ndarray,
+        y: np.ndarray,
+        synthetic_x: np.ndarray,
+        synthetic_y: np.ndarray,
+        current_fold: int
+) -> tuple[np.ndarray, np.ndarray]:
     synthetic_x = np.array_split(synthetic_x, N_SPLITS)
     synthetic_y = np.array_split(synthetic_y, N_SPLITS)
 
@@ -25,7 +32,12 @@ def complete_frame(x, y, synthetic_x, synthetic_y, current_fold: int):
     return x, y
 
 
-def error_estimation(x, y, classes_count, estimator):
+def error_estimation(
+        x: np.ndarray,
+        y: np.ndarray,
+        classes_count: list,
+        estimator: Any
+) -> dict:
     n = get_difference_of_classes(classes_count)
 
     if n == 0:

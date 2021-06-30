@@ -9,7 +9,7 @@ from scipy import stats
 from sklearn.decomposition import PCA
 
 
-def apply_pearson_feature_selection(samples, threshold=0.99) -> pd.DataFrame:
+def apply_pearson_feature_selection(samples: pd.DataFrame, threshold: float = 0.99) -> pd.DataFrame:
     if threshold >= 1.0 or threshold <= 0.0:
         raise ValueError(f'Expected values 0.0 < x < 1.0, received x={threshold}')
 
@@ -30,7 +30,7 @@ def apply_pearson_feature_selection(samples, threshold=0.99) -> pd.DataFrame:
     return samples[samples.columns[~features_to_delete]]
 
 
-def combine_columns_names(n_columns, columns_names, mode='default'):
+def combine_columns_names(n_columns: int, columns_names: pd.Index, mode: str = 'default') -> list:
     names = []
     if mode == 'default':
         for i in range(0, n_columns):
@@ -44,7 +44,7 @@ def combine_columns_names(n_columns, columns_names, mode='default'):
     return names
 
 
-def build_ratio_dataset(dataset, name):
+def build_ratio_dataset(dataset: pd.DataFrame, name: str) -> None:
     n_linhas, n_columns = dataset.shape
     linha_dataset_final = []
 
@@ -79,20 +79,20 @@ def build_ratio_dataset(dataset, name):
             linha_dataset_final.clear()
 
 
-def apply_min_max_normalization(df):
+def apply_min_max_normalization(df: pd.DataFrame) -> pd.DataFrame:
     df_final = []
 
-    max_dist = math.ceil(df.max(axis=1).max())
-    min_dist = 0
+    max_dist = math.ceil(np.amax(df.to_numpy()))
+    min_dist = math.floor(np.amin(df.to_numpy()))
 
-    for (feature, data) in df.iteritems():
+    for feature, data in df.iteritems():
         columns = []
         for i in data.values:
             xi = (i - min_dist)/(max_dist - min_dist)
             columns.append(xi)
         df_final.append(columns)
 
-    return pd.DataFrame(df_final).T
+    return pd.DataFrame(df_final, dtype=float).T
 
 
 def pca_cumulative_variance(samples, labels, verbose=False):
@@ -118,7 +118,7 @@ def pca_cumulative_variance(samples, labels, verbose=False):
         plt.savefig("./output/pca-explained-variance.png")
 
 
-def get_difference_of_classes(classes_count: list):
+def get_difference_of_classes(classes_count: list) -> int:
     if len(classes_count) != 2:
         raise ValueError(f'Should have maximum 2 unique labels (binary), {len(classes_count)} unique labels given')
 
