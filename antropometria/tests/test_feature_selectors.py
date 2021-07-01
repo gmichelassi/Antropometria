@@ -1,5 +1,3 @@
-import warnings
-
 from context import set_tests_context
 set_tests_context()
 
