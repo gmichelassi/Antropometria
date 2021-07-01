@@ -10,4 +10,4 @@ class UnderSampling:
     @staticmethod
     def fit_transform(x: pd.DataFrame, y: np.array):
         x_novo, y_novo = RandomUnderSampler(random_state=RANDOM_STATE).fit_resample(x, y)
-        return x_novo, y_novo, np.array([]), np.array([])
+        return x_novo, y_novo
