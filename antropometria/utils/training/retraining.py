@@ -13,7 +13,7 @@ SCORING = ['accuracy', 'precision', 'recall', 'f1']
 CV = StratifiedKFold(n_splits=N_SPLITS)
 
 
-def complete_frame(
+def complete_fold(
         x: np.ndarray,
         y: np.ndarray,
         synthetic_x: np.ndarray,
@@ -23,7 +23,7 @@ def complete_frame(
     synthetic_x = np.array_split(synthetic_x, N_SPLITS)
     synthetic_y = np.array_split(synthetic_y, N_SPLITS)
 
-    for i in range(len(synthetic_x)):
+    for i in range(N_SPLITS):
         if i != current_fold:
             for j in range(len(synthetic_x[i])):
                 x = np.append(arr=x, values=[synthetic_x[i][j]], axis=0)
@@ -57,7 +57,7 @@ def error_estimation(
         x_train, y_train = x[train_index], y[train_index]
         x_test, y_test = x[test_index], y[test_index]
 
-        x_train, y_train = complete_frame(x_train, y_train, synthetic_x, synthetic_y, current_fold)
+        x_train, y_train = complete_fold(x_train, y_train, synthetic_x, synthetic_y, current_fold)
         folds.append((x_train, y_train, x_test, y_test))
         current_fold += 1
 
