@@ -58,7 +58,10 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
                                  f'min_max: {min_max}')
 
                         try:
+                            # TODO: remover isso
+                            tempoinicial = time.time()
                             data = run_preprocessing(folder, dataset_name, classes, p_filter, reduction, sampling, min_max)
+                            log.info("TOOK: %s seconds ---" % (time.time() - tempoinicial)
                         except (IOError, ValueError, MemoryError) as error:
                             log.error(f'Could not run current test due to error: {error}')
                             continue
