@@ -53,7 +53,7 @@ A calibração de parâmetros é feita em várias etapas e vários processos pod
 Para indicar em qual conjunto de dados será realizada a calibração, vá no arquivo mainParameterCalibration.py e defina os argumentos _folder_, _dataset name_ e _classes_
 O argumento classes deve ser um vetor no qual em cada posição há uma string com o nome da classe OU deve ser None, indicando que todas as classes estão em um mesmo arquivo
 
-Finalmente, execute o pipeline digitando "python mainParameterCalibration.py" em seu terminal
+Finalmente, execute o pipeline a partir da raiz do projeto "python antropometria/mainParameterCalibration.py" em seu terminal
 A calibração de parâmetros irá gerar um grande volume de arquivos na pasta output, sendo o primeiro deles um arquivo .csv contendo o melhor resultado para cada teste realizado
 ~~~
 

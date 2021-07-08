@@ -8,7 +8,7 @@ def get_logger(logger_for_file):
     logger = logging.getLogger(os.path.basename(logger_for_file))
     if not logger.handlers:
         logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                            datefmt='%d/%m/%Y %I:%M:%S %p', filename=ROOT_DIR + "/output/processing.log",
+                            datefmt='%d/%m/%Y %I:%M:%S %p', filename=ROOT_DIR + "/antropometria/output/processing.log",
                             filemode='w', level=logging.DEBUG)
         console = logging.StreamHandler()
         console.setLevel(logging.DEBUG)

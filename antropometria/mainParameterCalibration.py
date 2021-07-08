@@ -1,4 +1,5 @@
 import csv
+import initial_context
 import numpy as np
 import time
 
@@ -15,6 +16,7 @@ from utils.training.retraining import error_estimation
 from utils.training.special_settings import stop_running_rf, skip_current_test
 
 log = logger.get_logger(__file__)
+initial_context.set_context()
 
 CLASSIFIERS = [Knn, Nb, Nn, Rf, Svm]
 FILTERS = [0.0]
@@ -38,7 +40,7 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
 
     is_random_forest_done = False
 
-    with open(f'./output/GridSearch/{folder}_{dataset_name}_best_results.csv', 'w') as csvfile:
+    with open(f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv', 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=FIELDNAMES)
         writer.writeheader()
 
@@ -112,7 +114,8 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
                                                             'err_f1score_macro': '-'}
 
                             log.info('Saving results!')
-                            with open(f'./output/GridSearch/{folder}_{dataset_name}_best_results.csv', 'a') as csvfile:
+                            with open(f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv',
+                                      'a') as csvfile:
                                 writer = csv.DictWriter(csvfile, fieldnames=FIELDNAMES)
                                 row = {'biblioteca': folder,
                                        'classifier': model.name,
