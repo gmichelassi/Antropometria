@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.model_selection import StratifiedKFold
 from antropometria.utils.metrics import calculate_mean, calculate_std
 from antropometria.utils.dataset.manipulation import get_difference_of_classes
-from typing import Any
+from typing import Any, Tuple
 
 
 N_SPLITS = 10
@@ -19,7 +19,7 @@ def complete_fold(
         synthetic_x: np.ndarray,
         synthetic_y: np.ndarray,
         current_fold: int
-) -> tuple[np.ndarray, np.ndarray]:
+) -> Tuple[np.ndarray, np.ndarray]:
     synthetic_x = np.array_split(synthetic_x, N_SPLITS)
     synthetic_y = np.array_split(synthetic_y, N_SPLITS)
 

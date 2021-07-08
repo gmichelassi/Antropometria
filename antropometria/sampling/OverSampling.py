@@ -4,7 +4,7 @@ import pandas as pd
 from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import SMOTE, BorderlineSMOTE, KMeansSMOTE, SVMSMOTE
 from sklearn.cluster import KMeans
-from typing import Union
+from typing import Tuple, Union
 
 RANDOM_STATE = 10000
 
@@ -25,7 +25,7 @@ class OverSampling:
 
         return SMOTE(random_state=RANDOM_STATE)
 
-    def fit_transform(self, x: pd.DataFrame, y: np.array) -> tuple[np.ndarray, np.ndarray]:
+    def fit_transform(self, x: pd.DataFrame, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         smote = self.__get_smote()
 
         x_novo, y_novo = smote.fit_resample(x, y)

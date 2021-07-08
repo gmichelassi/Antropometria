@@ -3,6 +3,7 @@ import os
 import pandas as pd
 
 from sklearn.utils import shuffle
+from typing import Tuple
 
 
 class LoadData:
@@ -13,7 +14,7 @@ class LoadData:
         self.LABEL_COLUMN = 'class_label'
         self.RANDOM_STATE = 10000
 
-    def load(self) -> tuple[pd.DataFrame, np.ndarray]:
+    def load(self) -> Tuple[pd.DataFrame, np.ndarray]:
         if len(self.classes) == 0:
             raise IOError('It is not possible to load a dataset with {0} argument'.format(self.classes))
 
@@ -22,7 +23,7 @@ class LoadData:
 
         return self.__load_data_in_multiple_files()
 
-    def __load_data_in_multiple_files(self) -> tuple[pd.DataFrame, np.ndarray]:
+    def __load_data_in_multiple_files(self) -> Tuple[pd.DataFrame, np.ndarray]:
         x = pd.DataFrame()
         y = np.array([])
 
@@ -52,7 +53,7 @@ class LoadData:
         x, y = shuffle(x, y, random_state=self.RANDOM_STATE)
         return x, y.astype('int64')
 
-    def __load_data_in_single_file(self) -> tuple[pd.DataFrame, np.ndarray]:
+    def __load_data_in_single_file(self) -> Tuple[pd.DataFrame, np.ndarray]:
         path = f"./antropometria/data/{self.folder}/{self.dataset_name}.csv"
 
         if os.path.isfile(path):

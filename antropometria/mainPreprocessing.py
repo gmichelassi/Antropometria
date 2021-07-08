@@ -6,6 +6,7 @@ from sampling.OverSampling import OverSampling
 from sampling.UnderSampling import UnderSampling
 from utils.dataset.load import LoadData
 from utils.dataset.manipulation import apply_pearson_feature_selection, apply_min_max_normalization
+from typing import Tuple
 
 log = logger.get_logger(__file__)
 
@@ -19,7 +20,7 @@ def run_preprocessing(
         sampling: str,
         apply_min_max: bool,
         verbose: bool = True
-) -> tuple[np.array, np.array, list]:
+) -> Tuple[np.ndarray, np.ndarray, list]:
 
     if verbose:
         log.info(f'Loading data from data/{folder}/{dataset_name}')
