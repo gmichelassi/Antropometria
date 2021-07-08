@@ -10,14 +10,17 @@ from utils.dataset.manipulation import apply_pearson_feature_selection, apply_mi
 log = logger.get_logger(__file__)
 
 
-def run_preprocessing(folder: str,
-                      dataset_name: str,
-                      classes: list,
-                      p_filter: float,
-                      reduction: str,
-                      sampling: str,
-                      apply_min_max: bool,
-                      verbose: bool = True) -> (np.array, np.array, list):
+def run_preprocessing(
+        folder: str,
+        dataset_name: str,
+        classes: list,
+        p_filter: float,
+        reduction: str,
+        sampling: str,
+        apply_min_max: bool,
+        verbose: bool = True
+) -> tuple[np.array, np.array, list]:
+
     if verbose:
         log.info(f'Loading data from data/{folder}/{dataset_name}')
 

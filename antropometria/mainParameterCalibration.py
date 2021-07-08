@@ -12,7 +12,7 @@ from mainPreprocessing import run_preprocessing
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedKFold
 from utils.training.retraining import error_estimation
-from utils.training.training_settings import stop_running_rf, skip_current_test
+from utils.training.special_settings import stop_running_rf, skip_current_test
 
 log = logger.get_logger(__file__)
 
@@ -47,7 +47,7 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
             for sampling in SAMPLINGS:
                 for p_filter in FILTERS:
                     for min_max in MIN_MAX_NORMALIZATION:
-                        if skip_current_test(is_random_forest_done, classifier, reduction, Rf):
+                        if skip_current_test(is_random_forest_done, classifier, reduction):
                             continue
 
                         log.info(f'Running test with '

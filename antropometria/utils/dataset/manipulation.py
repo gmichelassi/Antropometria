@@ -2,13 +2,17 @@ import csv
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pandas as pd
 
 from scipy import stats
 from sklearn.decomposition import PCA
 
 
-def apply_pearson_feature_selection(samples, max_value=0.99):
+def apply_pearson_feature_selection(samples: pd.DataFrame, threshold: float = 0.99) -> pd.DataFrame:
+    if threshold >= 1.0 or threshold <= 0.0:
+        raise ValueError(f'Expected values 0.0 < x < 1.0, received x={threshold}')
+
     n_features = samples.shape[1]
     features_to_delete = np.zeros(n_features, dtype=bool)
 
@@ -20,13 +24,13 @@ def apply_pearson_feature_selection(samples, max_value=0.99):
                 if not features_to_delete[j]:
                     feature_j = samples.iloc[:, j].to_numpy()
                     pearson, pvalue = stats.pearsonr(feature_i, feature_j)
-                    if pearson >= max_value:
+                    if abs(pearson) >= threshold:
                         features_to_delete[j] = True
 
     return samples[samples.columns[~features_to_delete]]
 
 
-def combine_columns_names(n_columns, columns_names, mode='default'):
+def combine_columns_names(n_columns: int, columns_names: pd.Index, mode: str = 'default') -> list:
     names = []
     if mode == 'default':
         for i in range(0, n_columns):
@@ -40,13 +44,17 @@ def combine_columns_names(n_columns, columns_names, mode='default'):
     return names
 
 
-def build_ratio_dataset(dataset, name):
-    n_linhas, n_columns = dataset.shape  # obtemos o tamanho do dataset
+def build_ratio_dataset(dataset: pd.DataFrame, name: str) -> None:
+    n_linhas, n_columns = dataset.shape
     linha_dataset_final = []
 
     columns = combine_columns_names(n_columns=n_columns, columns_names=dataset.columns, mode='complete')
+    folder_name = './antropometria/data/ratio'
 
-    with open(f'./data/ratio/{name}_distances_all_px_eu.csv', 'w') as csvfile:
+    if not os.path.isdir(folder_name):
+        os.mkdir(folder_name)
+
+    with open(f'{folder_name}/{name}.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(columns)
 
@@ -65,31 +73,29 @@ def build_ratio_dataset(dataset, name):
                         else:
                             ratio_dist = valor_j / valor_i
 
-                    linha_dataset_final.append(np.float(ratio_dist))
+                    linha_dataset_final.append(np.float64(ratio_dist))
 
             writer.writerow(linha_dataset_final)
             linha_dataset_final.clear()
 
-            print("Linha {0} concluida".format(linha), flush=True)
 
-
-def apply_min_max_normalization(df):
+def apply_min_max_normalization(df: pd.DataFrame) -> pd.DataFrame:
     df_final = []
 
-    max_dist = math.ceil(df.max(axis=1).max())
-    min_dist = 0
+    max_dist = math.ceil(np.amax(df.to_numpy()))
+    min_dist = math.floor(np.amin(df.to_numpy()))
 
-    for (feature, data) in df.iteritems():
+    for feature, data in df.iteritems():
         columns = []
         for i in data.values:
             xi = (i - min_dist)/(max_dist - min_dist)
             columns.append(xi)
         df_final.append(columns)
 
-    return pd.DataFrame(df_final).T
+    return pd.DataFrame(df_final, dtype=float).T
 
 
-def varianciaAcumuladaPCA(samples, labels, verbose=False):
+def pca_cumulative_variance(samples, labels, verbose=False):
     pca = PCA()
 
     pca.fit(samples, labels)
@@ -112,7 +118,7 @@ def varianciaAcumuladaPCA(samples, labels, verbose=False):
         plt.savefig("./output/pca-explained-variance.png")
 
 
-def get_difference_of_classes(classes_count: list):
+def get_difference_of_classes(classes_count: list) -> int:
     if len(classes_count) != 2:
         raise ValueError(f'Should have maximum 2 unique labels (binary), {len(classes_count)} unique labels given')
 

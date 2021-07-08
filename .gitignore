@@ -2,9 +2,10 @@ venv/
 .idea
 __pycache__/
 nohup.out
-output/*
-!output/GridSearch/.gitkeep
-data/*
-!data/.gitkeep
+antropometria/output/*
+!antropometria/output/GridSearch/.gitkeep
+antropometria/data/*
+!antropometria/data/dlibHOG
+!antropometria/data/dumb
+.pytest_cache/
 .DS_Store
-.pytest_cache

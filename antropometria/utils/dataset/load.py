@@ -1,6 +1,6 @@
 import numpy as np
-import pandas as pd
 import os
+import pandas as pd
 
 from sklearn.utils import shuffle
 
@@ -10,24 +10,25 @@ class LoadData:
         self.folder = folder
         self.dataset_name = dataset_name
         self.classes = classes
-        self.LABEL_COLUMN = 'label'
+        self.LABEL_COLUMN = 'class_label'
         self.RANDOM_STATE = 10000
 
-    def load(self) -> (pd.DataFrame, np.array):
-        if self.classes is None:
+    def load(self) -> tuple[pd.DataFrame, np.ndarray]:
+        if len(self.classes) == 0:
             raise IOError('It is not possible to load a dataset with {0} argument'.format(self.classes))
 
-        if 0 < len(self.classes) <= 1:
+        if len(self.classes) == 1:
             return self.__load_data_in_single_file()
+
         return self.__load_data_in_multiple_files()
 
-    def __load_data_in_multiple_files(self) -> (pd.DataFrame, np.array):
+    def __load_data_in_multiple_files(self) -> tuple[pd.DataFrame, np.ndarray]:
         x = pd.DataFrame()
         y = np.array([])
 
         label_count = 0
         for class_name in self.classes:
-            file_name = f'./data/{self.folder}/{class_name}_{self.dataset_name}.csv'
+            file_name = f'./antropometria/data/{self.folder}/{class_name}_{self.dataset_name}.csv'
 
             if os.path.isfile(file_name):
                 if 'ratio' in self.folder:
@@ -40,17 +41,19 @@ class LoadData:
                     if 'dlibHOG' in self.folder:
                         data = data.drop(['img_name', 'id'], axis=1)
 
-                label = label_count * np.ones(len(data), dtype=np.int)
+                label = label_count * np.ones(len(data), dtype=np.int64)
 
                 x = pd.concat([x, data])
                 y = np.concatenate((y, label))
+            else:
+                raise IOError(f'File not found for params {self.folder} and {self.dataset_name}.')
             label_count += 1
 
         x, y = shuffle(x, y, random_state=self.RANDOM_STATE)
         return x, y.astype('int64')
 
-    def __load_data_in_single_file(self) -> (pd.DataFrame, np.array):
-        path = f"./data/{self.folder}/{self.dataset_name}.csv"
+    def __load_data_in_single_file(self) -> tuple[pd.DataFrame, np.ndarray]:
+        path = f"./antropometria/data/{self.folder}/{self.dataset_name}.csv"
 
         if os.path.isfile(path):
             data = pd.read_csv(path)
