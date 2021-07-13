@@ -12,6 +12,7 @@ class LoadData:
         self.dataset_name = dataset_name
         self.classes = classes
         self.LABEL_COLUMN = 'class_label'
+        self.LABEL_REGEX = '.*(label).*'
         self.RANDOM_STATE = 10000
 
     def load(self) -> Tuple[pd.DataFrame, np.ndarray]:
@@ -59,7 +60,11 @@ class LoadData:
         if os.path.isfile(path):
             data = pd.read_csv(path)
 
-            labels = data[self.LABEL_COLUMN].values
+            try:
+                labels = data[self.LABEL_COLUMN].values
+            except KeyError:
+                labels = data.filter(regex=self.LABEL_REGEX).T.values[0]
+
             data = data.drop(self.LABEL_COLUMN, axis=1)
             return data, labels.astype('int64')
 
