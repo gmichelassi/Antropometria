@@ -62,10 +62,15 @@ class LoadData:
 
             try:
                 labels = data[self.LABEL_COLUMN].values
+                data = data.drop(self.LABEL_COLUMN, axis=1)
             except KeyError:
-                labels = data.filter(regex=self.LABEL_REGEX).T.values[0]
+                columns_regex = data.filter(regex='.*(label).*').columns
+                if columns_regex.shape[0] != 1:
+                    raise IOError(f"File do not have columns like '{self.LABEL_COLUMN}' or '{self.LABEL_REGEX}'")
 
-            data = data.drop(self.LABEL_COLUMN, axis=1)
+                labels = data[columns_regex].T.values[0]
+                data = data.drop(columns_regex, axis=1)
+
             return data, labels.astype('int64')
 
         raise IOError(f'File not found for params {self.folder} and {self.dataset_name}.')
