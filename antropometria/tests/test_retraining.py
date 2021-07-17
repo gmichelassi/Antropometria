@@ -7,6 +7,7 @@ import numpy as np
 
 from antropometria.classifiers.RandomForests import RandomForests
 from antropometria.utils.training.retraining import complete_fold, error_estimation, N_SPLITS
+from antropometria.config.constants import EMPTY_ERROR_ESTIMATION_DICT
 from pytest import approx
 from random import randrange
 from sklearn.datasets import make_classification
@@ -26,10 +27,8 @@ X_UNBALANCED_DATA, Y_UNBALANCED_DATA =\
     make_classification(n_samples=N_SAMPLES, n_features=N_FEATURES, weights=[0.4, 0.6])
 N_UNBALANCED_CLASSES, UNBALANCED_CLASS_COUNT = np.unique(Y_UNBALANCED_DATA, return_counts=True)
 
-DEFAULT_ERROR_DICT = {
-    'err_accuracy': '-', 'err_IC': '-', 'err_precision_micro': '-', 'err_recall_micro': '-',
-    'err_f1score_micro': '-', 'err_precision_macro': '-', 'err_recall_macro': '-', 'err_f1score_macro': '-'
-}
+DEFAULT_ERROR_DICT = EMPTY_ERROR_ESTIMATION_DICT
+FIELDNAMES = list(EMPTY_ERROR_ESTIMATION_DICT.keys())
 
 
 class TestRetraining:
@@ -54,21 +53,21 @@ class TestRetraining:
             X_UNBALANCED_DATA, Y_UNBALANCED_DATA, UNBALANCED_CLASS_COUNT, classifier.estimator
         )
 
-        assert list(result_dict.keys()) == [
-            'err_accuracy', 'err_IC', 'err_precision_micro', 'err_recall_micro', 'err_f1score_micro',
-            'err_precision_macro', 'err_recall_macro', 'err_f1score_macro'
-        ]
+        assert list(result_dict.keys()) == FIELDNAMES
 
         assert isinstance(result_dict['err_accuracy'], float)
-        assert isinstance(result_dict['err_IC'], tuple)
-        assert isinstance(result_dict['err_IC'][0], float)
-        assert isinstance(result_dict['err_IC'][1], float)
         assert isinstance(result_dict['err_precision_micro'], float)
         assert isinstance(result_dict['err_recall_micro'], float)
         assert isinstance(result_dict['err_f1score_micro'], float)
+        assert isinstance(result_dict['err_f1micro_ic'], tuple)
+        assert isinstance(result_dict['err_f1micro_ic'][0], float)
+        assert isinstance(result_dict['err_f1micro_ic'][1], float)
         assert isinstance(result_dict['err_precision_macro'], float)
         assert isinstance(result_dict['err_recall_macro'], float)
         assert isinstance(result_dict['err_f1score_macro'], float)
+        assert isinstance(result_dict['err_f1micro_ic'], tuple)
+        assert isinstance(result_dict['err_f1macro_ic'][0], float)
+        assert isinstance(result_dict['err_f1macro_ic'][1], float)
 
     def test_error_estimation_with_three_classes(self):
         with pytest.raises(ValueError):

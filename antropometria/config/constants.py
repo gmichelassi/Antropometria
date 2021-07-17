@@ -17,7 +17,6 @@ FIELDNAMES = [
     'cv_f1score',
     'parameters',
     'err_accuracy',
-    'err_IC',
     'err_precision_micro',
     'err_recall_micro',
     'err_f1score_micro',
@@ -35,7 +34,6 @@ SCORING = ['accuracy', 'precision', 'recall', 'f1']
 
 EMPTY_ERROR_ESTIMATION_DICT = {
     'err_accuracy': EMPTY,
-    'err_IC': EMPTY,
     'err_precision_micro': EMPTY,
     'err_recall_micro': EMPTY,
     'err_f1score_micro': EMPTY,
