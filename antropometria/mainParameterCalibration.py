@@ -3,6 +3,7 @@ import initial_context
 import numpy as np
 import time
 
+from config.constants import CV, FIELDNAMES, FILTERS, MIN_MAX_NORMALIZATION, REDUCTIONS, SAMPLINGS, SCORING
 from classifiers.KNearestNeighbors import KNearestNeighbors as Knn
 from classifiers.NaiveBayes import NaiveBayes as Nb
 from classifiers.NeuralNetwork import NeuralNetwork as Nn
@@ -11,7 +12,6 @@ from classifiers.SupportVectorMachine import SupportVectorMachine as Svm
 from config import logger
 from mainPreprocessing import run_preprocessing
 from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import StratifiedKFold
 from utils.training.retraining import error_estimation
 from utils.training.special_settings import stop_running_rf, skip_current_test
 
@@ -19,20 +19,6 @@ log = logger.get_logger(__file__)
 initial_context.set_context()
 
 CLASSIFIERS = [Knn, Nb, Nn, Rf, Svm]
-FILTERS = [0.0]
-MIN_MAX_NORMALIZATION = [False, True]
-REDUCTIONS = [None, 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF', 'RFSelect']
-SAMPLINGS = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
-
-N_SPLITS = 10
-CV = StratifiedKFold(n_splits=N_SPLITS)
-SCORING = ['accuracy', 'precision', 'recall', 'f1']
-FIELDNAMES = ['biblioteca', 'classifier', 'reduction', 'filtro', 'min_max', 'balanceamento',
-              'cv_accuracy', 'cv_precision', 'cv_recall', 'cv_f1score',
-              'parameters',
-              'err_accuracy', 'err_IC',
-              'err_precision_micro', 'err_recall_micro', 'err_f1score_micro',
-              'err_precision_macro', 'err_recall_macro', 'err_f1score_macro']
 
 
 def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])):
