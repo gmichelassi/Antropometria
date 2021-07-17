@@ -129,5 +129,5 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_grid_search('dlibHOG', 'distances_all_px_eu', ['casos', 'controles'])
+    run_grid_search('dlibHOG_Pearson95', 'distances_eu_without_mouth', ['single_file'])
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
