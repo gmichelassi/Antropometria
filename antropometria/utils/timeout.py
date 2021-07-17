@@ -6,15 +6,16 @@ from typing import Callable
 def timeout(seconds: int, use_timeout: bool):
     def decorator(function: Callable):
         if not use_timeout:
+            print('RETORNOU AQUI!!!!!')
             return function
 
-        def wrapper(args, **kwargs):
+        def wrapper(*args, **kwargs):
             def handler(signum, frame):
                 raise TimeoutError(f'This call took longer than {seconds}')
 
             signal.signal(signal.SIGALRM, handler)
             signal.alarm(seconds)
-            result = function(args, **kwargs)
+            result = function(*args, **kwargs)
             signal.alarm(0)
             return result
         return wrapper

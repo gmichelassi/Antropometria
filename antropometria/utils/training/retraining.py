@@ -1,16 +1,25 @@
 import math
 import numpy as np
+import os
+import sys
 
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+
+from antropometria.config.constants import CV, EMPTY_ERROR_ESTIMATION_DICT, N_SPLITS
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from sklearn.model_selection import StratifiedKFold
 from antropometria.utils.metrics import calculate_mean, calculate_std
 from antropometria.utils.dataset.manipulation import get_difference_of_classes
 from typing import Any, Tuple
 
 
-N_SPLITS = 10
-SCORING = ['accuracy', 'precision', 'recall', 'f1']
-CV = StratifiedKFold(n_splits=N_SPLITS)
+def calculate_confidence_interval(metric: list, mean_metric: float) -> Tuple[float, float]:
+    tc = 2.262
+    std = calculate_std(np.array(metric))
+
+    ic_lower = mean_metric - tc * (std / math.sqrt(N_SPLITS))
+    ic_upper = mean_metric + tc * (std / math.sqrt(N_SPLITS))
+
+    return ic_lower, ic_upper
 
 
 def complete_fold(
@@ -41,10 +50,7 @@ def error_estimation(
     n = get_difference_of_classes(classes_count)
 
     if n == 0:
-        return {
-            'err_accuracy': '-', 'err_IC': '-', 'err_precision_micro': '-', 'err_recall_micro': '-',
-            'err_f1score_micro': '-', 'err_precision_macro': '-', 'err_recall_macro': '-', 'err_f1score_macro': '-'
-        }
+        return EMPTY_ERROR_ESTIMATION_DICT
 
     synthetic_x = x[-n:]
     synthetic_y = y[-n:]
@@ -93,20 +99,17 @@ def error_estimation(
         'f1_macro': f1_macro
     })
 
-    tc = 2.262
-    std = calculate_std(np.array(accuracy))
-    ic_upper = mean_results['accuracy'] + tc * (std / math.sqrt(N_SPLITS))
-    ic_lower = mean_results['accuracy'] - tc * (std / math.sqrt(N_SPLITS))
-
-    ic = (ic_lower, ic_upper)
+    f1_micro_ic = calculate_confidence_interval(f1_micro, mean_results['f1_micro'])
+    f1_macro_ic = calculate_confidence_interval(f1_macro, mean_results['f1_macro'])
 
     return {
         'err_accuracy': mean_results['accuracy'],
-        'err_IC': ic,
         'err_precision_micro': mean_results['precision_micro'],
         'err_recall_micro': mean_results['recall_micro'],
         'err_f1score_micro': mean_results['f1_micro'],
+        'err_f1micro_ic': f1_micro_ic,
         'err_precision_macro': mean_results['precision_macro'],
         'err_recall_macro': mean_results['recall_macro'],
-        'err_f1score_macro': mean_results['f1_macro']
+        'err_f1score_macro': mean_results['f1_macro'],
+        'err_f1macro_ic': f1_macro_ic,
     }
