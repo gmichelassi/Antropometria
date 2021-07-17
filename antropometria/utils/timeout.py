@@ -6,7 +6,6 @@ from typing import Callable
 def timeout(seconds: int, use_timeout: bool):
     def decorator(function: Callable):
         if not use_timeout:
-            print('RETORNOU AQUI!!!!!')
             return function
 
         def wrapper(*args, **kwargs):
