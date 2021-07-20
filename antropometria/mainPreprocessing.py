@@ -33,36 +33,33 @@ def run_preprocessing(
     instances, features = x.shape
     n_features_to_keep = int(np.sqrt(features))
 
-    if verbose:
-        log.info(f'Data has {len(n_classes)} classes, {instances} instances and {features} features')
+    log.info(f'Data has {len(n_classes)} classes, {instances} instances and {features} features') \
+        if verbose else lambda: None
 
     if 0.0 < p_filter <= 0.99:
-        if verbose:
-            log.info('Applying pearson correlation filter')
+        log.info('Applying pearson correlation filter') if verbose else lambda: None
         x = apply_pearson_feature_selection(x, p_filter)
 
     if apply_min_max:
-        if verbose:
-            log.info('Applying min max normalization')
+        log.info('Applying min max normalization') if verbose else lambda: None
         x = apply_min_max_normalization(x)
 
     x = x.values
 
     if reduction is not None:
-        if verbose:
-            log.info(f'Applying {reduction} reduction')
-        feature_selector = get_feature_selector(reduction, n_features_to_keep, instances, features)
+        log.info(f'Applying {reduction} reduction') if verbose else lambda: None
 
+        feature_selector = get_feature_selector(reduction, n_features_to_keep, instances, features)
         x = feature_selector.fit_transform(x, y)
 
     if sampling is not None:
-        if len(classes_count) == 2:
-            if abs(classes_count[0] - classes_count[1]) == 0:
-                log.warning('Your binary dataset is balanced, please keep only `None` on SAMPLINGS constant on '
-                            'mainParameterCalibration. If you don\'t, the algoritms will be executed anyway and can'
-                            'slow training by a significant amount of time.')
-        if verbose:
-            log.info(f'Applying {sampling} sampling')
+        if len(classes_count) == 2 and abs(classes_count[0] - classes_count[1]) == 0:
+            log.warning('Your binary dataset is balanced, please keep only `None` on SAMPLINGS constant on '
+                        'mainParameterCalibration. If you don\'t, the algoritms will be executed anyway and can'
+                        'slow training by a significant amount of time.')
+
+        log.info(f'Applying {sampling} sampling') if verbose else lambda: None
+
         if sampling == 'random':
             x, y = UnderSampling().fit_transform(x, y)
         else:
