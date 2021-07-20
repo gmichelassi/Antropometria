@@ -59,7 +59,7 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
                                 sampling,
                                 min_max
                             )
-                        except (IOError, ValueError, MemoryError) as error:
+                        except (IOError, ValueError, MemoryError, TimeoutError) as error:
                             log.error(f'Could not run current test due to error: {error}')
                             continue
 
