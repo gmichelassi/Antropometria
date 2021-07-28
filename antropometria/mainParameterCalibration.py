@@ -22,10 +22,15 @@ initial_context.set_context()
 CLASSIFIERS = [Knn, Nb, Nn, Rf, Svm]
 
 
-def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])):
-    log.info(f'Running grid search for {folder}/{dataset_name}')
-
+def run_grid_search(
+        folder: str,
+        dataset_name: str,
+        classes: list = np.ndarray,
+        verbose: bool = True
+) -> None:
     is_random_forest_done = False
+
+    log.info(f'Running grid search for {folder}/{dataset_name}') if verbose else lambda: None
 
     with open(f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv', 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=FIELDNAMES)
@@ -47,7 +52,7 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
                             f'sampling: {sampling}, '
                             f'filtro: {p_filter}, '
                             f'min_max: {min_max}'
-                        )
+                        ) if verbose else lambda: None
 
                         try:
                             data = run_preprocessing(
@@ -65,10 +70,9 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
 
                         x, y, classes_count = data
                         instances, features = x.shape
-
                         model = classifier(n_features=features)
 
-                        log.info('Running cross validation')
+                        log.info('Running cross validation') if verbose else lambda: None
                         try:
                             grd = GridSearchCV(
                                 estimator=model.estimator,
@@ -91,9 +95,11 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
                             accuracy = grid_results.cv_results_['mean_test_accuracy'][grid_results.best_index_]
                             parameters = grid_results.best_params_
 
-                            log.info(f'Best result for test [{model.name}, {reduction}, {sampling}, {p_filter}, '
-                                     f'{min_max}] with f1-score {(f1 * 100):.2f}%.')
-                            log.info(f'Best parameters found: {parameters}')
+                            log.info(
+                                f'Best result for test [{model.name}, {reduction}, {sampling}, {p_filter}, {min_max}]'
+                                f'with f1-score {(f1 * 100):.2f}%.'
+                            ) if verbose else lambda: None
+                            log.info(f'Best parameters found: {parameters}') if verbose else lambda: None
 
                             if sampling is not None and sampling != 'Random':
                                 log.info(f'Running error estimation')
@@ -102,9 +108,11 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
                             else:
                                 error_estimation_results = EMPTY_ERROR_ESTIMATION_DICT
 
-                            log.info('Saving results!')
-                            with open(f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv',
-                                      'a') as csvfile:
+                            log.info('Saving results!') if verbose else lambda: None
+                            with open(
+                                    f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv',
+                                    'a'
+                            ) as csvfile:
                                 writer = csv.DictWriter(csvfile, fieldnames=FIELDNAMES)
                                 row = {
                                     'biblioteca': folder,
@@ -124,7 +132,7 @@ def run_grid_search(folder: str, dataset_name: str, classes: list = np.array([])
 
                         is_random_forest_done = stop_running_rf(is_random_forest_done, model.name, reduction)
                         current_test_ellapsed_time = (time.time() - current_test_initial_time) / 60
-                        log.info(f"Finished current test in {current_test_ellapsed_time:.2f} minutes")
+                        log.info(f"Finished current test in {current_test_ellapsed_time:.2f} minutes") if verbose else lambda: None
 
 
 if __name__ == '__main__':
