@@ -13,6 +13,7 @@ from classifiers.SupportVectorMachine import SupportVectorMachine as Svm
 from config import logger
 from mainPreprocessing import run_preprocessing
 from sklearn.model_selection import GridSearchCV
+from typing import Tuple
 from utils.training.retraining import error_estimation
 from utils.training.special_settings import stop_running_rf, skip_current_test
 
@@ -22,6 +23,67 @@ initial_context.set_context()
 CLASSIFIERS = [Knn, Nb, Nn, Rf, Svm]
 
 
+def write_header(file: str, fieldnames: list[str]) -> None:
+    with open(file, 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+
+
+def save_results(
+        file: str,
+        fieldnames: list[str],
+        test: dict,
+        grid_search_results: dict,
+        error_estimation_results: dict,
+        parameters: dict
+) -> None:
+    with open(file, 'a') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        results = {}
+        results.update(test)
+        results.update(grid_search_results)
+        results.update(error_estimation_results)
+        results['parameters'] = parameters
+        writer.writerow(results)
+
+
+def get_results(grid_results) -> Tuple[float, float, float, float, dict]:
+    f1 = grid_results.best_score_
+    precision = grid_results.cv_results_['mean_test_precision'][grid_results.best_index_]
+    recall = grid_results.cv_results_['mean_test_recall'][grid_results.best_index_]
+    accuracy = grid_results.cv_results_['mean_test_accuracy'][grid_results.best_index_]
+    parameters = grid_results.best_params_
+
+    return accuracy, precision, recall, f1, parameters
+
+
+def test_to_dict(
+        folder: str,
+        model_name: str,
+        reduction: str,
+        p_filter: float,
+        min_max: bool,
+        sampling: str
+) -> dict:
+    return {
+        'biblioteca': folder,
+        'classifier': model_name,
+        'reduction': reduction,
+        'filtro': p_filter,
+        'min_max': min_max,
+        'balanceamento': sampling,
+    }
+
+
+def grid_search_results_to_dict(accuracy: float, precision: float, recall: float, f1: float) -> dict:
+    return {
+        'cv_accuracy': accuracy,
+        'cv_precision': precision,
+        'cv_recall': recall,
+        'cv_f1score': f1,
+    }
+
+
 def run_grid_search(
         folder: str,
         dataset_name: str,
@@ -29,12 +91,10 @@ def run_grid_search(
         verbose: bool = True
 ) -> None:
     is_random_forest_done = False
+    output_file = f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv'
 
     log.info(f'Running grid search for {folder}/{dataset_name}') if verbose else lambda: None
-
-    with open(f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv', 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=FIELDNAMES)
-        writer.writeheader()
+    write_header(file=output_file, fieldnames=FIELDNAMES)
 
     for classifier in CLASSIFIERS:
         for reduction in REDUCTIONS:
@@ -86,56 +146,42 @@ def run_grid_search(
                             grid_results = grd.fit(x, y)
                         except (KeyError, ValueError) as error:
                             log.error(f'Could not run cross validation: {error}')
-                            grid_results = None
+                            continue
 
-                        if grid_results is not None:
-                            f1 = grid_results.best_score_
-                            precision = grid_results.cv_results_['mean_test_precision'][grid_results.best_index_]
-                            recall = grid_results.cv_results_['mean_test_recall'][grid_results.best_index_]
-                            accuracy = grid_results.cv_results_['mean_test_accuracy'][grid_results.best_index_]
-                            parameters = grid_results.best_params_
+                        accuracy, precision, recall, f1, parameters = get_results(grid_results)
+                        current_test = test_to_dict(folder, dataset_name, model.name, p_filter, min_max, sampling)
+                        grid_search_results = grid_search_results_to_dict(accuracy, precision, recall, precision)
 
-                            log.info(
-                                f'Best result for test [{model.name}, {reduction}, {sampling}, {p_filter}, {min_max}]'
-                                f'with f1-score {(f1 * 100):.2f}%.'
-                            ) if verbose else lambda: None
-                            log.info(f'Best parameters found: {parameters}') if verbose else lambda: None
+                        log.info(
+                            f'Best result for test [{model.name}, {reduction}, {sampling}, {p_filter}, {min_max}]'
+                            f'with f1-score {(f1 * 100):.2f}%.'
+                        ) if verbose else lambda: None
+                        log.info(f'Best parameters found: {parameters}') if verbose else lambda: None
 
-                            if sampling is not None and sampling != 'Random':
-                                log.info(f'Running error estimation')
-                                error_estimation_results = error_estimation(x, y, classes_count,
-                                                                            grid_results.best_estimator_)
-                            else:
-                                error_estimation_results = EMPTY_ERROR_ESTIMATION_DICT
+                        if sampling is not None and sampling != 'Random':
+                            log.info(f'Running error estimation')
+                            error_estimation_results = error_estimation(x, y, classes_count, grid_results.best_estimator_)
+                        else:
+                            error_estimation_results = EMPTY_ERROR_ESTIMATION_DICT
 
-                            log.info('Saving results!') if verbose else lambda: None
-                            with open(
-                                    f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv',
-                                    'a'
-                            ) as csvfile:
-                                writer = csv.DictWriter(csvfile, fieldnames=FIELDNAMES)
-                                row = {
-                                    'biblioteca': folder,
-                                    'classifier': model.name,
-                                    'reduction': reduction,
-                                    'filtro': p_filter,
-                                    'min_max': min_max,
-                                    'balanceamento': sampling,
-                                    'cv_accuracy': accuracy,
-                                    'cv_precision': precision,
-                                    'cv_recall': recall,
-                                    'cv_f1score': f1,
-                                    'parameters': parameters
-                                }
-                                row.update(error_estimation_results)
-                                writer.writerow(row)
+                        log.info('Saving results!') if verbose else lambda: None
+                        save_results(
+                            file=output_file,
+                            fieldnames=FIELDNAMES,
+                            test=current_test,
+                            grid_search_results=grid_search_results,
+                            error_estimation_results=error_estimation_results,
+                            parameters=parameters
+                        )
 
                         is_random_forest_done = stop_running_rf(is_random_forest_done, model.name, reduction)
                         current_test_ellapsed_time = (time.time() - current_test_initial_time) / 60
-                        log.info(f"Finished current test in {current_test_ellapsed_time:.2f} minutes") if verbose else lambda: None
+                        log.info(
+                            f"Finished current test in {current_test_ellapsed_time:.2f} minutes"
+                        ) if verbose else lambda: None
 
 
 if __name__ == '__main__':
     start_time = time.time()
-    run_grid_search('dlibHOG_Pearson95', 'distances_eu_without_mouth', ['single_file'])
+    run_grid_search('dlibHOG', 'distances_all_px_eu', ['casos', 'controles'])
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

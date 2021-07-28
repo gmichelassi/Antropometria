@@ -17,7 +17,6 @@ FIELDNAMES = [
     'cv_precision',
     'cv_recall',
     'cv_f1score',
-    'parameters',
     'err_accuracy',
     'err_precision_micro',
     'err_recall_micro',
@@ -27,6 +26,7 @@ FIELDNAMES = [
     'err_recall_macro',
     'err_f1score_macro',
     'err_f1macro_ic',
+    'parameters',
 ]
 FILTERS = [0.0]
 MIN_MAX_NORMALIZATION = [False, True]
