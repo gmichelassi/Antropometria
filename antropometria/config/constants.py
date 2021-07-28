@@ -1,3 +1,5 @@
+import os
+
 from sklearn.model_selection import StratifiedKFold
 
 N_SPLITS = 10
@@ -29,6 +31,7 @@ FIELDNAMES = [
 FILTERS = [0.0]
 MIN_MAX_NORMALIZATION = [False, True]
 REDUCTIONS = [None, 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF', 'RFSelect']
+ROOT_DIR = os.path.abspath(os.getcwd())
 SAMPLINGS = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
 SCORING = ['accuracy', 'precision', 'recall', 'f1']
 
