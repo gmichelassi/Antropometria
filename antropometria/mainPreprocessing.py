@@ -18,23 +18,22 @@ def run_preprocessing(
         folder: str,
         dataset_name: str,
         classes: list,
-        p_filter: float,
-        reduction: str,
-        sampling: str,
-        apply_min_max: bool,
+        apply_min_max: bool = False,
+        p_filter: float = 0.0,
+        reduction: str = None,
+        sampling: str = None,
         verbose: bool = True
-) -> Tuple[np.ndarray, np.ndarray, list]:
-
-    if verbose:
-        log.info(f'Loading data from data/{folder}/{dataset_name}')
+) -> Tuple[np.ndarray, np.ndarray, list[int]]:
+    log.info(f'Loading data from data/{folder}/{dataset_name}') if verbose else lambda: None
 
     x, y = LoadData(folder, dataset_name, classes).load()
     n_classes, classes_count = np.unique(y, return_counts=True)
     instances, features = x.shape
     n_features_to_keep = int(np.sqrt(features))
 
-    log.info(f'Data has {len(n_classes)} classes, {instances} instances and {features} features') \
-        if verbose else lambda: None
+    log.info(
+        f'Data has {len(n_classes)} classes, {instances} instances and {features} features'
+    ) if verbose else lambda: None
 
     if 0.0 < p_filter <= 0.99:
         log.info('Applying pearson correlation filter') if verbose else lambda: None
@@ -65,4 +64,4 @@ def run_preprocessing(
         else:
             x, y = OverSampling(sampling).fit_transform(x, y)
 
-    return x, y, classes_count
+    return x, y, classes_count.tolist()

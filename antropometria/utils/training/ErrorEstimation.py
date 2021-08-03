@@ -12,14 +12,55 @@ from antropometria.utils.dataset.manipulation import get_difference_of_classes
 from typing import Any, Tuple
 
 
-def calculate_confidence_interval(metric: list, mean_metric: float) -> Tuple[float, float]:
-    tc = 2.262
-    std = calculate_std(np.array(metric))
+class ErrorEstimation:
+    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any):
+        self.class_count = class_count
+        self.estimator = estimator
+        self.diff_classes = get_difference_of_classes(self.class_count)
 
-    ic_lower = mean_metric - tc * (std / math.sqrt(N_SPLITS))
-    ic_upper = mean_metric + tc * (std / math.sqrt(N_SPLITS))
+        self.x: np.ndarray = x[:-self.diff_classes]
+        self.y: np.ndarray = y[:-self.diff_classes]
+        self.synthetic_x: np.ndarray = x[-self.diff_classes:] if self.diff_classes > 0 else np.array([])
+        self.synthetic_y: np.ndarray = y[-self.diff_classes:] if self.diff_classes > 0 else np.array([])
+        self.splited_synthetic_x = np.array_split(self.synthetic_x, N_SPLITS)
+        self.splited_synthetic_y = np.array_split(self.synthetic_y, N_SPLITS)
 
-    return ic_lower, ic_upper
+    def run_error_estimation(self):
+        pass
+
+    def split_dataset(self) -> list[np.ndarray]:
+        folds, current_fold = [], 0
+
+        for train_index, test_index in CV.split(self.x, self.y):
+            x_train, y_train = self.x[train_index], self.y[train_index]
+            x_test, y_test = self.x[test_index], self.y[test_index]
+
+            x_train, y_train = self.complete_fold(current_fold)
+            folds.append((x_train, y_train, x_test, y_test))
+            current_fold += 1
+
+        return folds
+
+    def complete_fold(self, x: np.ndarray, y: np.ndarray, current_fold: int) -> Tuple[np.ndarray, np.ndarray]:
+        completed_x = self.x
+        completed_y = self.y
+        for i in range(N_SPLITS):
+            if i != current_fold:
+                for j in range(len(splited_synthetic_x[i])):
+                    completed_x = np.append(arr=self.x, values=[splited_synthetic_x[i][j]], axis=0)
+                    completed_y = np.append(arr=self.y, values=[splited_synthetic_y[i][j]], axis=0)
+
+        return completed_x, completed_y
+
+    @staticmethod
+    def calculate_confidence_interval(metric: list, mean_metric: float) -> Tuple[float, float]:
+        tc = 2.262
+        std = calculate_std(np.array(metric))
+
+        ic_lower = mean_metric - tc * (std / math.sqrt(N_SPLITS))
+        ic_upper = mean_metric + tc * (std / math.sqrt(N_SPLITS))
+
+        return ic_lower, ic_upper
 
 
 def complete_fold(
