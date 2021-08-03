@@ -3,8 +3,7 @@ import initial_context
 import numpy as np
 import time
 
-from config.constants import CV, EMPTY_ERROR_ESTIMATION_DICT, FIELDNAMES, FILTERS, MIN_MAX_NORMALIZATION, REDUCTIONS, \
-    SAMPLINGS, SCORING
+from config.constants import CV, FIELDNAMES, FILTERS, MIN_MAX_NORMALIZATION, REDUCTIONS, SAMPLINGS, SCORING
 from classifiers.KNearestNeighbors import KNearestNeighbors as Knn
 from classifiers.NaiveBayes import NaiveBayes as Nb
 from classifiers.NeuralNetwork import NeuralNetwork as Nn
@@ -14,7 +13,7 @@ from config import logger
 from mainPreprocessing import run_preprocessing
 from sklearn.model_selection import GridSearchCV
 from typing import Tuple
-from utils.training.retraining import error_estimation
+from utils.training.ErrorEstimation import ErrorEstimation
 from utils.training.special_settings import stop_running_rf, skip_current_test
 
 log = logger.get_logger(__file__)
@@ -101,39 +100,35 @@ def run_grid_search(
             for sampling in SAMPLINGS:
                 for p_filter in FILTERS:
                     for min_max in MIN_MAX_NORMALIZATION:
-                        current_test_initial_time = time.time()
-                        if skip_current_test(is_random_forest_done, classifier, reduction):
-                            continue
-
-                        log.info(
-                            f'Running test with '
-                            f'classifier: {classifier.__name__}, '
-                            f'reduction: {reduction}, '
-                            f'sampling: {sampling}, '
-                            f'filtro: {p_filter}, '
-                            f'min_max: {min_max}'
-                        ) if verbose else lambda: None
-
                         try:
-                            data = run_preprocessing(
-                                folder,
-                                dataset_name,
-                                classes,
-                                p_filter,
-                                reduction,
-                                sampling,
-                                min_max
+                            current_test_initial_time = time.time()
+                            if skip_current_test(is_random_forest_done, classifier.__name__, reduction):
+                                continue
+
+                            log.info(
+                                f'Running test with '
+                                f'classifier: {classifier.__name__}, '
+                                f'reduction: {reduction}, '
+                                f'sampling: {sampling}, '
+                                f'filtro: {p_filter}, '
+                                f'min_max: {min_max}'
+                            ) if verbose else lambda: None
+
+                            x, y, classes_count = run_preprocessing(
+                                folder=folder,
+                                dataset_name=dataset_name,
+                                classes=classes,
+                                apply_min_max=min_max,
+                                p_filter=p_filter,
+                                reduction=reduction,
+                                sampling=sampling
                             )
-                        except (IOError, ValueError, MemoryError, TimeoutError) as error:
-                            log.error(f'Could not run current test due to error: {error}')
-                            continue
 
-                        x, y, classes_count = data
-                        instances, features = x.shape
-                        model = classifier(n_features=features)
+                            instances, features = x.shape
+                            model = classifier(n_features=features)
 
-                        log.info('Running cross validation') if verbose else lambda: None
-                        try:
+                            log.info('Running cross validation') if verbose else lambda: None
+
                             grd = GridSearchCV(
                                 estimator=model.estimator,
                                 param_grid=model.parameter_grid,
@@ -144,41 +139,43 @@ def run_grid_search(
                             )
 
                             grid_results = grd.fit(x, y)
-                        except (KeyError, ValueError) as error:
-                            log.error(f'Could not run cross validation: {error}')
-                            continue
 
-                        accuracy, precision, recall, f1, parameters = get_results(grid_results)
-                        current_test = test_to_dict(folder, dataset_name, model.name, p_filter, min_max, sampling)
-                        grid_search_results = grid_search_results_to_dict(accuracy, precision, recall, precision)
+                            accuracy, precision, recall, f1, parameters = get_results(grid_results)
+                            current_test = test_to_dict(folder, dataset_name, model.name, p_filter, min_max, sampling)
+                            grid_search_results = grid_search_results_to_dict(accuracy, precision, recall, precision)
 
-                        log.info(
-                            f'Best result for test [{model.name}, {reduction}, {sampling}, {p_filter}, {min_max}]'
-                            f'with f1-score {(f1 * 100):.2f}%.'
-                        ) if verbose else lambda: None
-                        log.info(f'Best parameters found: {parameters}') if verbose else lambda: None
+                            log.info(
+                                f'Best result for test [{model.name}, {reduction}, {sampling}, {p_filter}, {min_max}]'
+                                f'with f1-score {(f1 * 100):.2f}%.'
+                            ) if verbose else lambda: None
+                            log.info(f'Best parameters found: {parameters}') if verbose else lambda: None
 
-                        if sampling is not None and sampling != 'Random':
                             log.info(f'Running error estimation')
-                            error_estimation_results = error_estimation(x, y, classes_count, grid_results.best_estimator_)
-                        else:
-                            error_estimation_results = EMPTY_ERROR_ESTIMATION_DICT
+                            error_estimation = ErrorEstimation(x, y, classes_count, grid_results.best_estimator_)
+                            error_estimation_results = error_estimation.run_error_estimation()
 
-                        log.info('Saving results!') if verbose else lambda: None
-                        save_results(
-                            file=output_file,
-                            fieldnames=FIELDNAMES,
-                            test=current_test,
-                            grid_search_results=grid_search_results,
-                            error_estimation_results=error_estimation_results,
-                            parameters=parameters
-                        )
+                            log.info('Saving results!') if verbose else lambda: None
+                            save_results(
+                                file=output_file,
+                                fieldnames=FIELDNAMES,
+                                test=current_test,
+                                grid_search_results=grid_search_results,
+                                error_estimation_results=error_estimation_results,
+                                parameters=parameters
+                            )
 
-                        is_random_forest_done = stop_running_rf(is_random_forest_done, model.name, reduction)
-                        current_test_ellapsed_time = (time.time() - current_test_initial_time) / 60
-                        log.info(
-                            f"Finished current test in {current_test_ellapsed_time:.2f} minutes"
-                        ) if verbose else lambda: None
+                            current_test_ellapsed_time = (time.time() - current_test_initial_time) / 60
+                            log.info(
+                                f"Finished current test in {current_test_ellapsed_time:.2f} minutes"
+                            ) if verbose else lambda: None
+                        except (IOError, KeyError, MemoryError, TimeoutError, ValueError) as error:
+                            log.error(f'Could not run current test due to error: {error}')
+                        finally:
+                            is_random_forest_done = stop_running_rf(
+                                is_random_forest_done,
+                                classifier.__name__,
+                                reduction
+                            )
 
 
 if __name__ == '__main__':
