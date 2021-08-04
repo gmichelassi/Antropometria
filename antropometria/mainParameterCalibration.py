@@ -13,13 +13,26 @@ from config import logger
 from mainPreprocessing import run_preprocessing
 from sklearn.model_selection import GridSearchCV
 from typing import Tuple
-from utils.training.ErrorEstimation import ErrorEstimation
+from utils.training.DefaultErrorEstimation import DefaultErrorEstimation
+from utils.training.RandomSamplingErrorEstimation import RandomSamplingErrorEstimation
+from utils.training.SmoteErrorEstimation import SmoteErrorEstimation
 from utils.training.special_settings import stop_running_rf, skip_current_test
 
 log = logger.get_logger(__file__)
 initial_context.set_context()
 
 CLASSIFIERS = [Knn, Nb, Nn, Rf, Svm]
+
+
+errorEstimationSelector = {
+    'None': DefaultErrorEstimation,
+    'Random': RandomSamplingErrorEstimation,
+    'Smote': SmoteErrorEstimation,
+    'Borderline': SmoteErrorEstimation,
+    'KMeans': SmoteErrorEstimation,
+    'SVM': SmoteErrorEstimation,
+    'Tomek': SmoteErrorEstimation
+}
 
 
 def write_header(file: str, fieldnames: list[str]) -> None:
@@ -145,13 +158,15 @@ def run_grid_search(
                             grid_search_results = grid_search_results_to_dict(accuracy, precision, recall, precision)
 
                             log.info(
-                                f'Best result for test [{model.name}, {reduction}, {sampling}, {p_filter}, {min_max}]'
+                                f'Best result for test [{model.name}, {reduction}, {sampling}, {p_filter}, {min_max}] '
                                 f'with f1-score {(f1 * 100):.2f}%.'
                             ) if verbose else lambda: None
                             log.info(f'Best parameters found: {parameters}') if verbose else lambda: None
 
                             log.info(f'Running error estimation')
-                            error_estimation = ErrorEstimation(x, y, classes_count, grid_results.best_estimator_)
+                            error_estimation = errorEstimationSelector[str(sampling)](
+                                x, y, classes_count, grid_results.best_estimator_, sampling
+                            )
                             error_estimation_results = error_estimation.run_error_estimation()
 
                             log.info('Saving results!') if verbose else lambda: None
