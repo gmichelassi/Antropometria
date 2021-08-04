@@ -2,7 +2,10 @@ from context import set_tests_context
 set_tests_context()
 
 import numpy as np
+import os
+import pandas as pd
 
+from antropometria.config.constants.general import TEMPORARY_RANDOM_SAMPLES, TEMPORARY_RANDOM_SAMPLES_LABELS
 from antropometria.sampling.OverSampling import OverSampling
 from antropometria.sampling.UnderSampling import UnderSampling
 from pytest import approx
@@ -74,3 +77,20 @@ class TestDataSampling:
         assert approx(balanced_classes_count[0], rel=5) == balanced_classes_count[1]
         assert CLASSES_COUNT[0] + difference_of_classes == CLASSES_COUNT[1] \
                or CLASSES_COUNT[0] == CLASSES_COUNT[1] + difference_of_classes
+
+    def test_random_undersampling_creates_temporary_files(self):
+        x_balanced, y_balanced = UnderSampling().fit_transform(X_DATA, Y_DATA)
+
+        assert os.path.isfile(TEMPORARY_RANDOM_SAMPLES)
+        assert os.path.isfile(TEMPORARY_RANDOM_SAMPLES_LABELS)
+
+        removed_values = pd.read_csv(TEMPORARY_RANDOM_SAMPLES).to_numpy()
+        removed_values_labels = pd.read_csv(TEMPORARY_RANDOM_SAMPLES_LABELS).T.to_numpy()[0]
+
+        assert removed_values.shape[0] == removed_values_labels.shape[0]
+
+        fulldataset_shape = (x_balanced.shape[0] + removed_values.shape[0], x_balanced.shape[1])
+        assert fulldataset_shape == X_DATA.shape
+
+        os.remove(TEMPORARY_RANDOM_SAMPLES)
+        os.remove(TEMPORARY_RANDOM_SAMPLES_LABELS)
