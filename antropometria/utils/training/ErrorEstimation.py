@@ -22,37 +22,35 @@ class ErrorEstimation(ABC):
 
     @abstractmethod
     def run_error_estimation(self) -> dict[str, tuple[float, float]]:
-        raise NotImplementedError()
+        pass
 
     @abstractmethod
-    def __split_dataset(self) -> list[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
-        raise NotImplementedError()
+    def get_folds(self):
+        pass
 
-    @abstractmethod
-    def __complete_fold(self, x: np.ndarray, y: np.ndarray, current_fold: int) -> Tuple[np.ndarray, np.ndarray]:
-        raise NotImplementedError()
-
-    def __predict_folds(
-            self,
-            folds:  list[tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]
-    ) -> Tuple[list[float], list[float], list[float], list[float], list[float], list[float], list[float]]:
-        accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro =\
+    def calculate_metrics(self, folds: list[tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]) \
+            -> Tuple[list[float], list[float], list[float], list[float], list[float], list[float], list[float]]:
+        accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro = \
             [], [], [], [], [], [], []
-        for i in range(N_SPLITS):
-            self.estimator.fit(folds[i][0], folds[i][1])
-            y_predict = self.estimator.predict(folds[i][2])
 
-            accuracy.append(accuracy_score(y_true=folds[i][3], y_pred=y_predict))
-            precision_micro.append(precision_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
-            recall_micro.append(recall_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
-            f1_micro.append(f1_score(y_true=folds[i][3], y_pred=y_predict, average='micro'))
-            precision_macro.append(precision_score(y_true=folds[i][3], y_pred=y_predict, average='macro'))
-            recall_macro.append(recall_score(y_true=folds[i][3], y_pred=y_predict, average='macro'))
-            f1_macro.append(f1_score(y_true=folds[i][3], y_pred=y_predict, average='macro'))
+        for i in range(N_SPLITS):
+            x_train, y_train = folds[i][0], folds[i][1]
+            x_test, y_test = folds[i][2], folds[i][3]
+
+            self.estimator.fit(x_train, y_train)
+            y_predict = self.estimator.predict(x_test)
+
+            accuracy.append(accuracy_score(y_true=y_test, y_pred=y_predict))
+            precision_micro.append(precision_score(y_true=y_test, y_pred=y_predict, average='micro'))
+            recall_micro.append(recall_score(y_true=y_test, y_pred=y_predict, average='micro'))
+            f1_micro.append(f1_score(y_true=y_test, y_pred=y_predict, average='micro'))
+            precision_macro.append(precision_score(y_true=y_test, y_pred=y_predict, average='macro'))
+            recall_macro.append(recall_score(y_true=y_test, y_pred=y_predict, average='macro'))
+            f1_macro.append(f1_score(y_true=y_test, y_pred=y_predict, average='macro'))
 
         return accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro
 
-    def __calculate_results(
+    def calculate_results(
             self,
             accuracy: list[float],
             precision_micro: list[float],
@@ -71,8 +69,8 @@ class ErrorEstimation(ABC):
             'recall_macro': recall_macro,
             'f1_macro': f1_macro
         })
-        f1_micro_ic = self.__calculate_confidence_interval(f1_micro, mean_results['f1_micro'])
-        f1_macro_ic = self.__calculate_confidence_interval(f1_macro, mean_results['f1_macro'])
+        f1_micro_ic = self.calculate_confidence_interval(f1_micro, mean_results['f1_micro'])
+        f1_macro_ic = self.calculate_confidence_interval(f1_macro, mean_results['f1_macro'])
 
         return {
             'err_accuracy': mean_results['accuracy'],
@@ -87,7 +85,7 @@ class ErrorEstimation(ABC):
         }
 
     @staticmethod
-    def __calculate_confidence_interval(metric: list, mean_metric: float) -> Tuple[float, float]:
+    def calculate_confidence_interval(metric: list, mean_metric: float) -> Tuple[float, float]:
         tc = 2.262
         std = calculate_std(np.array(metric))
 
@@ -95,3 +93,20 @@ class ErrorEstimation(ABC):
         ic_upper = mean_metric + tc * (std / math.sqrt(N_SPLITS))
 
         return ic_lower, ic_upper
+
+    @staticmethod
+    def get_confusion_matrix_values(y_true: np.ndarray, y_predicted: np.ndarray):
+        """Calculates the number of tp, fp, tn, fn for binary datasets"""
+        true_positive, false_positive, true_negative, false_negative = 0, 0, 0, 0
+
+        for i in range(len(y_true)):
+            if y_true[i] == y_predicted[i] == 1:
+                true_positive += 1
+            if y_predicted[i] == 1 and y_true[i] != y_predicted[i]:
+                false_positive += 1
+            if y_true[i] == y_predicted[i] == 0:
+                true_negative += 1
+            if y_predicted[i] == 0 and y_true[i] != y_predicted[i]:
+                false_negative += 1
+
+        return true_positive, false_positive, true_negative, false_negative

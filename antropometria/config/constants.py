@@ -32,9 +32,10 @@ FILTERS = [0.0]
 MIN_MAX_NORMALIZATION = [False, True]
 REDUCTIONS = [None, 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF', 'RFSelect']
 ROOT_DIR = os.path.abspath(os.getcwd())
-SAMPLINGS = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
+SAMPLINGS = ['Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
 SCORING = ['accuracy', 'precision', 'recall', 'f1']
-
+TEMPORARY_RANDOM_SAMPLES = 'antropometria/output/temp_removed_random_samples.csv'
+TEMPORARY_RANDOM_SAMPLES_LABELS = 'antropometria/output/temp_removed_random_samples_labels.csv'
 EMPTY_ERROR_ESTIMATION_DICT = {
     'err_accuracy': EMPTY,
     'err_precision_micro': EMPTY,

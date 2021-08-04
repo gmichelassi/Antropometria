@@ -59,7 +59,7 @@ def run_preprocessing(
 
         log.info(f'Applying {sampling} sampling') if verbose else lambda: None
 
-        if sampling == 'random':
+        if sampling == 'Random':
             x, y = UnderSampling().fit_transform(x, y)
         else:
             x, y = OverSampling(sampling).fit_transform(x, y)

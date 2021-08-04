@@ -4,9 +4,10 @@ import sys
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
-from ErrorEstimation import ErrorEstimation
+from antropometria.utils.training.ErrorEstimation import ErrorEstimation
 from antropometria.config.constants import CV, N_SPLITS
 from antropometria.utils.dataset.manipulation import get_difference_of_classes
+
 from typing import Any, Tuple
 
 
@@ -23,15 +24,15 @@ class SmoteErrorEstimation(ErrorEstimation):
         self.splited_synthetic_y = np.array_split(self.synthetic_y, N_SPLITS)
 
     def run_error_estimation(self) -> dict[str, tuple[float, float]]:
-        folds = self.__split_dataset()
+        folds = self.get_folds()
         accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro \
-            = self.__predict_folds(folds)
+            = self.calculate_metrics(folds)
 
-        return self.__calculate_results(
+        return self.calculate_results(
             accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro
         )
 
-    def __split_dataset(self) -> list[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
+    def get_folds(self) -> list[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
         folds, current_fold = [], 0
 
         for train_index, test_index in CV.split(self.x, self.y):
@@ -40,13 +41,13 @@ class SmoteErrorEstimation(ErrorEstimation):
             x_test: np.ndarray = self.x[test_index]
             y_test: np.ndarray = self.y[test_index]
 
-            x_train, y_train = self.__complete_fold(x_train, y_train, current_fold)
+            x_train, y_train = self.complete_fold(x_train, y_train, current_fold)
             folds.append((x_train, y_train, x_test, y_test))
             current_fold += 1
 
         return folds
 
-    def __complete_fold(self, x: np.ndarray, y: np.ndarray, current_fold: int) -> Tuple[np.ndarray, np.ndarray]:
+    def complete_fold(self, x: np.ndarray, y: np.ndarray, current_fold: int) -> Tuple[np.ndarray, np.ndarray]:
         completed_x: np.ndarray = x
         completed_y: np.ndarray = y
         for i in range(N_SPLITS):
