@@ -2,15 +2,15 @@ import initial_context
 import numpy as np
 import time
 
-from antropometria.config.constants.general import FIELDNAMES, CV
-from antropometria.config.constants.training import \
-    REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, SCORING, ERROR_ESTIMATION
 from classifiers.KNearestNeighbors import KNearestNeighbors as Knn
 from classifiers.NaiveBayes import NaiveBayes as Nb
 from classifiers.NeuralNetwork import NeuralNetwork as Nn
 from classifiers.RandomForests import RandomForests as Rf
 from classifiers.SupportVectorMachine import SupportVectorMachine as Svm
 from config import logger
+from config.constants.general import FIELDNAMES, CV
+from config.constants.training import \
+    REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, SCORING, ERROR_ESTIMATION
 from mainPreprocessing import run_preprocessing
 from sklearn.model_selection import GridSearchCV
 from utils.parameter_calibration.results import write_header, get_results, save_results
