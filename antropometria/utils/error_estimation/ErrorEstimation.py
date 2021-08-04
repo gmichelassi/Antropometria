@@ -3,10 +3,11 @@ import numpy as np
 import os
 import sys
 
+from antropometria.config.constants.general import N_SPLITS
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from abc import ABC, abstractmethod
-from antropometria.config.constants import N_SPLITS
 from antropometria.utils.metrics import calculate_mean, calculate_std
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from typing import Any, Tuple

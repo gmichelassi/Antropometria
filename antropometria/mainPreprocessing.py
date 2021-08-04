@@ -55,7 +55,7 @@ def run_preprocessing(
         if len(classes_count) == 2 and abs(classes_count[0] - classes_count[1]) == 0:
             log.warning('Your binary dataset is balanced, please keep only `None` on SAMPLINGS constant on '
                         'mainParameterCalibration. If you don\'t, the algoritms will be executed anyway and can'
-                        'slow training by a significant amount of time.')
+                        'slow parameter_calibration by a significant amount of time.')
 
         log.info(f'Applying {sampling} sampling') if verbose else lambda: None
 

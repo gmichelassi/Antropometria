@@ -1,9 +1,10 @@
-import csv
 import initial_context
 import numpy as np
 import time
 
-from config.constants import CV, FIELDNAMES, FILTERS, MIN_MAX_NORMALIZATION, REDUCTIONS, SAMPLINGS, SCORING
+from antropometria.config.constants.general import FIELDNAMES, CV
+from antropometria.config.constants.training import \
+    REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, SCORING, ERROR_ESTIMATION
 from classifiers.KNearestNeighbors import KNearestNeighbors as Knn
 from classifiers.NaiveBayes import NaiveBayes as Nb
 from classifiers.NeuralNetwork import NeuralNetwork as Nn
@@ -12,88 +13,14 @@ from classifiers.SupportVectorMachine import SupportVectorMachine as Svm
 from config import logger
 from mainPreprocessing import run_preprocessing
 from sklearn.model_selection import GridSearchCV
-from typing import Tuple
-from utils.training.DefaultErrorEstimation import DefaultErrorEstimation
-from utils.training.RandomSamplingErrorEstimation import RandomSamplingErrorEstimation
-from utils.training.SmoteErrorEstimation import SmoteErrorEstimation
-from utils.training.special_settings import stop_running_rf, skip_current_test
+from utils.parameter_calibration.results import write_header, get_results, save_results
+from utils.parameter_calibration.special_settings import stop_running_rf, skip_current_test
+from utils.parameter_calibration.to_dict import test_to_dict, grid_search_results_to_dict
 
 log = logger.get_logger(__file__)
 initial_context.set_context()
 
 CLASSIFIERS = [Knn, Nb, Nn, Rf, Svm]
-
-
-errorEstimationSelector = {
-    'None': DefaultErrorEstimation,
-    'Random': RandomSamplingErrorEstimation,
-    'Smote': SmoteErrorEstimation,
-    'Borderline': SmoteErrorEstimation,
-    'KMeans': SmoteErrorEstimation,
-    'SVM': SmoteErrorEstimation,
-    'Tomek': SmoteErrorEstimation
-}
-
-
-def write_header(file: str, fieldnames: list[str]) -> None:
-    with open(file, 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-
-
-def save_results(
-        file: str,
-        fieldnames: list[str],
-        test: dict,
-        grid_search_results: dict,
-        error_estimation_results: dict,
-        parameters: dict
-) -> None:
-    with open(file, 'a') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        results = {}
-        results.update(test)
-        results.update(grid_search_results)
-        results.update(error_estimation_results)
-        results['parameters'] = parameters
-        writer.writerow(results)
-
-
-def get_results(grid_results) -> Tuple[float, float, float, float, dict]:
-    f1 = grid_results.best_score_
-    precision = grid_results.cv_results_['mean_test_precision'][grid_results.best_index_]
-    recall = grid_results.cv_results_['mean_test_recall'][grid_results.best_index_]
-    accuracy = grid_results.cv_results_['mean_test_accuracy'][grid_results.best_index_]
-    parameters = grid_results.best_params_
-
-    return accuracy, precision, recall, f1, parameters
-
-
-def test_to_dict(
-        folder: str,
-        model_name: str,
-        reduction: str,
-        p_filter: float,
-        min_max: bool,
-        sampling: str
-) -> dict:
-    return {
-        'biblioteca': folder,
-        'classifier': model_name,
-        'reduction': reduction,
-        'filtro': p_filter,
-        'min_max': min_max,
-        'balanceamento': sampling,
-    }
-
-
-def grid_search_results_to_dict(accuracy: float, precision: float, recall: float, f1: float) -> dict:
-    return {
-        'cv_accuracy': accuracy,
-        'cv_precision': precision,
-        'cv_recall': recall,
-        'cv_f1score': f1,
-    }
 
 
 def run_grid_search(
@@ -164,7 +91,7 @@ def run_grid_search(
                             log.info(f'Best parameters found: {parameters}') if verbose else lambda: None
 
                             log.info(f'Running error estimation')
-                            error_estimation = errorEstimationSelector[str(sampling)](
+                            error_estimation = ERROR_ESTIMATION[str(sampling)](
                                 x, y, classes_count, grid_results.best_estimator_, sampling
                             )
                             error_estimation_results = error_estimation.run_error_estimation()
@@ -193,7 +120,11 @@ def run_grid_search(
                             )
 
 
-if __name__ == '__main__':
+def main():
     start_time = time.time()
     run_grid_search('dlibHOG', 'distances_all_px_eu', ['casos', 'controles'])
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
+
+
+if __name__ == '__main__':
+    main()

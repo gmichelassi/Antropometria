@@ -2,11 +2,12 @@ import numpy as np
 import os
 import sys
 
+from antropometria.config.constants.general import N_SPLITS, CV
+
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
-from antropometria.utils.training.ErrorEstimation import ErrorEstimation
-from antropometria.config.constants import CV, N_SPLITS
 from antropometria.utils.dataset.manipulation import get_difference_of_classes
+from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
 
 from typing import Any, Tuple
 

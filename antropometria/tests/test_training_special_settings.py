@@ -1,7 +1,7 @@
 from context import set_tests_context
 set_tests_context()
 
-from antropometria.utils.training.special_settings import stop_running_rf, skip_current_test
+from antropometria.utils.parameter_calibration.special_settings import stop_running_rf, skip_current_test
 from antropometria.classifiers.RandomForests import RandomForests as Rf
 from antropometria.classifiers.NaiveBayes import NaiveBayes as OtherClassifier
 
