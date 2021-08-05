@@ -21,8 +21,8 @@ class DummyConcreteErrorEstimation(ErrorEstimation):
     This is a dummy implementation of the abstract class Error Estimation.
     It is used to test the concrete methods.
     """
-    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any, sampling: str):
-        super(DummyConcreteErrorEstimation, self).__init__(x, y, class_count, estimator, sampling)
+    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any):
+        super(DummyConcreteErrorEstimation, self).__init__(x, y, class_count, estimator)
 
     def run_error_estimation(self) -> dict[str, tuple[float, float]]:
         raise NotImplementedError
@@ -34,7 +34,7 @@ class DummyConcreteErrorEstimation(ErrorEstimation):
 class TestErrorEstimation:
     @pytest.fixture
     def error_estimation(self):
-        return DummyConcreteErrorEstimation(X, Y, CLASSES_COUNT, SVC(), 'any')
+        return DummyConcreteErrorEstimation(X, Y, CLASSES_COUNT, SVC())
 
     @pytest.fixture
     def generate_folds(self):
