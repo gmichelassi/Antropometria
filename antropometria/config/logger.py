@@ -1,19 +1,28 @@
 import logging
 import os
+import sys
 
-ROOT_DIR = os.path.abspath(os.getcwd())
+sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
+from antropometria.config.constants.general import ROOT_DIR
 
 
-def get_logger(logger_for_file):
-    logger = logging.getLogger(os.path.basename(logger_for_file))
+def get_logger(logged_file: str = __file__):
+    logger = logging.getLogger(os.path.basename(logged_file))
     if not logger.handlers:
-        logging.basicConfig(format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                            datefmt='%d/%m/%Y %I:%M:%S %p', filename=ROOT_DIR + "/antropometria/output/processing.log",
-                            filemode='w', level=logging.DEBUG)
+        logging.basicConfig(
+            format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+            datefmt='%d/%m/%Y %I:%M:%S %p',
+            filename=ROOT_DIR + "/antropometria/output/processing.log",
+            filemode='w',
+            level=logging.DEBUG
+        )
         console = logging.StreamHandler()
         console.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s %(name)-12s: %(levelname)-8s %(message)s',
-                                      datefmt='%d/%m/%Y %I:%M:%S')
+        formatter = logging.Formatter(
+            '%(asctime)s %(name)-12s: %(levelname)-8s %(message)s',
+            datefmt='%d/%m/%Y %I:%M:%S'
+        )
         console.setFormatter(formatter)
         logger.addHandler(console)
     return logger

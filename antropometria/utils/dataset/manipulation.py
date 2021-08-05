@@ -118,7 +118,7 @@ def pca_cumulative_variance(samples, labels, verbose=False):
         plt.savefig("./output/pca-explained-variance.png")
 
 
-def get_difference_of_classes(classes_count: list) -> int:
+def get_difference_of_classes(classes_count: list[int]) -> int:
     if len(classes_count) != 2:
         raise ValueError(f'Should have maximum 2 unique labels (binary), {len(classes_count)} unique labels given')
 

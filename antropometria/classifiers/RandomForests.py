@@ -3,7 +3,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 
 class RandomForests:
-    def __init__(self, name: str = 'RandomForestClassifier', n_features: int = 0):
+    def __init__(self, name: str = 'RandomForest', n_features: int = 0):
         self.name = name
         self.sqrt_n_features = int(sqrt(n_features))
         self.estimator = RandomForestClassifier()
