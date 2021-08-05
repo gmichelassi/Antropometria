@@ -12,8 +12,8 @@ from typing import Any, Tuple
 
 
 class RandomSamplingErrorEstimation(ErrorEstimation):
-    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any, sampling: str):
-        super(RandomSamplingErrorEstimation, self).__init__(x, y, class_count, estimator, sampling)
+    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any):
+        super(RandomSamplingErrorEstimation, self).__init__(x, y, class_count, estimator)
         self.removed_values = pd.read_csv(TEMPORARY_RANDOM_SAMPLES).to_numpy()
         self.removed_values_labels = pd.read_csv(TEMPORARY_RANDOM_SAMPLES_LABELS).T.to_numpy()[0]
 

@@ -14,10 +14,9 @@ from typing import Any, Tuple
 
 
 class ErrorEstimation(ABC):
-    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any, sampling: str):
+    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any):
         self.class_count = class_count
         self.estimator = estimator
-        self.sampling = sampling
         self.x = x
         self.y = y
 
@@ -26,7 +25,7 @@ class ErrorEstimation(ABC):
         pass
 
     @abstractmethod
-    def get_folds(self):
+    def get_folds(self) -> list[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
         pass
 
     def calculate_metrics(self, folds: list[tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]) \

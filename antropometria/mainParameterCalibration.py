@@ -92,7 +92,7 @@ def run_grid_search(
 
                             log.info(f'Running error estimation')
                             error_estimation = ERROR_ESTIMATION[str(sampling)](
-                                x, y, classes_count, grid_results.best_estimator_, sampling
+                                x, y, classes_count, grid_results.best_estimator_
                             )
                             error_estimation_results = error_estimation.run_error_estimation()
 

@@ -13,16 +13,16 @@ from typing import Any, Tuple
 
 
 class SmoteErrorEstimation(ErrorEstimation):
-    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any, sampling: str):
-        super(SmoteErrorEstimation, self).__init__(x, y, class_count, estimator, sampling)
+    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any):
+        super(SmoteErrorEstimation, self).__init__(x, y, class_count, estimator)
 
         self.diff_classes = get_difference_of_classes(self.class_count)
         self.x: np.ndarray = x[:-self.diff_classes]
         self.y: np.ndarray = y[:-self.diff_classes]
         self.synthetic_x: np.ndarray = x[-self.diff_classes:] if self.diff_classes > 0 else np.array([])
         self.synthetic_y: np.ndarray = y[-self.diff_classes:] if self.diff_classes > 0 else np.array([])
-        self.splited_synthetic_x = np.array_split(self.synthetic_x, N_SPLITS)
-        self.splited_synthetic_y = np.array_split(self.synthetic_y, N_SPLITS)
+        self.splitted_synthetic_x = np.array_split(self.synthetic_x, N_SPLITS)
+        self.splitted_synthetic_y = np.array_split(self.synthetic_y, N_SPLITS)
 
     def run_error_estimation(self) -> dict[str, tuple[float, float]]:
         folds = self.get_folds()
@@ -53,8 +53,8 @@ class SmoteErrorEstimation(ErrorEstimation):
         completed_y: np.ndarray = y
         for i in range(N_SPLITS):
             if i != current_fold:
-                for j in range(len(self.splited_synthetic_x[i])):
-                    completed_x = np.append(arr=completed_x, values=[self.splited_synthetic_x[i][j]], axis=0)
-                    completed_y = np.append(arr=completed_y, values=[self.splited_synthetic_y[i][j]], axis=0)
+                for j in range(len(self.splitted_synthetic_x[i])):
+                    completed_x = np.append(arr=completed_x, values=[self.splitted_synthetic_x[i][j]], axis=0)
+                    completed_y = np.append(arr=completed_y, values=[self.splitted_synthetic_y[i][j]], axis=0)
 
         return completed_x, completed_y
