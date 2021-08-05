@@ -1,12 +1,10 @@
 import csv
 import math
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
 
 from scipy import stats
-from sklearn.decomposition import PCA
 
 
 def apply_pearson_feature_selection(samples: pd.DataFrame, threshold: float = 0.99) -> pd.DataFrame:
@@ -93,29 +91,6 @@ def apply_min_max_normalization(df: pd.DataFrame) -> pd.DataFrame:
         df_final.append(columns)
 
     return pd.DataFrame(df_final, dtype=float).T
-
-
-def pca_cumulative_variance(samples, labels, verbose=False):
-    pca = PCA()
-
-    pca.fit(samples, labels)
-    var_exp = pca.explained_variance_ratio_
-    cum_var_exp = np.cumsum(var_exp)
-
-    for i, soma in enumerate(cum_var_exp):
-        print("PC" + str(i+1) + " Cumulative variance: {0:.3f}%".format(cum_var_exp[i]*100))
-
-    if verbose:
-        plt.figure(figsize=(8, 6))
-        plt.bar(range(1, len(cum_var_exp) + 1), var_exp, align='center', label='individual variance explained',
-                alpha=0.7)
-        plt.step(range(1, len(cum_var_exp) + 1), cum_var_exp, where='mid', label='cumulative variance explained',
-                 color='red')
-        plt.ylabel('Explained variance ratio')
-        plt.xlabel('Principal components')
-        plt.xticks(np.arange(1, len(var_exp) + 1, 1))
-        plt.legend(loc='center right')
-        plt.savefig("./output/pca-explained-variance.png")
 
 
 def get_difference_of_classes(classes_count: list[int]) -> int:
