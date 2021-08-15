@@ -122,7 +122,7 @@ def run_grid_search(
 
 def main():
     start_time = time.time()
-    run_grid_search('dlibHOG', 'distances_sem_boca_px_eu.csv', ['casos', 'controles'])
+    run_grid_search('dlibHOG', 'distances_sem_boca_px_eu', ['casos', 'controles'])
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
 
 
