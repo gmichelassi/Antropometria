@@ -14,7 +14,7 @@ class DefaultErrorEstimation(ErrorEstimation):
     def __init__(self, x: np.ndarray, y: np.ndarray, class_count: List[int], estimator: Any):
         super(DefaultErrorEstimation, self).__init__(x, y, class_count, estimator)
 
-    def run_error_estimation(self) -> dict[str, tuple[float, float]]:
+    def run_error_estimation(self) -> dict[str, Tuple[float, float]]:
         folds = self.get_folds()
         accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro \
             = self.calculate_metrics(folds)

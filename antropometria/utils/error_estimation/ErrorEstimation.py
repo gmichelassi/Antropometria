@@ -21,14 +21,14 @@ class ErrorEstimation(ABC):
         self.y = y
 
     @abstractmethod
-    def run_error_estimation(self) -> dict[str, tuple[float, float]]:
+    def run_error_estimation(self) -> dict[str, Tuple[float, float]]:
         pass
 
     @abstractmethod
     def get_folds(self) -> List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
         pass
 
-    def calculate_metrics(self, folds: List[tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]) \
+    def calculate_metrics(self, folds: List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]) \
             -> Tuple[List[float], List[float], List[float], List[float], List[float], List[float], List[float]]:
         accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro = \
             [], [], [], [], [], [], []
@@ -59,7 +59,7 @@ class ErrorEstimation(ABC):
             precision_macro: List[float],
             recall_macro: List[float],
             f1_macro: List[float]
-    ) -> dict[str, tuple[float, float]]:
+    ) -> dict[str, Tuple[float, float]]:
         mean_results = calculate_mean({
             'accuracy': accuracy,
             'precision_micro': precision_micro,

@@ -24,7 +24,7 @@ class SmoteErrorEstimation(ErrorEstimation):
         self.splitted_synthetic_x = np.array_split(self.synthetic_x, N_SPLITS)
         self.splitted_synthetic_y = np.array_split(self.synthetic_y, N_SPLITS)
 
-    def run_error_estimation(self) -> dict[str, tuple[float, float]]:
+    def run_error_estimation(self) -> dict[str, Tuple[float, float]]:
         folds = self.get_folds()
         accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro \
             = self.calculate_metrics(folds)

@@ -24,7 +24,7 @@ class DummyConcreteErrorEstimation(ErrorEstimation):
     def __init__(self, x: np.ndarray, y: np.ndarray, class_count: List[int], estimator: Any):
         super(DummyConcreteErrorEstimation, self).__init__(x, y, class_count, estimator)
 
-    def run_error_estimation(self) -> dict[str, tuple[float, float]]:
+    def run_error_estimation(self) -> dict[str, Tuple[float, float]]:
         raise NotImplementedError
 
     def get_folds(self) -> List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:

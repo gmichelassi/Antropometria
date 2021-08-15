@@ -17,7 +17,7 @@ class RandomSamplingErrorEstimation(ErrorEstimation):
         self.removed_values = pd.read_csv(TEMPORARY_RANDOM_SAMPLES).to_numpy()
         self.removed_values_labels = pd.read_csv(TEMPORARY_RANDOM_SAMPLES_LABELS).T.to_numpy()[0]
 
-    def run_error_estimation(self) -> dict[str, tuple[float, float]]:
+    def run_error_estimation(self) -> dict[str, Tuple[float, float]]:
         folds = self.get_folds()
         accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro \
             = self.calculate_metrics(folds)
