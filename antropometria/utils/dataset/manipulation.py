@@ -5,6 +5,7 @@ import os
 import pandas as pd
 
 from scipy import stats
+from typing import List
 
 
 def apply_pearson_feature_selection(samples: pd.DataFrame, threshold: float = 0.99) -> pd.DataFrame:
@@ -93,7 +94,7 @@ def apply_min_max_normalization(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(df_final, dtype=float).T
 
 
-def get_difference_of_classes(classes_count: list[int]) -> int:
+def get_difference_of_classes(classes_count: List[int]) -> int:
     if len(classes_count) != 2:
         raise ValueError(f'Should have maximum 2 unique labels (binary), {len(classes_count)} unique labels given')
 

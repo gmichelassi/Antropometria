@@ -1,9 +1,9 @@
 import csv
 
-from typing import Tuple
+from typing import List, Tuple
 
 
-def write_header(file: str, fieldnames: list[str]) -> None:
+def write_header(file: str, fieldnames: List[str]) -> None:
     with open(file, 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -21,7 +21,7 @@ def get_results(grid_results) -> Tuple[float, float, float, float, dict]:
 
 def save_results(
         file: str,
-        fieldnames: list[str],
+        fieldnames: List[str],
         test: dict,
         grid_search_results: dict,
         error_estimation_results: dict,

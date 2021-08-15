@@ -9,11 +9,11 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from antropometria.utils.dataset.manipulation import get_difference_of_classes
 from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
 
-from typing import Any, Tuple
+from typing import Any, List, Tuple
 
 
 class SmoteErrorEstimation(ErrorEstimation):
-    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any):
+    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: List[int], estimator: Any):
         super(SmoteErrorEstimation, self).__init__(x, y, class_count, estimator)
 
         self.diff_classes = get_difference_of_classes(self.class_count)
@@ -33,7 +33,7 @@ class SmoteErrorEstimation(ErrorEstimation):
             accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro
         )
 
-    def get_folds(self) -> list[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
+    def get_folds(self) -> List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
         folds, current_fold = [], 0
 
         for train_index, test_index in CV.split(self.x, self.y):

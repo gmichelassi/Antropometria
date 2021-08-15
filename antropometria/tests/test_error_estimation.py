@@ -6,7 +6,7 @@ import pytest
 
 from antropometria.config.constants.general import FIELDNAMES, CV, N_SPLITS
 from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
-from typing import Any, Tuple
+from typing import Any, List, Tuple
 from sklearn.datasets import make_classification
 from sklearn.svm import SVC
 
@@ -21,13 +21,13 @@ class DummyConcreteErrorEstimation(ErrorEstimation):
     This is a dummy implementation of the abstract class Error Estimation.
     It is used to test the concrete methods.
     """
-    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any):
+    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: List[int], estimator: Any):
         super(DummyConcreteErrorEstimation, self).__init__(x, y, class_count, estimator)
 
     def run_error_estimation(self) -> dict[str, tuple[float, float]]:
         raise NotImplementedError
 
-    def get_folds(self) -> list[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
+    def get_folds(self) -> List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
         raise NotImplementedError
 
 

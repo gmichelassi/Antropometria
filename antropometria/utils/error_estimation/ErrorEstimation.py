@@ -10,11 +10,11 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from abc import ABC, abstractmethod
 from antropometria.utils.metrics import calculate_mean, calculate_std
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from typing import Any, Tuple
+from typing import Any, List, Tuple
 
 
 class ErrorEstimation(ABC):
-    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any):
+    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: List[int], estimator: Any):
         self.class_count = class_count
         self.estimator = estimator
         self.x = x
@@ -25,11 +25,11 @@ class ErrorEstimation(ABC):
         pass
 
     @abstractmethod
-    def get_folds(self) -> list[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
+    def get_folds(self) -> List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
         pass
 
-    def calculate_metrics(self, folds: list[tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]) \
-            -> Tuple[list[float], list[float], list[float], list[float], list[float], list[float], list[float]]:
+    def calculate_metrics(self, folds: List[tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]) \
+            -> Tuple[List[float], List[float], List[float], List[float], List[float], List[float], List[float]]:
         accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro = \
             [], [], [], [], [], [], []
 
@@ -52,13 +52,13 @@ class ErrorEstimation(ABC):
 
     def calculate_results(
             self,
-            accuracy: list[float],
-            precision_micro: list[float],
-            recall_micro: list[float],
-            f1_micro: list[float],
-            precision_macro: list[float],
-            recall_macro: list[float],
-            f1_macro: list[float]
+            accuracy: List[float],
+            precision_micro: List[float],
+            recall_micro: List[float],
+            f1_micro: List[float],
+            precision_macro: List[float],
+            recall_macro: List[float],
+            f1_macro: List[float]
     ) -> dict[str, tuple[float, float]]:
         mean_results = calculate_mean({
             'accuracy': accuracy,

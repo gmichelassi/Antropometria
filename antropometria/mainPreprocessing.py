@@ -8,7 +8,7 @@ from antropometria.sampling.UnderSampling import UnderSampling
 from antropometria.utils.dataset.load import LoadData
 from antropometria.utils.dataset.manipulation import apply_pearson_feature_selection, apply_min_max_normalization
 from antropometria.utils.timeout import timeout
-from typing import Tuple
+from typing import Tuple, List
 
 log = logger.get_logger(__file__)
 
@@ -23,7 +23,7 @@ def run_preprocessing(
         reduction: str = None,
         sampling: str = None,
         verbose: bool = True
-) -> Tuple[np.ndarray, np.ndarray, list[int]]:
+) -> Tuple[np.ndarray, np.ndarray, List[int]]:
     log.info(f'Loading data from data/{folder}/{dataset_name}') if verbose else lambda: None
 
     x, y = LoadData(folder, dataset_name, classes).load()

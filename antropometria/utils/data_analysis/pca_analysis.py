@@ -38,7 +38,7 @@ class PCAAnalysis:
         return components_dict
 
     @staticmethod
-    def compute_t_student_test(component_dict: dict, data: list[pd.DataFrame] = None):
+    def compute_t_student_test(component_dict: dict, data: List[pd.DataFrame] = None):
         if len(data) != 2:
             raise IOError(f'Expected len(data) = 2 but was {len(data)}')
         test = []

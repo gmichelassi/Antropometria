@@ -8,11 +8,11 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from antropometria.config.constants.general import \
     TEMPORARY_RANDOM_SAMPLES, TEMPORARY_RANDOM_SAMPLES_LABELS, N_SPLITS, CV
 from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
-from typing import Any, Tuple
+from typing import Any, List, Tuple
 
 
 class RandomSamplingErrorEstimation(ErrorEstimation):
-    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: list[int], estimator: Any):
+    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: List[int], estimator: Any):
         super(RandomSamplingErrorEstimation, self).__init__(x, y, class_count, estimator)
         self.removed_values = pd.read_csv(TEMPORARY_RANDOM_SAMPLES).to_numpy()
         self.removed_values_labels = pd.read_csv(TEMPORARY_RANDOM_SAMPLES_LABELS).T.to_numpy()[0]
@@ -26,7 +26,7 @@ class RandomSamplingErrorEstimation(ErrorEstimation):
             accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro
         )
 
-    def get_folds(self) -> list[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
+    def get_folds(self) -> List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
         folds, current_fold = [], 0
         splitted_values = np.array_split(self.removed_values, N_SPLITS, axis=0)
         splitted_values_labels = np.array_split(self.removed_values_labels, N_SPLITS, axis=0)
