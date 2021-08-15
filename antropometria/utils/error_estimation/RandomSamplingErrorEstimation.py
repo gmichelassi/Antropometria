@@ -8,7 +8,7 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from antropometria.config.constants.general import \
     TEMPORARY_RANDOM_SAMPLES, TEMPORARY_RANDOM_SAMPLES_LABELS, N_SPLITS, CV
 from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
-from typing import Any, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 
 class RandomSamplingErrorEstimation(ErrorEstimation):
@@ -17,7 +17,7 @@ class RandomSamplingErrorEstimation(ErrorEstimation):
         self.removed_values = pd.read_csv(TEMPORARY_RANDOM_SAMPLES).to_numpy()
         self.removed_values_labels = pd.read_csv(TEMPORARY_RANDOM_SAMPLES_LABELS).T.to_numpy()[0]
 
-    def run_error_estimation(self) -> dict[str, Tuple[float, float]]:
+    def run_error_estimation(self) -> Dict[str, Tuple[float, float]]:
         folds = self.get_folds()
         accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro \
             = self.calculate_metrics(folds)

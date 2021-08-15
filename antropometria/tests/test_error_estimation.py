@@ -6,7 +6,7 @@ import pytest
 
 from antropometria.config.constants.general import FIELDNAMES, CV, N_SPLITS
 from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
-from typing import Any, List, Tuple
+from typing import Any, Dict, List, Tuple
 from sklearn.datasets import make_classification
 from sklearn.svm import SVC
 
@@ -24,7 +24,7 @@ class DummyConcreteErrorEstimation(ErrorEstimation):
     def __init__(self, x: np.ndarray, y: np.ndarray, class_count: List[int], estimator: Any):
         super(DummyConcreteErrorEstimation, self).__init__(x, y, class_count, estimator)
 
-    def run_error_estimation(self) -> dict[str, Tuple[float, float]]:
+    def run_error_estimation(self) -> Dict[str, Tuple[float, float]]:
         raise NotImplementedError
 
     def get_folds(self) -> List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:

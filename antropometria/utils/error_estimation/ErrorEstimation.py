@@ -10,7 +10,7 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from abc import ABC, abstractmethod
 from antropometria.utils.metrics import calculate_mean, calculate_std
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from typing import Any, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 
 class ErrorEstimation(ABC):
@@ -21,7 +21,7 @@ class ErrorEstimation(ABC):
         self.y = y
 
     @abstractmethod
-    def run_error_estimation(self) -> dict[str, Tuple[float, float]]:
+    def run_error_estimation(self) -> Dict[str, Tuple[float, float]]:
         pass
 
     @abstractmethod
@@ -59,7 +59,7 @@ class ErrorEstimation(ABC):
             precision_macro: List[float],
             recall_macro: List[float],
             f1_macro: List[float]
-    ) -> dict[str, Tuple[float, float]]:
+    ) -> Dict[str, Tuple[float, float]]:
         mean_results = calculate_mean({
             'accuracy': accuracy,
             'precision_micro': precision_micro,
