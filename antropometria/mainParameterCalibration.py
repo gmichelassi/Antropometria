@@ -81,7 +81,7 @@ def run_grid_search(
                             grid_results = grd.fit(x, y)
 
                             accuracy, precision, recall, f1, parameters = get_results(grid_results)
-                            current_test = test_to_dict(folder, dataset_name, model.name, p_filter, min_max, sampling)
+                            current_test = test_to_dict(folder, model.name, reduction, p_filter, min_max, sampling)
                             grid_search_results = grid_search_results_to_dict(accuracy, precision, recall, precision)
 
                             log.info(
