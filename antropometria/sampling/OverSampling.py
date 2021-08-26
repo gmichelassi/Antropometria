@@ -25,7 +25,7 @@ class OverSampling:
 
         return SMOTE(random_state=RANDOM_STATE)
 
-    def fit_transform(self, x: pd.DataFrame, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    def fit_transform(self, x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         smote = self.__get_smote()
 
         x_novo, y_novo = smote.fit_resample(x, y)
