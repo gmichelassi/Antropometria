@@ -17,7 +17,7 @@ from sampling.UnderSampling import UnderSampling
 from utils.dataset.load import LoadData
 
 log = logger.get_logger(__file__)
-CLASSIFIERS = [Knn, Nb, Nn, Rf, Svm]
+CLASSIFIERS = [Nb ]#Svm,, Nn , Rf,Knn
 
 
 def main(metrica: str):
@@ -44,19 +44,19 @@ def main(metrica: str):
                 y_training = y[0]
 
                 number_of_features_set.append(get_best_features(x_training, y_training, balanceador, redutor))
-
     non_redundant_feature_sets = best_reductions(number_of_features_set, nfeatures)
 
     for indutor in CLASSIFIERS:
         for balanceador in SAMPLINGS:
             for n in range(len(non_redundant_feature_sets)):
-                reductions = non_redundant_feature_sets[n]
-                model = indutor(n_features=len(reductions))
-                estimator = model.estimator
-                media_ideal = 0.0
 
-                # TODO: VocÊ não está usando os parâmetros pra nada, atenção
+                reductions = non_redundant_feature_sets[n]
+                media_ideal = 0.0
+                model = indutor(n_features=len(reductions))
+
                 for parametros in ParameterGrid(model.parameter_grid):
+                    estimator = model.estimator
+                    estimator.set_params(**parametros)
                     soma = 0.0
                     for x, y in zip(all_x, all_y):
                         x_train, x_test, x_calibration = x
@@ -87,14 +87,19 @@ def main(metrica: str):
                             soma += recall
 
                     media = soma / N_SPLITS
+                    print(media)
+                    print("+++++++++")
                     if media > media_ideal:
                         media_ideal = media
-
-                    # TODO: Precisa usar os parametros
                     parametros_otimos = parametros
-
+                print(parametros_otimos)
+                estimator_final = model.estimator
+                print(media_ideal)
+                print("*******************")
                 media_otima, soma = 0, 0
+                estimator_final.set_params(**parametros_otimos)
                 for x, y in zip(all_x, all_y):
+
                     x_train, x_test, x_calibration = x
                     y_train, y_test, y_calibration = y
 
@@ -109,8 +114,8 @@ def main(metrica: str):
                     apply_reductions(x_train, non_redundant_feature_sets[n])
                     apply_reductions(x_test, non_redundant_feature_sets[n])
 
-                    estimator.fit(x_train, y_train)
-                    y_test_predict = estimator.predict(x_test)
+                    estimator_final.fit(x_train, y_train)
+                    y_test_predict = estimator_final.predict(x_test)
                     if metrica == "f1":
                         f1 = f1_score(y_test, y_test_predict)
                         soma += f1
@@ -143,42 +148,43 @@ def best_reductions(characteristics, nfeatures):
 
     numpyarr = np.array(characteristics)
     flat = numpyarr.flatten()
-    consensus_features = np.bincount(flat)
-    if consensus_features[0:nfeatures] not in non_redundant_features_sets:
-        non_redundant_features_sets.append(consensus_features[0:nfeatures])
+    consensus_features_np = np.bincount(flat)[0:nfeatures]
+    consensus_features = consensus_features_np.tolist()
+    if consensus_features not in non_redundant_features_sets:
+        non_redundant_features_sets.append(consensus_features)
 
     return non_redundant_features_sets
 
 
 def get_best_features(x_training: np.ndarray, y_training: np.ndarray, sampling: str = None, selector: str = None):
-    x, y = x_training, y_training
+    x, y = np.copy(x_training), np.copy(y_training)
     if sampling is not None:
         if sampling == "Random":
-            x, y = UnderSampling().fit_transform(x_training, y_training)
+            x, y = UnderSampling().fit_transform(x, y)
         else:
-            x, y = OverSampling(sampling).fit_transform(x_training, y_training)
-
+            x, y = OverSampling(sampling).fit_transform(x, y)
+    x_without_reductions = np.copy(x)
     if selector is not None:
         instances, features = x.shape
         n_features_to_keep = int(np.sqrt(features))
         feature_selector = get_feature_selector(selector, n_features_to_keep, instances, features)
         x = feature_selector.fit_transform(x, y)
 
-    return get_indexes(x_training, x, selector)
 
 
-def get_indexes(original_dataset: np.ndarray, reduced_dataset: np.ndarray, selector: str):
+    return get_indexes(x_without_reductions, x, selector)
+
+
+def get_indexes(original_dataset: np.ndarray, reduced_dataset: np.ndarray, selector: str ):
     if selector is None:
         return [i for i in range(original_dataset.shape[1])]
+    indexes = []
+    for i in range(original_dataset.shape[1]):
+        for j in range(reduced_dataset.shape[1]):
+            if np.array_equal (original_dataset[:,i],reduced_dataset[:,j]):
+                indexes.append(i)
 
-    if selector == 'PCA':
-        return []
-
-    return [
-        i for i, j in zip(range(original_dataset.shape[1]), range(reduced_dataset.shape[1]))
-        if np.array_equal(original_dataset[:i], reduced_dataset[:j])
-    ]
-
+    return indexes
 
 if __name__ == '__main__':
     main('f1')
