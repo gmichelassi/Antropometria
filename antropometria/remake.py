@@ -17,11 +17,11 @@ from sampling.UnderSampling import UnderSampling
 from utils.dataset.load import LoadData
 
 log = logger.get_logger(__file__)
-CLASSIFIERS = [Nb ]#Svm,, Nn , Rf,Knn
+CLASSIFIERS = [Knn, Nb, Rf, Nn, Svm]
 
 
 def main(metrica: str):
-    dataset, labels = LoadData('dlibHOG', 'distances_all_px_eu', ["casos", "controles"]).load()
+    dataset, labels = LoadData('dlibHOG', 'distances_sem_boca_px_eu', ["casos", "controles"]).load()
     numpy_dataset = dataset.to_numpy()
     nfeatures = int(math.sqrt(numpy_dataset.shape[1]))
 
@@ -48,6 +48,7 @@ def main(metrica: str):
 
     for indutor in CLASSIFIERS:
         for balanceador in SAMPLINGS:
+
             for n in range(len(non_redundant_feature_sets)):
 
                 reductions = non_redundant_feature_sets[n]
@@ -87,16 +88,14 @@ def main(metrica: str):
                             soma += recall
 
                     media = soma / N_SPLITS
-                    print(media)
-                    print("+++++++++")
                     if media > media_ideal:
                         media_ideal = media
                     parametros_otimos = parametros
-                print(parametros_otimos)
                 estimator_final = model.estimator
-                print(media_ideal)
-                print("*******************")
-                media_otima, soma = 0, 0
+                print("Media calibracao: {0}".format(media_ideal))
+                print("")
+
+                soma_acuracia, soma_precisao, soma_f1, soma_recall = 0, 0, 0, 0
                 estimator_final.set_params(**parametros_otimos)
                 for x, y in zip(all_x, all_y):
 
@@ -111,25 +110,29 @@ def main(metrica: str):
                     else:
                         x_train, y_train = OverSampling(balanceador).fit_transform(x_train, y_train)
 
-                    apply_reductions(x_train, non_redundant_feature_sets[n])
-                    apply_reductions(x_test, non_redundant_feature_sets[n])
+                    x_train = apply_reductions(x_train, non_redundant_feature_sets[n])
+                    x_test = apply_reductions(x_test, non_redundant_feature_sets[n])
 
                     estimator_final.fit(x_train, y_train)
                     y_test_predict = estimator_final.predict(x_test)
-                    if metrica == "f1":
-                        f1 = f1_score(y_test, y_test_predict)
-                        soma += f1
-                    elif metrica == "accuracy":
-                        acuracia = accuracy_score(y_test, y_test_predict)
-                        soma += acuracia
-                    elif metrica == 'precision':
-                        precisao = precision_score(y_test, y_test_predict)
-                        soma += precisao
-                    else:
-                        recall = recall_score(y_test, y_test_predict)
-                        soma += recall
-                media_otima = soma / N_SPLITS
-                print(media_otima)
+
+                    f1 = f1_score(y_test, y_test_predict)
+                    soma_f1 += f1
+
+                    acuracia = accuracy_score(y_test, y_test_predict)
+                    soma_acuracia += acuracia
+
+                    precisao = precision_score(y_test, y_test_predict)
+                    soma_precisao += precisao
+
+                    recall = recall_score(y_test, y_test_predict)
+                    soma_recall += recall
+
+                print("Media {0} otima encontrada:{1}".format("f1", soma_f1/ N_SPLITS))
+                print("Media {0} otima encontrada:{1}".format("accuracy", soma_acuracia / N_SPLITS))
+                print("Media {0} otima encontrada:{1}".format("precision", soma_precisao / N_SPLITS))
+                print("Media {0} otima encontrada:{1}".format("recall", soma_recall / N_SPLITS))
+                print("")
 
 
 def apply_reductions(x: np.ndarray, characteristics):
