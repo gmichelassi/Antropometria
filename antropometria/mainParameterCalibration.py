@@ -54,6 +54,7 @@ def run_grid_search(
                                 f'min_max: {min_max}'
                             ) if verbose else lambda: None
 
+                            preprocessing_initial_time = time.time()
                             x, y, classes_count = run_preprocessing(
                                 folder=folder,
                                 dataset_name=dataset_name,
@@ -63,6 +64,7 @@ def run_grid_search(
                                 reduction=reduction,
                                 sampling=sampling
                             )
+                            log.debug(f"Pre processing took {(time.time() - preprocessing_initial_time) / 60} minutes")
 
                             instances, features = x.shape
                             model = classifier(n_features=features)

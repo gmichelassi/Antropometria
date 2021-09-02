@@ -13,7 +13,7 @@ from typing import Tuple, List
 log = logger.get_logger(__file__)
 
 
-@timeout(seconds=7500, use_timeout=(os.name.lower() != 'windows'))
+# @timeout(seconds=7500, use_timeout=(os.name.lower() != 'windows'))
 def run_preprocessing(
         folder: str,
         dataset_name: str,
