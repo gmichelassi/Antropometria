@@ -20,7 +20,7 @@ from utils.parameter_calibration.to_dict import test_to_dict, grid_search_result
 log = logger.get_logger(__file__)
 initial_context.set_context()
 
-CLASSIFIERS = [Knn, Nb, Nn, Rf, Svm]
+CLASSIFIERS = [Knn, Nb]  # , Nn, Rf, Svm
 
 
 def run_grid_search(
@@ -124,7 +124,7 @@ def run_grid_search(
 
 def main():
     start_time = time.time()
-    run_grid_search('dlibHOG', 'distances_sem_boca_px_eu', ['casos', 'controles'])
+    run_grid_search('dlibHOG_Pearson95', 'distances_eu_without_mouth', ['single_file'])
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
 
 
