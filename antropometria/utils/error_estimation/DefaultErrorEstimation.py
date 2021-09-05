@@ -16,10 +16,16 @@ class DefaultErrorEstimation(ErrorEstimation):
 
     def run_error_estimation(self) -> Dict[str, Tuple[float, float]]:
         folds = self.get_folds()
-        accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro \
-            = self.calculate_metrics(folds)
 
-        return self.calculate_results(
+        if self.binary:
+            accuracy, precision, recall, f1 = self.calculate_binary_metrics(folds)
+
+            return self.calculate_binary_results(accuracy, precision, recall, f1)
+
+        accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro \
+            = self.calculate_multiclass_metrics(folds)
+
+        return self.calculate_multiclass_results(
             accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro
         )
 

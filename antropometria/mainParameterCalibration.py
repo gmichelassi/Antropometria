@@ -8,7 +8,7 @@ from classifiers.NeuralNetwork import NeuralNetwork as Nn
 from classifiers.RandomForests import RandomForests as Rf
 from classifiers.SupportVectorMachine import SupportVectorMachine as Svm
 from config import logger
-from config.constants.general import FIELDNAMES, CV
+from config.constants.general import BINARY_FIELDNAMES, MULTICLASS_FIELDNAMES, CV
 from config.constants.training import \
     REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, SCORING, ERROR_ESTIMATION
 from mainPreprocessing import run_preprocessing
@@ -20,7 +20,7 @@ from utils.parameter_calibration.to_dict import test_to_dict, grid_search_result
 log = logger.get_logger(__file__)
 initial_context.set_context()
 
-CLASSIFIERS = [Nn, Rf]  # Knn, Nb, , Svm
+CLASSIFIERS = [Knn, Nb, Nn, Rf, Svm]
 
 
 def run_grid_search(
@@ -30,10 +30,12 @@ def run_grid_search(
         verbose: bool = True
 ) -> None:
     is_random_forest_done = False
+    binary = len(classes) == 2
+    fieldnames = BINARY_FIELDNAMES if binary else MULTICLASS_FIELDNAMES
     output_file = f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv'
 
     log.info(f'Running grid search for {folder}/{dataset_name}') if verbose else lambda: None
-    write_header(file=output_file, fieldnames=FIELDNAMES)
+    write_header(file=output_file, fieldnames=fieldnames)
 
     for classifier in CLASSIFIERS:
         for reduction in REDUCTIONS:
@@ -101,7 +103,7 @@ def run_grid_search(
                             log.info('Saving results!') if verbose else lambda: None
                             save_results(
                                 file=output_file,
-                                fieldnames=FIELDNAMES,
+                                fieldnames=fieldnames,
                                 test=current_test,
                                 grid_search_results=grid_search_results,
                                 error_estimation_results=error_estimation_results,
@@ -124,7 +126,7 @@ def run_grid_search(
 
 def main():
     start_time = time.time()
-    run_grid_search('dlibHOG_Pearson95', 'distances_eu_without_mouth', ['single_file'])
+    run_grid_search('dlibHOG', 'distances_all_px_eu', ['casos', 'controles'])
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
 
 

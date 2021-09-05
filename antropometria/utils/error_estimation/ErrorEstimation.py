@@ -20,6 +20,8 @@ class ErrorEstimation(ABC):
         self.x = x
         self.y = y
 
+        self.binary = len(class_count) == 2
+
     @abstractmethod
     def run_error_estimation(self) -> Dict[str, Tuple[float, float]]:
         pass
@@ -28,7 +30,7 @@ class ErrorEstimation(ABC):
     def get_folds(self) -> List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
         pass
 
-    def calculate_metrics(self, folds: List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]) \
+    def calculate_multiclass_metrics(self, folds: List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]) \
             -> Tuple[List[float], List[float], List[float], List[float], List[float], List[float], List[float]]:
         accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro = \
             [], [], [], [], [], [], []
@@ -50,7 +52,7 @@ class ErrorEstimation(ABC):
 
         return accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro
 
-    def calculate_results(
+    def calculate_multiclass_results(
             self,
             accuracy: List[float],
             precision_micro: List[float],
@@ -84,6 +86,46 @@ class ErrorEstimation(ABC):
             'err_f1macro_ic': f1_macro_ic,
         }
 
+    def calculate_binary_metrics(self, folds: List[Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]):
+        accuracy, precision, recall, f1 = [], [], [], []
+
+        for i in range(N_SPLITS):
+            x_train, y_train = folds[i][0], folds[i][1]
+            x_test, y_test = folds[i][2], folds[i][3]
+
+            self.estimator.fit(x_train, y_train)
+            y_predict = self.estimator.predict(x_test)
+
+            accuracy.append(accuracy_score(y_true=y_test, y_pred=y_predict))
+            precision.append(precision_score(y_true=y_test, y_pred=y_predict, average='binary'))
+            recall.append(recall_score(y_true=y_test, y_pred=y_predict, average='binary'))
+            f1.append(f1_score(y_true=y_test, y_pred=y_predict, average='binary'))
+
+        return accuracy, precision, recall, f1
+
+    def calculate_binary_results(
+            self,
+            accuracy: List[float],
+            precision: List[float],
+            recall: List[float],
+            f1: List[float]
+    ) -> Dict[str, Tuple[float, float]]:
+        mean_results = calculate_mean({
+            'accuracy': accuracy,
+            'precision': precision,
+            'recall': recall,
+            'f1': f1,
+        })
+        f1_ic = self.calculate_confidence_interval(f1, mean_results['f1'])
+
+        return {
+            'err_accuracy': mean_results['accuracy'],
+            'err_precision': mean_results['precision'],
+            'err_recall': mean_results['recall'],
+            'err_f1score': mean_results['f1'],
+            'err_f1_ic': f1_ic,
+        }
+
     @staticmethod
     def calculate_confidence_interval(metric: list, mean_metric: float) -> Tuple[float, float]:
         tc = 2.262
@@ -94,9 +136,10 @@ class ErrorEstimation(ABC):
 
         return ic_lower, ic_upper
 
-    @staticmethod
-    def get_confusion_matrix_values(y_true: np.ndarray, y_predicted: np.ndarray):
-        """Calculates the number of tp, fp, tn, fn for binary datasets"""
+    def get_confusion_matrix_values(self, y_true: np.ndarray, y_predicted: np.ndarray):
+        if not self.binary:
+            raise ValueError('Dataset is not bianry')
+
         true_positive, false_positive, true_negative, false_negative = 0, 0, 0, 0
 
         for i in range(len(y_true)):
