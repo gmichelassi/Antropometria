@@ -30,7 +30,7 @@ def run_grid_search(
         verbose: bool = True
 ) -> None:
     is_random_forest_done = False
-    binary = len(classes) == 2
+    binary = True
     fieldnames = BINARY_FIELDNAMES if binary else MULTICLASS_FIELDNAMES
     output_file = f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv'
 
