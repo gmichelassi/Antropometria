@@ -20,7 +20,7 @@ from utils.parameter_calibration.to_dict import test_to_dict, grid_search_result
 log = logger.get_logger(__file__)
 initial_context.set_context()
 
-CLASSIFIERS = [Rf]
+CLASSIFIERS = [Svm, Knn, Nb, Nn]
 
 
 def run_grid_search(
