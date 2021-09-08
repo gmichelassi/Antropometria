@@ -12,8 +12,8 @@ ERROR_ESTIMATION = {
     'SVM': SmoteErrorEstimation,
     'Tomek': SmoteErrorEstimation
 }
-FILTERS = [0.0]
-MIN_MAX_NORMALIZATION = [False, True]
-REDUCTIONS = ['RFSelect', 'RFS']  # None, 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF', 'RFSelect'
+FILTERS = [0.0, 0.98, 0.99]
+MIN_MAX_NORMALIZATION = [False]
+REDUCTIONS = [None, 'PCA', 'ReliefF', 'RFSelect', 'mRMR', 'FCBF', 'CFS', 'RFS']
 SAMPLINGS = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
 SCORING = ['accuracy', 'precision', 'recall', 'f1']
