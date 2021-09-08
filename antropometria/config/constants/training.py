@@ -14,6 +14,6 @@ ERROR_ESTIMATION = {
 }
 FILTERS = [0.0]
 MIN_MAX_NORMALIZATION = [False, True]
-REDUCTIONS = ['ReliefF', 'RFSelect', 'RFS']  # None, 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', , 'RFSelect'
+REDUCTIONS = ['RFSelect', 'RFS']  # None, 'PCA', 'mRMR', 'FCBF', 'CFS', 'RFS', 'ReliefF', 'RFSelect'
 SAMPLINGS = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
 SCORING = ['accuracy', 'precision', 'recall', 'f1']
