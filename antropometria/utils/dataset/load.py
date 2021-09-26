@@ -2,6 +2,7 @@ import numpy as np
 import os
 import pandas as pd
 
+from antropometria.config.exceptions.dataset import MissingDatasetError
 from sklearn.utils import shuffle
 from typing import Tuple
 
@@ -32,45 +33,48 @@ class LoadData:
         for class_name in self.classes:
             file_name = f'./antropometria/data/{self.folder}/{class_name}_{self.dataset_name}.csv'
 
-            if os.path.isfile(file_name):
-                if 'ratio' in self.folder:
-                    chuncksize, chunklist = 10, []
-                    for chunk in pd.read_csv(file_name, chunksize=chuncksize, dtype=np.float64):
-                        chunklist.append(chunk)
-                    data = pd.concat(chunklist)
-                else:
-                    data = pd.read_csv(file_name)
-                    if 'dlibHOG' in self.folder:
-                        data = data.drop(['img_name', 'id'], axis=1)
+            if not os.path.isfile(file_name):
+                raise MissingDatasetError(folder=self.folder, name=self.dataset_name)
 
-                label = label_count * np.ones(len(data), dtype=np.int64)
+            data = self.__load_data_from_file(file_name=file_name)
+            label = label_count * np.ones(len(data), dtype=np.int64)
 
-                x = pd.concat([x, data])
-                y = np.concatenate((y, label))
-            else:
-                raise IOError(f'File not found for params {self.folder} and {self.dataset_name}.')
+            x = pd.concat([x, data])
+            y = np.concatenate((y, label))
+
             label_count += 1
 
         x, y = shuffle(x, y, random_state=self.RANDOM_STATE)
         return x, y.astype('int64')
 
+    def __load_data_from_file(self, file_name: str):
+        if 'ratio' in self.folder:
+            return pd.concat(list(map(lambda x: x, pd.read_csv(file_name, chuncksize=10, dtype=np.float64))))
+
+        dataset = pd.read_csv(file_name)
+
+        if 'dlibHOG' in self.folder:
+            return dataset.drop(['img_name', 'id'], axis=1)
+
+        return dataset
+
     def __load_data_in_single_file(self) -> Tuple[pd.DataFrame, np.ndarray]:
         path = f"./antropometria/data/{self.folder}/{self.dataset_name}.csv"
 
-        if os.path.isfile(path):
-            data = pd.read_csv(path)
+        if not os.path.isfile(path):
+            raise MissingDatasetError(folder=self.folder, name=self.dataset_name)
 
-            try:
-                labels = data[self.LABEL_COLUMN].values
-                data = data.drop(self.LABEL_COLUMN, axis=1)
-            except KeyError:
-                columns_regex = data.filter(regex='.*(label).*').columns
-                if columns_regex.shape[0] != 1:
-                    raise IOError(f"File do not have columns like '{self.LABEL_COLUMN}' or '{self.LABEL_REGEX}'")
+        data = pd.read_csv(path)
 
-                labels = data[columns_regex].T.values[0]
-                data = data.drop(columns_regex, axis=1)
+        try:
+            labels = data[self.LABEL_COLUMN].values
+            data = data.drop(self.LABEL_COLUMN, axis=1)
+        except KeyError:
+            columns_regex = data.filter(regex='.*(label).*').columns
+            if columns_regex.shape[0] != 1:
+                raise IOError(f"File do not have columns like '{self.LABEL_COLUMN}' or '{self.LABEL_REGEX}'")
 
-            return data, labels.astype('int64')
+            labels = data[columns_regex].T.values[0]
+            data = data.drop(columns_regex, axis=1)
 
-        raise IOError(f'File not found for params {self.folder} and {self.dataset_name}.')
+        return data, labels.astype('int64')

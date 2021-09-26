@@ -2,7 +2,7 @@ import numpy as np
 import os
 
 from antropometria.config import logger
-from antropometria.feature_selectors.utils.getter import get_feature_selector
+from antropometria.utils.get_feature_selector import get_feature_selector
 from antropometria.sampling.OverSampling import OverSampling
 from antropometria.sampling.UnderSampling import UnderSampling
 from antropometria.utils.dataset.load import LoadData

@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import pytest
 
+from antropometria.config.exceptions.dataset import NonBinaryDatasetError
 from antropometria.utils.dataset.manipulation import apply_pearson_feature_selection, combine_columns_names, \
     build_ratio_dataset, get_difference_of_classes, apply_min_max_normalization
 
@@ -83,10 +84,10 @@ class TestDatasetManipulation:
         assert difference_of_num_of_labels == 200 - 100
 
     def test_get_the_difference_of_number_of_labels_in_non_binary_dataset(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(NonBinaryDatasetError):
             get_difference_of_classes([100])
 
-        with pytest.raises(ValueError):
+        with pytest.raises(NonBinaryDatasetError):
             get_difference_of_classes([1, 2, 3])
 
     def test_applies_min_max_normalization(self):

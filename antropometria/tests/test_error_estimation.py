@@ -4,7 +4,7 @@ set_tests_context()
 import numpy as np
 import pytest
 
-from antropometria.config.constants.general import FIELDNAMES, CV, N_SPLITS
+from antropometria.config.constants.general import BINARY_FIELDNAMES, MULTICLASS_FIELDNAMES, CV, N_SPLITS
 from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
 from typing import Any, Dict, List, Tuple
 from sklearn.datasets import make_classification
@@ -53,9 +53,9 @@ class TestErrorEstimation:
             error_estimation.run_error_estimation()
             error_estimation.get_folds()
 
-    def test_calculate_metrics(self, error_estimation, generate_folds):
+    def test_calculate_multiclass_metrics(self, error_estimation, generate_folds):
         accuracy, precision_micro, recall_micro, f1_micro, precision_macro, recall_macro, f1_macro\
-            = error_estimation.calculate_metrics(generate_folds)
+            = error_estimation.calculate_multiclass_metrics(generate_folds)
 
         for i in range(N_SPLITS):
             assert isinstance(accuracy[i], float)
@@ -66,8 +66,8 @@ class TestErrorEstimation:
             assert isinstance(recall_macro[i], float)
             assert isinstance(f1_macro[i], float)
 
-    def test_calculate_results(self, error_estimation):
-        result_dict = error_estimation.calculate_results(
+    def test_calculate_multiclass_results(self, error_estimation):
+        result_dict = error_estimation.calculate_multiclass_results(
             accuracy=[0.99, 0.98, 0.95],
             precision_micro=[0.99, 0.98, 0.95],
             recall_micro=[0.99, 0.98, 0.95],
@@ -77,7 +77,7 @@ class TestErrorEstimation:
             f1_macro=[0.99, 0.98, 0.95]
         )
 
-        assert list(result_dict.keys()) == FIELDNAMES[10:len(FIELDNAMES) - 1]
+        assert list(result_dict.keys()) == MULTICLASS_FIELDNAMES[10:len(MULTICLASS_FIELDNAMES) - 1]
         assert isinstance(result_dict['err_accuracy'], float)
         assert isinstance(result_dict['err_precision_micro'], float)
         assert isinstance(result_dict['err_recall_micro'], float)
@@ -91,6 +91,32 @@ class TestErrorEstimation:
         assert isinstance(result_dict['err_f1micro_ic'], tuple)
         assert isinstance(result_dict['err_f1macro_ic'][0], float)
         assert isinstance(result_dict['err_f1macro_ic'][1], float)
+
+    def test_calculate_binary_metrics(self, error_estimation, generate_folds):
+        accuracy, precision, recall, f1 = error_estimation.calculate_binary_metrics(generate_folds)
+
+        for i in range(N_SPLITS):
+            assert isinstance(accuracy[i], float)
+            assert isinstance(precision[i], float)
+            assert isinstance(recall[i], float)
+            assert isinstance(f1[i], float)
+
+    def test_calculate_binary_results(self, error_estimation):
+        result_dict = error_estimation.calculate_binary_results(
+            accuracy=[0.99, 0.98, 0.95],
+            precision=[0.99, 0.98, 0.95],
+            recall=[0.99, 0.98, 0.95],
+            f1=[0.99, 0.98, 0.95],
+        )
+
+        assert list(result_dict.keys()) == BINARY_FIELDNAMES[10:len(BINARY_FIELDNAMES) - 1]
+        assert isinstance(result_dict['err_accuracy'], float)
+        assert isinstance(result_dict['err_precision'], float)
+        assert isinstance(result_dict['err_recall'], float)
+        assert isinstance(result_dict['err_f1score'], float)
+        assert isinstance(result_dict['err_f1_ic'], tuple)
+        assert isinstance(result_dict['err_f1_ic'][0], float)
+        assert isinstance(result_dict['err_f1_ic'][1], float)
 
     def test_calculate_confidence_interval(self, error_estimation):
         accuracy = [0.71, 0.74, 0.72]

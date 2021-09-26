@@ -4,6 +4,7 @@ set_tests_context()
 import pytest
 import numpy as np
 
+from antropometria.config.exceptions.dataset import MissingDatasetError
 from antropometria.utils.dataset.load import LoadData
 
 
@@ -33,8 +34,8 @@ class TestLoadingDataset:
         assert x.shape[0] == len(y)
 
     def test_loading_non_existing_dataset(self):
-        with pytest.raises(IOError):
+        with pytest.raises(MissingDatasetError):
             LoadData(FOLDER_SINGLE_FILE, f"{DATASET_SINGLE_FILE}_DONOTEXIST", SINGLE_CLASS).load()
 
-        with pytest.raises(IOError):
+        with pytest.raises(MissingDatasetError):
             LoadData(FOLDER_MULTIPLE_FILES, f"{DATASET_MULTIPLE_FILES}_DONOTEXIST", SINGLE_CLASS).load()

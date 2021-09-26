@@ -9,6 +9,7 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from abc import ABC, abstractmethod
 from antropometria.utils.metrics import calculate_mean, calculate_std
+from antropometria.config.exceptions.dataset import NonBinaryDatasetError
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from typing import Any, Dict, List, Tuple
 
@@ -138,7 +139,7 @@ class ErrorEstimation(ABC):
 
     def get_confusion_matrix_values(self, y_true: np.ndarray, y_predicted: np.ndarray):
         if not self.binary:
-            raise ValueError('Dataset is not bianry')
+            raise NonBinaryDatasetError(number_of_classes=len(self.class_count))
 
         true_positive, false_positive, true_negative, false_negative = 0, 0, 0, 0
 

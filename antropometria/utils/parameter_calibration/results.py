@@ -35,4 +35,3 @@ def save_results(
         results.update(error_estimation_results)
         results['parameters'] = parameters
         writer.writerow(results)
-

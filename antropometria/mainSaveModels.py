@@ -47,7 +47,7 @@ svm_parameters = {'kernel': 'linear',
                   'random_state': 707878}
 
 
-def saveModel(folder, dataset_name, classes, model, p_filter, reduction, sampling, min_max):
+def save_model(folder, dataset_name, classes, model, p_filter, reduction, sampling, min_max):
     data = run_preprocessing(folder, dataset_name, classes, p_filter, reduction, sampling, False, min_max)
 
     if data is None:
@@ -98,4 +98,4 @@ if __name__ == '__main__':
         estimator = None
 
     if estimator is not None:
-        saveModel('dlibHOG', 'distances_all_px_eu', ['casos', 'controles'], estimator, 0.98, 'PCA', 'Tomek', False)
+        save_model('dlibHOG', 'distances_all_px_eu', ['casos', 'controles'], estimator, 0.98, 'PCA', 'Tomek', False)

@@ -4,6 +4,7 @@ import numpy as np
 import os
 import pandas as pd
 
+from antropometria.config.exceptions.dataset import NonBinaryDatasetError
 from scipy import stats
 from typing import List
 
@@ -96,6 +97,6 @@ def apply_min_max_normalization(df: pd.DataFrame) -> pd.DataFrame:
 
 def get_difference_of_classes(classes_count: List[int]) -> int:
     if len(classes_count) != 2:
-        raise ValueError(f'Should have maximum 2 unique labels (binary), {len(classes_count)} unique labels given')
+        raise NonBinaryDatasetError(len(classes_count))
 
     return abs(classes_count[0] - classes_count[1])

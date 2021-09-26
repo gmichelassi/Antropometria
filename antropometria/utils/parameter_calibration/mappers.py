@@ -1,4 +1,4 @@
-def test_to_dict(
+def map_test_to_dict(
         folder: str,
         model_name: str,
         reduction: str,
@@ -16,7 +16,7 @@ def test_to_dict(
     }
 
 
-def grid_search_results_to_dict(accuracy: float, precision: float, recall: float, f1: float) -> dict:
+def map_grid_search_results_to_dict(accuracy: float, precision: float, recall: float, f1: float) -> dict:
     return {
         'cv_accuracy': accuracy,
         'cv_precision': precision,

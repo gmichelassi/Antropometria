@@ -1,12 +1,11 @@
 from context import set_tests_context
 set_tests_context()
 
-import pytest
 import numpy as np
 import pandas as pd
 import os
 
-from antropometria.config.constants.general import FIELDNAMES
+from antropometria.config.constants.general import MULTICLASS_FIELDNAMES
 from antropometria.utils.parameter_calibration.results import get_results, save_results, write_header
 
 OUTPUT_FILE = './antropometria/output/file_test.csv'
@@ -64,7 +63,7 @@ class TestParameterCalibrationResults:
     def test_save_results(self):
         save_results(
             file=OUTPUT_FILE,
-            fieldnames=FIELDNAMES,
+            fieldnames=MULTICLASS_FIELDNAMES,
             test=TEST,
             grid_search_results=GRID_SEARCH_RESULTS,
             error_estimation_results=ERROR_ESTIMATION_RESULTS,
@@ -75,11 +74,11 @@ class TestParameterCalibrationResults:
         os.remove(OUTPUT_FILE)
 
     def test_write_header(self):
-        write_header(file=OUTPUT_FILE, fieldnames=FIELDNAMES)
+        write_header(file=OUTPUT_FILE, fieldnames=MULTICLASS_FIELDNAMES)
 
         assert os.path.isfile(OUTPUT_FILE)
 
         header = pd.read_csv(OUTPUT_FILE).columns.to_numpy()
-        assert np.array_equal(header, FIELDNAMES)
+        assert np.array_equal(header, MULTICLASS_FIELDNAMES)
 
         os.remove(OUTPUT_FILE)

@@ -3,7 +3,7 @@ set_tests_context()
 
 import numpy as np
 
-from antropometria.feature_selectors.utils.getter import get_feature_selector
+from antropometria.utils.get_feature_selector import get_feature_selector
 from sklearn.datasets import make_classification
 
 

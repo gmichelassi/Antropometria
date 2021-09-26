@@ -4,7 +4,7 @@ set_tests_context()
 import numpy as np
 import pytest
 
-from antropometria.config.constants.general import FIELDNAMES, CV, N_SPLITS
+from antropometria.config.constants.general import CV, N_SPLITS
 from antropometria.utils.error_estimation.SmoteErrorEstimation import SmoteErrorEstimation
 from pytest import approx
 from sklearn.datasets import make_classification

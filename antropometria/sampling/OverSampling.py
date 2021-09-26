@@ -16,11 +16,11 @@ class OverSampling:
     def __get_smote(self) -> Union[SMOTE, BorderlineSMOTE, KMeansSMOTE, SVMSMOTE, SMOTETomek]:
         if self.algorithm == 'Borderline':
             return BorderlineSMOTE(random_state=RANDOM_STATE)
-        elif self.algorithm == 'KMeans':
+        if self.algorithm == 'KMeans':
             return KMeansSMOTE(random_state=RANDOM_STATE, kmeans_estimator=KMeans(n_clusters=20))
-        elif self.algorithm == 'SVM':
+        if self.algorithm == 'SVM':
             return SVMSMOTE(random_state=RANDOM_STATE)
-        elif self.algorithm == 'Tomek':
+        if self.algorithm == 'Tomek':
             return SMOTETomek(random_state=RANDOM_STATE)
 
         return SMOTE(random_state=RANDOM_STATE)
