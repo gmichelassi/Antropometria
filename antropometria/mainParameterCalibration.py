@@ -49,16 +49,16 @@ def run_grid_search(
         # [Nn,    'RFSelect', 'Random', 0.0,  True],
         # [Nn,    'PCA',      'Random', 0.0,  False],
         # [Nn,    'PCA',      'Random', 0.0,  True],
-        # [Knn,   'ReliefF',  'Random', 0.0,  False],
-        # [Knn,   'ReliefF',  'Random', 0.0,  True],
-        # [Nn,    'ReliefF',  None,     0.0,  False],
-        # [Nn,    'ReliefF',  None,     0.0,  True],
-        # [Rf,    None,       'Random', 0.0,  False],
-        [Nn,    'CFS',      'Random', 0.0,  True],
-        [Nn,    'FCBF',     'Random', 0.0,  True],
-        [Nn,    'mRMR',     'Random', 0.0,  False],
-        [Rf,    None,       'Random', 0.0,  True],
-        [Nn,    'mRMR',     'Random', 0.0,  True],
+        # [Knn,   'ReliefF',  'Random', 0.0,  False], * até aqui na puchkin
+        [Knn,   'ReliefF',  'Random', 0.0,  True],
+        [Nn,    'ReliefF',  None,     0.0,  False],
+        [Nn,    'ReliefF',  None,     0.0,  True],
+        [Rf,    None,       'Random', 0.0,  False],
+        # [Nn,    'CFS',      'Random', 0.0,  True], * a partir daqui na tolstoi
+        # [Nn,    'FCBF',     'Random', 0.0,  True],
+        # [Nn,    'mRMR',     'Random', 0.0,  False],
+        # [Rf,    None,       'Random', 0.0,  True],
+        # [Nn,    'mRMR',     'Random', 0.0,  True],
     ]
     for classifier, reduction, sampling, p_filter, min_max in tests:
         try:
