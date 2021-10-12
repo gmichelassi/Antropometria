@@ -1,5 +1,3 @@
-import pandas as pd
-
 import initial_context
 import numpy as np
 import time
@@ -40,26 +38,7 @@ def run_grid_search(
     log.info(f'Running grid search for {folder}/{dataset_name}') if verbose else lambda: None
     write_header(file=output_file, fieldnames=fieldnames)
 
-    # tests = product(CLASSIFIERS, REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION)
-    tests = [
-        # [Nn,    'ReliefF',  'Random', 0.0,  False],
-        # [Nn,    'ReliefF',  'Random', 0.0,  True],
-        # [Nn,    'CFS',      'Random', 0.0,  False],
-        # [Nn,    'RFSelect', 'Random', 0.0,  False],
-        # [Nn,    'RFSelect', 'Random', 0.0,  True],
-        # [Nn,    'PCA',      'Random', 0.0,  False],
-        # [Nn,    'PCA',      'Random', 0.0,  True],
-        # [Knn,   'ReliefF',  'Random', 0.0,  False], * até aqui na puchkin
-        [Knn,   'ReliefF',  'Random', 0.0,  True],
-        [Nn,    'ReliefF',  None,     0.0,  False],
-        [Nn,    'ReliefF',  None,     0.0,  True],
-        [Rf,    None,       'Random', 0.0,  False],
-        # [Nn,    'CFS',      'Random', 0.0,  True], * a partir daqui na tolstoi
-        # [Nn,    'FCBF',     'Random', 0.0,  True],
-        # [Nn,    'mRMR',     'Random', 0.0,  False],
-        # [Rf,    None,       'Random', 0.0,  True],
-        # [Nn,    'mRMR',     'Random', 0.0,  True],
-    ]
+    tests = product(CLASSIFIERS, REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION)
     for classifier, reduction, sampling, p_filter, min_max in tests:
         try:
             current_test_initial_time = time.time()
