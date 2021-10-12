@@ -21,7 +21,7 @@ from utils.parameter_calibration.mappers import map_test_to_dict, map_grid_searc
 log = logger.get_logger(__file__)
 initial_context.set_context()
 
-CLASSIFIERS = [Svm, Nb, Knn, Rf, Nn]
+CLASSIFIERS = [Svm]
 
 
 def run_grid_search(
@@ -121,7 +121,7 @@ def run_grid_search(
 
 def main():
     start_time = time.time()
-    run_grid_search('dlibHOG', 'dlibhog95', [''])
+    run_grid_search('dlibHOG', 'distances_all_px_eu', ['casos', 'controles'])
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
 
 
