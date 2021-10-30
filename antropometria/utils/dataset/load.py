@@ -53,7 +53,7 @@ class LoadData:
 
         dataset = pd.read_csv(file_name)
 
-        if 'dlibHOG' in self.folder:
+        if self.folder in ['dlibHOG', 'dlibCNN', 'openCvDNN', 'openCvHaar', 'openFace']:
             return dataset.drop(['img_name', 'id'], axis=1)
 
         return dataset
