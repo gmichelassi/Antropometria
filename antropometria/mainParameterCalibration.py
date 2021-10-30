@@ -1,27 +1,29 @@
-import initial_context
+import pandas as pd
+
 import numpy as np
 import time
 
-from classifiers.KNearestNeighbors import KNearestNeighbors as Knn
-from classifiers.NaiveBayes import NaiveBayes as Nb
-from classifiers.NeuralNetwork import NeuralNetwork as Nn
-from classifiers.RandomForests import RandomForests as Rf
-from classifiers.SupportVectorMachine import SupportVectorMachine as Svm
-from config import logger
-from config.constants.general import BINARY_FIELDNAMES, MULTICLASS_FIELDNAMES, CV
-from config.constants.training import \
+from antropometria import initial_context
+from antropometria.classifiers.KNearestNeighbors import KNearestNeighbors as Knn
+from antropometria.classifiers.NaiveBayes import NaiveBayes as Nb
+from antropometria.classifiers.NeuralNetwork import NeuralNetwork as Nn
+from antropometria.classifiers.RandomForests import RandomForests as Rf
+from antropometria.classifiers.SupportVectorMachine import SupportVectorMachine as Svm
+from antropometria.config import logger
+from antropometria.config.constants.general import BINARY_FIELDNAMES, MULTICLASS_FIELDNAMES, CV
+from antropometria.config.constants.training import \
     REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, SCORING, ERROR_ESTIMATION
 from itertools import product
-from mainPreprocessing import run_preprocessing
+from antropometria.mainPreprocessing import run_preprocessing
 from sklearn.model_selection import GridSearchCV
-from utils.parameter_calibration.results import write_header, get_results, save_results
-from utils.parameter_calibration.special_settings import stop_running_rf, skip_current_test
-from utils.parameter_calibration.mappers import map_test_to_dict, map_grid_search_results_to_dict
+from antropometria.utils.parameter_calibration.results import write_header, get_results, save_results
+from antropometria.utils.parameter_calibration.special_settings import stop_running_rf, skip_current_test
+from antropometria.utils.parameter_calibration.mappers import map_test_to_dict, map_grid_search_results_to_dict
 
 log = logger.get_logger(__file__)
 initial_context.set_context()
 
-CLASSIFIERS = [Nb, Nn]
+CLASSIFIERS = [Svm]
 
 
 def run_grid_search(
