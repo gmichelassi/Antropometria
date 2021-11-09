@@ -23,7 +23,7 @@ from antropometria.utils.parameter_calibration.mappers import map_test_to_dict, 
 log = logger.get_logger(__file__)
 initial_context.set_context()
 
-CLASSIFIERS = [Svm]
+CLASSIFIERS = [Svm, Nn, Rf, Knn, Nb]
 
 
 def run_grid_search(
@@ -124,8 +124,13 @@ def run_grid_search(
 def main():
     start_time = time.time()
     run_grid_search('dlibCNN', 'distances_all_px_eu', ['casos', 'controles'])
+
+    run_grid_search('dlibHOG', 'distances_all_px_eu', ['casos', 'controles'])
+
+    run_grid_search('openCvDNN', 'distances_all_px_eu', ['casos', 'controles'])
+
+    run_grid_search('openCvHaar', 'distances_all_px_eu', ['casos', 'controles'])
+
+    run_grid_search('openFace', 'distances_all_px_eu', ['casos', 'controles'])
+
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
-
-
-if __name__ == '__main__':
-    main()

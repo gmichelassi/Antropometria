@@ -125,6 +125,10 @@ class ErrorEstimation(ABC):
             'err_recall': mean_results['recall'],
             'err_f1score': mean_results['f1'],
             'err_f1_ic': f1_ic,
+            'accuracy_folds': accuracy,
+            'precision_folds': precision,
+            'recall_folds': recall,
+            'f1_folds': f1
         }
 
     @staticmethod

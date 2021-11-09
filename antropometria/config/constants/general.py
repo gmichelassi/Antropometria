@@ -44,6 +44,10 @@ BINARY_FIELDNAMES = [
     'err_recall',
     'err_f1score',
     'err_f1_ic',
+    'accuracy_folds',
+    'precision_folds',
+    'recall_folds',
+    'f1_folds',
     'parameters',
 ]
 ROOT_DIR = os.path.abspath(os.getcwd())
