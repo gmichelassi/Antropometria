@@ -49,6 +49,7 @@ def run_grid_search(
 
             log.info(
                 f'Running test with'
+                f' dataset: {folder}'
                 f' classifier: {classifier.__name__},'
                 f' reduction: {reduction},'
                 f' sampling: {sampling},'
