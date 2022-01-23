@@ -1,5 +1,3 @@
-import pandas as pd
-
 import numpy as np
 import time
 
@@ -17,7 +15,7 @@ from itertools import product
 from antropometria.mainPreprocessing import run_preprocessing
 from sklearn.model_selection import GridSearchCV
 from antropometria.utils.parameter_calibration.results import write_header, get_results, save_results
-from antropometria.utils.parameter_calibration.special_settings import stop_running_rf, skip_current_test
+from antropometria.utils.parameter_calibration.special_settings import skip_current_test
 from antropometria.utils.parameter_calibration.mappers import map_test_to_dict, map_grid_search_results_to_dict
 
 log = logger.get_logger(__file__)
@@ -32,7 +30,6 @@ def run_grid_search(
         classes: list = np.ndarray,
         verbose: bool = True
 ) -> None:
-    is_random_forest_done = False
     binary = True
     fieldnames = BINARY_FIELDNAMES if binary else MULTICLASS_FIELDNAMES
     output_file = f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv'
@@ -44,7 +41,7 @@ def run_grid_search(
     for classifier, reduction, sampling, p_filter, min_max in tests:
         try:
             current_test_initial_time = time.time()
-            if skip_current_test(is_random_forest_done, classifier.__name__, reduction):
+            if skip_current_test(classifier.__name__, reduction):
                 continue
 
             log.info(
@@ -114,12 +111,6 @@ def run_grid_search(
             log.info(f"Finished current test in {current_test_ellapsed_time:.2f} minutes") if verbose else lambda: None
         except (IOError, KeyError, MemoryError, TimeoutError, ValueError) as error:
             log.error(f'Could not run current test due to error: {error}')
-        finally:
-            is_random_forest_done = stop_running_rf(
-                is_random_forest_done,
-                classifier.__name__,
-                reduction
-            )
 
 
 def main():
