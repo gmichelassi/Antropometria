@@ -6,8 +6,8 @@ from antropometria.utils.parameter_calibration.special_settings import skip_curr
 
 class TestTrainingSpecialSettings:
     def test_skips_current_test(self):
-        assert not skip_current_test(classifier='RandomForest', reduction=None)
-        assert not skip_current_test(classifier='RandomForest', reduction='RFSelect')
-        assert skip_current_test(classifier='RandomForest', reduction='PCA')
+        assert not skip_current_test(classifier='RandomForests', reduction=None)
+        assert not skip_current_test(classifier='RandomForests', reduction='RFSelect')
+        assert skip_current_test(classifier='RandomForests', reduction='PCA')
         assert skip_current_test(classifier='SVM', reduction=None)
         assert not skip_current_test(classifier='SVM', reduction='PCA')
