@@ -10,4 +10,4 @@ class TestTrainingSpecialSettings:
         assert not skip_current_test(classifier='RandomForest', reduction='RFSelect')
         assert skip_current_test(classifier='RandomForest', reduction='PCA')
         assert skip_current_test(classifier='SVM', reduction=None)
-        assert skip_current_test(classifier='SVM', reduction='PCA')
+        assert not skip_current_test(classifier='SVM', reduction='PCA')
