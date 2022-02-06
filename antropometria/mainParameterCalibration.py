@@ -27,7 +27,7 @@ CLASSIFIERS = [Svm, Nn, Rf, Knn, Nb]
 def run_grid_search(
         folder: str,
         dataset_name: str,
-        classes: list = np.ndarray,
+        classes: list = np.array([]),
         verbose: bool = True
 ) -> None:
     binary = True

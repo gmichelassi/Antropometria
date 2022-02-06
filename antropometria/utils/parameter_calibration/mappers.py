@@ -1,14 +1,17 @@
+from antropometria.config.types import Classifier, Reduction, Sampling
+
+
 def map_test_to_dict(
         folder: str,
-        model_name: str,
-        reduction: str,
+        classifier: Classifier,
+        reduction: Reduction,
         p_filter: float,
         min_max: bool,
-        sampling: str
+        sampling: Sampling
 ) -> dict:
     return {
         'biblioteca': folder,
-        'classifier': model_name,
+        'classifier': classifier,
         'reduction': reduction,
         'filtro': p_filter,
         'min_max': min_max,

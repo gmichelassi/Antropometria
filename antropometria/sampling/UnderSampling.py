@@ -1,10 +1,9 @@
 import numpy as np
 import pandas as pd
 
-
+from antropometria.config.constants.general import TEMPORARY_RANDOM_SAMPLES, TEMPORARY_RANDOM_SAMPLES_LABELS
 from imblearn.under_sampling import RandomUnderSampler
 from typing import Tuple
-from antropometria.config.constants.general import TEMPORARY_RANDOM_SAMPLES, TEMPORARY_RANDOM_SAMPLES_LABELS
 
 RANDOM_STATE = 10000
 

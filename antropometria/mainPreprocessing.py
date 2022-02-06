@@ -2,13 +2,14 @@ import numpy as np
 import os
 
 from antropometria.config import logger
+from antropometria.config.types import Reduction, Sampling
 from antropometria.utils.get_feature_selector import get_feature_selector
 from antropometria.sampling.OverSampling import OverSampling
 from antropometria.sampling.UnderSampling import UnderSampling
 from antropometria.utils.dataset.load import LoadData
 from antropometria.utils.dataset.manipulation import apply_pearson_feature_selection, apply_min_max_normalization
 from antropometria.utils.timeout import timeout
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 log = logger.get_logger(__file__)
 
@@ -20,8 +21,8 @@ def run_preprocessing(
         classes: list,
         apply_min_max: bool = False,
         p_filter: float = 0.0,
-        reduction: str = None,
-        sampling: str = None,
+        reduction: Optional[Reduction] = None,
+        sampling: Optional[Sampling] = None,
         verbose: bool = True
 ) -> Tuple[np.ndarray, np.ndarray, List[int]]:
     log.info(f'Loading data from data/{folder}/{dataset_name}') if verbose else lambda: None

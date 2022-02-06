@@ -3,6 +3,7 @@ import os
 
 sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
+from antropometria.config.types import Reduction
 from antropometria.feature_selectors.CFS import CFS
 from antropometria.feature_selectors.FCBF import FCBF
 from antropometria.feature_selectors.MRMR import MRMR
@@ -12,6 +13,8 @@ from sklearn.decomposition import PCA
 from skrebate import ReliefF
 from typing import Union
 
+
+FeatureSelector = Union[CFS, FCBF, MRMR, RFS, RFSelect, PCA, ReliefF]
 
 REDUCTIONS = {
     'pca': PCA,
@@ -25,11 +28,11 @@ REDUCTIONS = {
 
 
 def get_feature_selector(
-        reduction: str,
+        reduction: Reduction,
         n_features_to_keep: int,
         instances: int,
         features: int
-) -> Union[CFS, FCBF, MRMR, RFS, RFSelect, PCA, ReliefF]:
+) -> FeatureSelector:
     lowered_reduction = reduction.lower()
     reduction_method = REDUCTIONS[lowered_reduction]
 

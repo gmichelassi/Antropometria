@@ -1,14 +1,15 @@
-from typing import Union
+from antropometria.config.types import Classifier, Reduction
+from typing import Optional
 
 
 def skip_current_test(
-        classifier: str = 'Any',
-        reduction: Union[str, None] = 'Any'
+        classifier: Optional[Classifier],
+        reduction: Optional[Reduction]
 ) -> bool:
-    if classifier == 'RandomForests' and reduction not in ['RFSelect', None]:
+    if classifier == 'RandomForest' and reduction not in ['RFSelect', None]:
         return True
 
-    if classifier != 'RandomForests' and reduction is None:
+    if classifier != 'RandomForest' and reduction is None:
         return True
 
     return False
