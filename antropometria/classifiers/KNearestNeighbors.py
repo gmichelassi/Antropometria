@@ -7,10 +7,10 @@ class KNearestNeighbors:
         self.n_features = n_features
         self.estimator = KNeighborsClassifier()
         self.parameter_grid = {
-            'n_neighbors': [1, 2, 3, 5, 10, 20, 25, 30, 35, 40],
+            'n_neighbors': [1, 2, 3, 5, 10, 20, 25],
             'weights': ['uniform', 'distance'],
-            'algorithm': ['auto', 'brute'],
-            'leaf_size': [1, 5, 10, 20, 30],
+            'algorithm': ['auto'],
+            'leaf_size': [1, 10, 30],
             'n_jobs': [-1]
         }
 

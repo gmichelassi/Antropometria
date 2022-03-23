@@ -14,11 +14,11 @@ class NeuralNetwork:
                                    (n_features,),
                                    (n_features, n_features, n_features)],
             'activation': ['identity', 'logistic', 'tanh', 'relu'],
-            'solver': ['lbfgs', 'sgd'],
+            'solver': ['lbfgs'],
             'alpha': [0.0001, 0.001, 0.01],
             'learning_rate': ['adaptive'],
             'learning_rate_init': [0.001],
-            'max_iter': [5000],
+            'max_iter': [1000],
             'random_state': [707878]
         }
 
