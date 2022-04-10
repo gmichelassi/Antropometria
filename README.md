@@ -18,8 +18,8 @@
 ### Preparativos
 ~~~
 # Instalação do repositório
-1. Certifique-se que está usando a versão 3.6 ou superior do Python, preferencialmente em um sistema operacional UNIX
-2. Crie um ambiente virtual -venv- (veja abaixo como fazer isso) e clone este repositório dentro do seu venv
+1. Certifique-se que está usando a versão 3.6 ou superior do Python, preferencialmente em um sistema operacional UNIX;
+2. Crie um ambiente virtual -venv- (veja abaixo como fazer isso) e clone este repositório dentro do seu venv;
 3. Dentro de seu ambiente virtual, execute o comando "pip install -r requirements.txt" para instalar todas as dependencias necessárias;
 
 # Formato dos dados
@@ -42,38 +42,15 @@ data/
 Veja [aqui](https://www.treinaweb.com.br/blog/criando-ambientes-virtuais-para-projetos-python-com-o-virtualenv/) sobre criação de ambientes virtuais para Python.
 
 ### Como executar?
+Para executar o pipeline é preciso realizar dois passos.
 
-##### 1. Calibração de Parâmetros
-~~~
-A calibração de parâmetros é feita em várias etapas e vários processos podem ou não ser aplicados, para controlar quais processos serão aplicados:
-1. No arquivo mainParameterCalibration.py localize a função testToRun()
-2. Os vetores da linha 27 até a linha 31 indicam quais algoritmos serão aplicados durante o processo de calibração
-3. Remova ou insira valores nos vetores para controlar quais testes serão executados
+##### Configurar os parâmetros de testes
+Em `antropometria/classifiers/` existe um arquivo para cada classificador implementado. É possível (e recomendado) alterar os parâmetros a serem calibrados para que se adequem ao problema que está sendo estudado.
 
-Para indicar em qual conjunto de dados será realizada a calibração, vá no arquivo mainParameterCalibration.py e defina os argumentos _folder_, _dataset name_ e _classes_
-O argumento classes deve ser um vetor no qual em cada posição há uma string com o nome da classe OU deve ser None, indicando que todas as classes estão em um mesmo arquivo
+Em `antropometria/config/constants/training/` estão definidas as configurações de testes que serão executados durante os pipelines.
 
-Finalmente, execute o pipeline a partir da raiz do projeto "python antropometria/mainParameterCalibration.py" em seu terminal
-A calibração de parâmetros irá gerar um grande volume de arquivos na pasta output, sendo o primeiro deles um arquivo .csv contendo o melhor resultado para cada teste realizado
-~~~
-
-##### 2. Salvar o melhor modelo definido via calibração de parâmetros
-~~~
-Tendo em mãos o arquivo com os resultados, localize o melhor resultado (aconselha-se usar algum software auxiliar para essa tarefa, como por exemplo o Excel)
-Sabendo o melhor resultado, no arquivo SaveModels.py, encontre o dicionário relativo ao classificador e altere os parâmetros conforme a combinação que gerou os melhores resultados
-Finalmente, vá até a linha 110 do arquivo SaveModels.py e indique no último parâmetro, qual dicionário deverá ser utilizado
-
-Se tudo ocorrer bem, um arquivo chamado output.sav será salvo na pasta de outputs!
-~~~
-
-### Para usuários
-
-1. Não altere os códigos caso não tenha conhecimento de Machine Learning, eles já estão com uma configuração padrão para rodarem sem problemas.
-2. O arquivo mainSplitDataFrame.py foi criado única e exclusivamente para lidar com um caso específico que ocorreu durante a Iniciação Científica.
-
-Caso queira aprender melhor sobre machine learning ou este projeto, consulte:
-- o relatório dessa IC (disponível por e-mail)
-- a ementa e a bibliografia das disciplinas [Inteligência Artificial - ACH2016](https://uspdigital.usp.br/jupiterweb/obterDisciplina?sgldis=ACH2016) e [Reconhecimento de Padrões - SIN5007](https://uspdigital.usp.br/janus/componente/disciplinasOferecidasInicial.jsf?action=3&sgldis=SIN5007)
+##### Executar
+Na raiz do projeto `python3 app.py`.
 
 
 ### Para desenvolvedores
@@ -96,11 +73,3 @@ Arquivos e diretórios
 
 Commits
 - Durante seus _commits_, as mensagens devem ser claras e explicativas do que foi alterado.
-
-Testes
-- ...
-
-OBS: O arquivo `mainSplitDataFrame.py` não tende a seguir a organização do resto do projeto por realizar uma tarefa muito específica e não comum a maioria dos demais conjuntos de dados;
-
-Deve-se ter em mente que tudo que for escrito deve estar claro em seu propósito.
-Comentários devem ser evitados.
