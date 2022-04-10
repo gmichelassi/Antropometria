@@ -70,7 +70,7 @@ class LoadData:
             labels = data[self.LABEL_COLUMN].values
             data = data.drop(self.LABEL_COLUMN, axis=1)
         except KeyError:
-            columns_regex = data.filter(regex='.*(label).*').columns
+            columns_regex = data.filter(regex=self.LABEL_REGEX).columns
             if columns_regex.shape[0] != 1:
                 raise IOError(f"File do not have columns like '{self.LABEL_COLUMN}' or '{self.LABEL_REGEX}'")
 
