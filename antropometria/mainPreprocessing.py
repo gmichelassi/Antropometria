@@ -32,7 +32,6 @@ def calculate_number_of_neatures_to_keep(
     accumulated_variance = 0
     number_of_relevant_features = 0
     for explained_variance in pca.explained_variance_ratio_:
-        print(accumulated_variance)
         if accumulated_variance > threshold:
             break
 
