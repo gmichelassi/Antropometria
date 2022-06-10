@@ -1,0 +1,10 @@
+from antropometria.mainParameterCalibration import main as parameter_calibration
+from antropometria.mainPreprocessing import run_preprocessing
+from antropometria.mainSaveModels import save_model
+
+import antropometria.classifiers
+import antropometria.config
+import antropometria.feature_selectors
+import antropometria.sampling
+import antropometria.tests
+import antropometria.utils

@@ -1,6 +1,3 @@
-from context import set_tests_context
-set_tests_context()
-
 import numpy as np
 
 from antropometria.utils.get_feature_selector import get_feature_selector

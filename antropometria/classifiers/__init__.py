@@ -1,0 +1,5 @@
+from antropometria.classifiers.KNearestNeighbors import KNearestNeighbors
+from antropometria.classifiers.NaiveBayes import NaiveBayes
+from antropometria.classifiers.NeuralNetwork import NeuralNetwork
+from antropometria.classifiers.RandomForests import RandomForests
+from antropometria.classifiers.SupportVectorMachine import SupportVectorMachine

@@ -1,6 +1,3 @@
-from context import set_tests_context
-set_tests_context()
-
 import numpy as np
 import pandas as pd
 import os

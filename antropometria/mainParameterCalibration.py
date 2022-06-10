@@ -2,23 +2,26 @@ import numpy as np
 import time
 
 from antropometria import initial_context
-from antropometria.classifiers.KNearestNeighbors import KNearestNeighbors as Knn
-from antropometria.classifiers.NaiveBayes import NaiveBayes as Nb
-from antropometria.classifiers.NeuralNetwork import NeuralNetwork as Nn
-from antropometria.classifiers.RandomForests import RandomForests as Rf
-from antropometria.classifiers.SupportVectorMachine import SupportVectorMachine as Svm
-from antropometria.config import logger
+from antropometria.classifiers import (
+    KNearestNeighbors as Knn,
+    NaiveBayes as Nb,
+    NeuralNetwork as Nn,
+    RandomForests as Rf,
+    SupportVectorMachine as Svm
+)
+from antropometria.config import get_logger
 from antropometria.config.constants.general import BINARY_FIELDNAMES, MULTICLASS_FIELDNAMES, CV
-from antropometria.config.constants.training import \
+from antropometria.config.constants.training import (
     REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, SCORING, ERROR_ESTIMATION
-from itertools import product
+)
 from antropometria.mainPreprocessing import run_preprocessing
-from sklearn.model_selection import GridSearchCV
+from antropometria.utils.parameter_calibration.mappers import map_test_to_dict, map_grid_search_results_to_dict
 from antropometria.utils.parameter_calibration.results import write_header, get_results, save_results
 from antropometria.utils.parameter_calibration.special_settings import skip_current_test
-from antropometria.utils.parameter_calibration.mappers import map_test_to_dict, map_grid_search_results_to_dict
+from itertools import product
+from sklearn.model_selection import GridSearchCV
 
-log = logger.get_logger(__file__)
+log = get_logger(__file__)
 initial_context.set_context()
 
 CLASSIFIERS = [Svm, Nn, Rf, Knn, Nb]
@@ -115,14 +118,6 @@ def run_grid_search(
 
 def main():
     start_time = time.time()
-    run_grid_search('dlibCNN', 'distances_all_px_eu', ['casos', 'controles'])
-
-    run_grid_search('dlibHOG', 'distances_all_px_eu', ['casos', 'controles'])
-
-    run_grid_search('openCvDNN', 'distances_all_px_eu', ['casos', 'controles'])
-
-    run_grid_search('openCvHaar', 'distances_all_px_eu', ['casos', 'controles'])
-
-    run_grid_search('openFace', 'distances_all_px_eu', ['casos', 'controles'])
+    run_grid_search('openface', 'distances_px', ['casos', 'controles'])
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

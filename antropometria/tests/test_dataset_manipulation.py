@@ -1,14 +1,16 @@
-from context import set_tests_context
-set_tests_context()
-
 import numpy as np
 import os
 import pandas as pd
 import pytest
 
 from antropometria.config.exceptions.dataset import NonBinaryDatasetError
-from antropometria.utils.dataset.manipulation import apply_pearson_feature_selection, combine_columns_names, \
-    build_ratio_dataset, get_difference_of_classes, apply_min_max_normalization
+from antropometria.utils.dataset.manipulation import (
+    apply_pearson_feature_selection,
+    combine_columns_names,
+    build_ratio_dataset,
+    get_difference_of_classes,
+    apply_min_max_normalization
+)
 
 
 COLUMNS_NAMES = pd.Index(['this', 'is', 'a', 'test'])

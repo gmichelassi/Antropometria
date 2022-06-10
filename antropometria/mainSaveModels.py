@@ -2,16 +2,19 @@ import numpy as np
 import pickle
 import sys
 
-from classifiers.KNearestNeighbors import KNearestNeighbors as Knn
-from classifiers.NaiveBayes import NaiveBayes as Nb
-from classifiers.NeuralNetwork import NeuralNetwork as Nn
-from classifiers.RandomForests import RandomForests as Rf
-from classifiers.SupportVectorMachine import SupportVectorMachine as Svm
-from config import logger
-from feature_selectors.utils.getter import get_feature_selector
-from mainPreprocessing import run_preprocessing
-from utils.dataset.manipulation import apply_pearson_feature_selection, apply_min_max_normalization, \
+from antropometria.classifiers.KNearestNeighbors import KNearestNeighbors as Knn
+from antropometria.classifiers.NaiveBayes import NaiveBayes as Nb
+from antropometria.classifiers.NeuralNetwork import NeuralNetwork as Nn
+from antropometria.classifiers.RandomForests import RandomForests as Rf
+from antropometria.classifiers.SupportVectorMachine import SupportVectorMachine as Svm
+from antropometria.config import logger
+from antropometria.utils import get_feature_selector
+from antropometria.mainPreprocessing import run_preprocessing
+from antropometria.utils.dataset.manipulation import (
+    apply_pearson_feature_selection,
+    apply_min_max_normalization,
     get_difference_of_classes
+)
 
 log = logger.get_logger(__file__)
 

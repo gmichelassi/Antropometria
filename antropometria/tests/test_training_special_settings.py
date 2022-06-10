@@ -1,6 +1,3 @@
-from context import set_tests_context
-set_tests_context()
-
 from antropometria.utils.parameter_calibration.special_settings import skip_current_test
 
 

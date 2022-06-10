@@ -1,8 +1,3 @@
-import sys
-import os
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-
 from antropometria.config.types import Reduction
 from antropometria.feature_selectors.CFS import CFS
 from antropometria.feature_selectors.FCBF import FCBF

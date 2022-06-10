@@ -3,11 +3,11 @@ import os
 
 from antropometria.config import logger
 from antropometria.config.types import Reduction, Sampling
-from antropometria.utils.get_feature_selector import get_feature_selector
 from antropometria.sampling.OverSampling import OverSampling
 from antropometria.sampling.UnderSampling import UnderSampling
 from antropometria.utils.dataset.load import LoadData
 from antropometria.utils.dataset.manipulation import apply_pearson_feature_selection, apply_min_max_normalization
+from antropometria.utils.get_feature_selector import get_feature_selector
 from antropometria.utils.timeout import timeout
 from typing import Tuple, List, Optional
 

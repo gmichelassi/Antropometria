@@ -1,6 +1,3 @@
-from context import set_tests_context
-set_tests_context()
-
 import numpy as np
 
 from antropometria.utils.metrics import calculate_mean
