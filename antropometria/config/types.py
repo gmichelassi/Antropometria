@@ -1,4 +1,4 @@
-from typing import Union, NewType
+from typing import Union
 
 Classifier = Union['KNeighborsClassifier', 'NaiveBayes', 'NeuralNetwork', 'RandomForest', 'SupportVectorMachine']
 Reduction = Union['PCA', 'ReliefF', 'RFSelect', 'mRMR', 'FCBF', 'CFS', 'RFS']
