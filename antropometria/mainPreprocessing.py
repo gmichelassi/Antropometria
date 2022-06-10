@@ -1,5 +1,5 @@
 import numpy as np
-import os
+import platform
 
 from antropometria.config import logger
 from antropometria.config.types import Reduction, Sampling
@@ -9,12 +9,41 @@ from antropometria.utils.dataset.load import LoadData
 from antropometria.utils.dataset.manipulation import apply_pearson_feature_selection, apply_min_max_normalization
 from antropometria.utils.get_feature_selector import get_feature_selector
 from antropometria.utils.timeout import timeout
+from sklearn.decomposition import PCA
 from typing import Tuple, List, Optional
 
 log = logger.get_logger(__file__)
 
 
-# @timeout(seconds=7500, use_timeout=(os.name.lower() != 'windows'))
+def calculate_number_of_neatures_to_keep(
+        original_number_of_features: int,
+        current_number_of_features: int,
+        dataset: np.ndarray
+) -> int:
+    sqrt_original_features = int(np.sqrt(original_number_of_features))
+
+    if sqrt_original_features < current_number_of_features:
+        return current_number_of_features
+
+    pca = PCA()
+    pca.fit(dataset)
+
+    threshold = 0.9
+    accumulated_variance = 0
+    number_of_relevant_features = 0
+    for explained_variance in pca.explained_variance_ratio_:
+        print(accumulated_variance)
+        if accumulated_variance > threshold:
+            break
+
+        accumulated_variance = accumulated_variance + explained_variance
+        number_of_relevant_features = number_of_relevant_features + 1
+
+    return number_of_relevant_features \
+        if (number_of_relevant_features / current_number_of_features) >= 0.6 else current_number_of_features
+
+
+@timeout(seconds=7500, use_timeout=(platform.system().lower() != 'windows'))
 def run_preprocessing(
         folder: str,
         dataset_name: str,
@@ -29,11 +58,10 @@ def run_preprocessing(
 
     x, y = LoadData(folder, dataset_name, classes).load()
     n_classes, classes_count = np.unique(y, return_counts=True)
-    instances, features = x.shape
-    n_features_to_keep = int(np.sqrt(features))
+    instances, original_number_of_features = x.shape
 
     log.info(
-        f'Data has {len(n_classes)} classes, {instances} instances and {features} features'
+        f'Data has {len(n_classes)} classes, {instances} instances and {original_number_of_features} features'
     ) if verbose else lambda: None
 
     if 0.0 < p_filter <= 0.99:
@@ -44,12 +72,18 @@ def run_preprocessing(
         log.info('Applying min max normalization') if verbose else lambda: None
         x = apply_min_max_normalization(x)
 
-    x = x.values
+    _, current_number_of_features = x.shape
+
+    x = x.to_numpy()
+
+    n_features_to_keep = calculate_number_of_neatures_to_keep(
+        original_number_of_features, current_number_of_features, dataset=x
+    )
 
     if reduction is not None:
         log.info(f'Applying {reduction} reduction') if verbose else lambda: None
 
-        feature_selector = get_feature_selector(reduction, n_features_to_keep, instances, features)
+        feature_selector = get_feature_selector(reduction, n_features_to_keep, instances, current_number_of_features)
         x = feature_selector.fit_transform(x, y)
 
     if sampling is not None:
