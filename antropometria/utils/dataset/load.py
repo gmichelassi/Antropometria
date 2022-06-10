@@ -7,6 +7,9 @@ from sklearn.utils import shuffle
 from typing import Tuple
 
 
+IMAGE_PROCESSING = ['dlibhog', 'dlibcnn', 'opencvdnn', 'opencvhaar', 'openface', 'mediapipe64', 'mediapipecustom']
+
+
 class LoadData:
     def __init__(self, folder: str, dataset_name: str, classes: list):
         self.folder = folder
@@ -53,8 +56,8 @@ class LoadData:
 
         dataset = pd.read_csv(file_name)
 
-        if self.folder in ['dlibHOG', 'dlibCNN', 'openCvDNN', 'openCvHaar', 'openFace']:
-            return dataset.drop(['img_name', 'id'], axis=1)
+        if self.folder.lower() in IMAGE_PROCESSING:
+            return dataset.drop(['image_name', 'label'], axis=1)
 
         return dataset
 
