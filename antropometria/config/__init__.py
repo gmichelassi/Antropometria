@@ -10,6 +10,7 @@ from antropometria.config.constants import (
 from antropometria.config.logger import get_logger
 from antropometria.config.types import Reduction, Sampling, Classifier
 from antropometria.config.training_parameters import (
+    BINARY,
     ERROR_ESTIMATION,
     FILTERS,
     MIN_MAX_NORMALIZATION,

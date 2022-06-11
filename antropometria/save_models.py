@@ -5,7 +5,7 @@ import sys
 from antropometria.classifiers.KNearestNeighbors import KNearestNeighbors as Knn
 from antropometria.classifiers.NaiveBayes import NaiveBayes as Nb
 from antropometria.classifiers.NeuralNetwork import NeuralNetwork as Nn
-from antropometria.classifiers.RandomForests import RandomForests as Rf
+from antropometria.classifiers.RandomForest import RandomForest as Rf
 from antropometria.classifiers.SupportVectorMachine import SupportVectorMachine as Svm
 from antropometria.config import logger
 from antropometria.feature_selectors import get_feature_selector

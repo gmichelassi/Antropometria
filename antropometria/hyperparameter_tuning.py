@@ -6,13 +6,21 @@ from antropometria.classifiers import (
     KNearestNeighbors as Knn,
     NaiveBayes as Nb,
     NeuralNetwork as Nn,
-    RandomForests as Rf,
+    RandomForest as Rf,
     SupportVectorMachine as Svm
 )
 from antropometria.config import get_logger
-from antropometria.config.constants import BINARY_FIELDNAMES, MULTICLASS_FIELDNAMES, CV
-from antropometria.config.training_parameters import (
-    REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, SCORING, ERROR_ESTIMATION
+from antropometria.config import (
+    BINARY,
+    BINARY_FIELDNAMES,
+    CV,
+    ERROR_ESTIMATION,
+    FILTERS,
+    MIN_MAX_NORMALIZATION,
+    MULTICLASS_FIELDNAMES,
+    REDUCTIONS,
+    SAMPLINGS,
+    SCORING
 )
 from antropometria.preprocessing import run_preprocessing
 from antropometria.utils.mappers import map_test_to_dict, map_grid_search_results_to_dict
@@ -25,99 +33,117 @@ log = get_logger(__file__)
 initial_context.set_context()
 
 CLASSIFIERS = [Svm, Nn, Rf, Knn, Nb]
+FIELDNAMES = BINARY_FIELDNAMES if BINARY else MULTICLASS_FIELDNAMES
 
 
-def run_grid_search(
+def preprocessing(folder, dataset_name, classes, apply_min_max, p_filter, reduction, sampling, verbose):
+    log.info(
+        f'Preprocessing dataset {folder} with [{reduction}, {sampling}, filter {p_filter}, min_max {apply_min_max}]'
+    ) if verbose else lambda: None
+
+    preprocessing_initial_time = time.time()
+    x, y, classes_count = run_preprocessing(
+        folder=folder,
+        dataset_name=dataset_name,
+        classes=classes,
+        apply_min_max=apply_min_max,
+        p_filter=p_filter,
+        reduction=reduction,
+        sampling=sampling
+    )
+
+    log.info(f"Preprocessing took {(time.time() - preprocessing_initial_time) / 60} minutes")
+
+    return x, y, classes_count
+
+
+def grid_search(classifier, x, y, classes_count, verbose: bool = True):
+    log.info(f'Running cross validation for {classifier.__name__}') if verbose else lambda: None
+
+    initial_time = time.time()
+    n_instances, n_features = x.shape
+    model = classifier(n_features=n_features)
+
+    grd = GridSearchCV(
+        estimator=model.estimator,
+        param_grid=model.parameter_grid,
+        scoring=SCORING,
+        cv=CV,
+        refit='f1',
+        n_jobs=-1
+    )
+    grid_results = grd.fit(x, y)
+
+    accuracy, precision, recall, f1, parameters, best_estimator = get_results(grid_results)
+    ellapsed_time = (time.time() - initial_time) / 60
+
+    log.info(f"Finished current grid search in {ellapsed_time:.2f} minutes") if verbose else lambda: None
+    log.info(f'Results presented f1-score {(f1 * 100):.2f}%.') if verbose else lambda: None
+    log.info(f'Best parameters found: {parameters}') if verbose else lambda: None
+
+    return accuracy, precision, recall, f1, parameters, best_estimator
+
+
+def error_estimation(x, y, classes_count, best_estimator, sampling, verbose):
+    log.info(f'Running error estimation')
+
+    initial_time = time.time()
+
+    error_estimation_results =\
+        ERROR_ESTIMATION[str(sampling)](x, y, classes_count, best_estimator).run_error_estimation()
+
+    ellapsed_time = (time.time() - initial_time) / 60
+
+    log.info(f"Finished error estimation in {ellapsed_time:.2f} minutes") if verbose else lambda: None
+
+    return error_estimation_results
+
+
+def hyperparameter_tuning(
         folder: str,
         dataset_name: str,
         classes: list = np.array([]),
         verbose: bool = True
 ) -> None:
-    binary = True
-    fieldnames = BINARY_FIELDNAMES if binary else MULTICLASS_FIELDNAMES
-    output_file = f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv'
-
     log.info(f'Running grid search for {folder}/{dataset_name}') if verbose else lambda: None
-    write_header(file=output_file, fieldnames=fieldnames)
 
-    tests = product(CLASSIFIERS, REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION)
-    for classifier, reduction, sampling, p_filter, min_max in tests:
+    preprocessing_params = product(REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION)
+    output_file = f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv'
+    write_header(file=output_file, fieldnames=FIELDNAMES)
+
+    for reduction, sampling, p_filter, apply_min_max in preprocessing_params:
         try:
-            current_test_initial_time = time.time()
-            if skip_current_test(classifier.__name__, reduction):
-                continue
 
-            log.info(
-                f'Running test with'
-                f' dataset: {folder}'
-                f' classifier: {classifier.__name__},'
-                f' reduction: {reduction},'
-                f' sampling: {sampling},'
-                f' filtro: {p_filter},'
-                f' min_max: {min_max}'
-            ) if verbose else lambda: None
-
-            preprocessing_initial_time = time.time()
-            x, y, classes_count = run_preprocessing(
-                folder=folder,
-                dataset_name=dataset_name,
-                classes=classes,
-                apply_min_max=min_max,
-                p_filter=p_filter,
-                reduction=reduction,
-                sampling=sampling
-            )
-            log.debug(f"Pre processing took {(time.time() - preprocessing_initial_time) / 60} minutes")
-
-            instances, features = x.shape
-            model = classifier(n_features=features)
-
-            log.info('Running cross validation') if verbose else lambda: None
-
-            grd = GridSearchCV(
-                estimator=model.estimator,
-                param_grid=model.parameter_grid,
-                scoring=SCORING,
-                cv=CV,
-                refit='f1',
-                n_jobs=-1
+            x, y, classes_count = preprocessing(
+                folder, dataset_name, classes, apply_min_max, p_filter, reduction, sampling, verbose
             )
 
-            grid_results = grd.fit(x, y)
+            for classifier in CLASSIFIERS:
+                if skip_current_test(classifier.__name__, reduction):
+                    continue
 
-            accuracy, precision, recall, f1, parameters = get_results(grid_results)
-            current_test = map_test_to_dict(folder, model.name, reduction, p_filter, min_max, sampling)
-            grid_search_results = map_grid_search_results_to_dict(accuracy, precision, recall, precision)
+                accuracy, precision, recall, f1, parameters, best_estimator = grid_search(classifier, x, y, classes_count)
+                current_test = map_test_to_dict(folder, classifier.__name__, reduction, p_filter, apply_min_max, sampling)
+                grid_search_results = map_grid_search_results_to_dict(accuracy, precision, recall, precision)
+                error_estimation_results = error_estimation(x, y, classes_count, best_estimator, sampling, verbose)
 
-            log.info(
-                f'Best result for test [{model.name}, {reduction}, {sampling}, {p_filter}, {min_max}] '
-                f'with f1-score {(f1 * 100):.2f}%.'
-            ) if verbose else lambda: None
-            log.info(f'Best parameters found: {parameters}') if verbose else lambda: None
+                log.info('Saving results!') if verbose else lambda: None
+                save_results(
+                    file=output_file,
+                    fieldnames=FIELDNAMES,
+                    test=current_test,
+                    grid_search_results=grid_search_results,
+                    error_estimation_results=error_estimation_results,
+                    parameters=parameters
+                )
 
-            log.info(f'Running error estimation')
-            error_estimation = ERROR_ESTIMATION[str(sampling)](x, y, classes_count, grid_results.best_estimator_)
-            error_estimation_results = error_estimation.run_error_estimation()
-
-            log.info('Saving results!') if verbose else lambda: None
-            save_results(
-                file=output_file,
-                fieldnames=fieldnames,
-                test=current_test,
-                grid_search_results=grid_search_results,
-                error_estimation_results=error_estimation_results,
-                parameters=parameters
-            )
-
-            current_test_ellapsed_time = (time.time() - current_test_initial_time) / 60
-
-            log.info(f"Finished current test in {current_test_ellapsed_time:.2f} minutes") if verbose else lambda: None
         except (IOError, KeyError, MemoryError, TimeoutError, ValueError) as error:
             log.error(f'Could not run current test due to error: {error}')
 
 
 def main():
     start_time = time.time()
-    run_grid_search('openface', 'distances_px', ['casos', 'controles'])
+
+    hyperparameter_tuning('openface', 'distances_px', ['casos', 'controles'])
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

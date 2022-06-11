@@ -2,7 +2,7 @@ from antropometria.utils.error_estimation.DefaultErrorEstimation import DefaultE
 from antropometria.utils.error_estimation.RandomSamplingErrorEstimation import RandomSamplingErrorEstimation
 from antropometria.utils.error_estimation.SmoteErrorEstimation import SmoteErrorEstimation
 
-
+BINARY = True
 ERROR_ESTIMATION = {
     'None': DefaultErrorEstimation,
     'Random': RandomSamplingErrorEstimation,

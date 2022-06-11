@@ -1,4 +1,4 @@
-from antropometria import parameter_calibration
+from antropometria import hyperparameter_tuning
 
 if __name__ == '__main__':
-    parameter_calibration()
+    hyperparameter_tuning()

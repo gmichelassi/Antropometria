@@ -45,17 +45,19 @@ class GridResults:
             'mean_test_accuracy': [0.9, 0.1, 0.2],
         }
         self.best_params_ = {}
+        self.best_estimator_ = 'RandomForest'
 
 
 class TestParameterCalibrationResults:
     def test_get_results(self):
-        accuracy, precision, recall, f1, parameters = get_results(GridResults())
+        accuracy, precision, recall, f1, parameters, best_estimator = get_results(GridResults())
 
         assert type(accuracy) == float
         assert type(precision) == float
         assert type(recall) == float
         assert type(f1) == float
         assert type(parameters) == dict
+        assert type(best_estimator) == str
 
     def test_save_results(self):
         save_results(
