@@ -1,9 +1,3 @@
-import os
-import sys
-from typing import List
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-
 import json
 import numpy as np
 import pandas as pd
@@ -12,12 +6,13 @@ import time
 from antropometria.utils.dataset.load import LoadData
 from scipy.stats import ttest_ind
 from sklearn.decomposition import PCA
+from typing import List
 
 THRESHOLD = 0.1
 
 
 class PCAAnalysis:
-    def __init__(self, x: pd.DataFrame, y: np.ndarray):
+    def __init__(self, x: pd.DataFrame, y: np.ndarray = None):
         self.x = x
         self.y = y
 

@@ -6,7 +6,7 @@ sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 import pandas as pd
 import time
 
-from antropometria.mainPreprocessing import run_preprocessing
+from antropometria.preprocessing import run_preprocessing
 from antropometria.utils.dataset.load import LoadData
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import SelectFromModel

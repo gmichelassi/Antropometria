@@ -2,7 +2,7 @@ import numpy as np
 import os
 import pandas as pd
 
-from antropometria.config.exceptions.dataset import MissingDatasetError
+from antropometria.exceptions import MissingDatasetError
 from sklearn.utils import shuffle
 from typing import Tuple
 

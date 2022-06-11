@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from antropometria.config.exceptions.dataset import MissingDatasetError
+from antropometria.exceptions import MissingDatasetError
 from antropometria.utils.dataset.load import LoadData
 
 

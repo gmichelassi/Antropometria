@@ -1,6 +1,6 @@
 import numpy as np
 
-from antropometria.utils.get_feature_selector import get_feature_selector
+from antropometria.feature_selectors.get_feature_selector import get_feature_selector
 from sklearn.datasets import make_classification
 
 

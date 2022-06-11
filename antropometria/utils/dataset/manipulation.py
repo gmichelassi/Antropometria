@@ -4,7 +4,7 @@ import numpy as np
 import os
 import pandas as pd
 
-from antropometria.config.exceptions.dataset import NonBinaryDatasetError
+from antropometria.exceptions import NonBinaryDatasetError
 from scipy import stats
 from typing import List
 

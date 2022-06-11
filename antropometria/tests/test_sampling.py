@@ -2,7 +2,7 @@ import numpy as np
 import os
 import pandas as pd
 
-from antropometria.config.constants.general import TEMPORARY_RANDOM_SAMPLES, TEMPORARY_RANDOM_SAMPLES_LABELS
+from antropometria.config.constants import TEMPORARY_RANDOM_SAMPLES, TEMPORARY_RANDOM_SAMPLES_LABELS
 from antropometria.sampling.OverSampling import OverSampling
 from antropometria.sampling.UnderSampling import UnderSampling
 from pytest import approx

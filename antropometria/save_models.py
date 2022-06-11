@@ -8,8 +8,8 @@ from antropometria.classifiers.NeuralNetwork import NeuralNetwork as Nn
 from antropometria.classifiers.RandomForests import RandomForests as Rf
 from antropometria.classifiers.SupportVectorMachine import SupportVectorMachine as Svm
 from antropometria.config import logger
-from antropometria.utils import get_feature_selector
-from antropometria.mainPreprocessing import run_preprocessing
+from antropometria.feature_selectors import get_feature_selector
+from antropometria.preprocessing import run_preprocessing
 from antropometria.utils.dataset.manipulation import (
     apply_pearson_feature_selection,
     apply_min_max_normalization,

@@ -10,11 +10,11 @@ from antropometria.classifiers import (
     SupportVectorMachine as Svm
 )
 from antropometria.config import get_logger
-from antropometria.config.constants.general import BINARY_FIELDNAMES, MULTICLASS_FIELDNAMES, CV
-from antropometria.config.constants.training import (
+from antropometria.config.constants import BINARY_FIELDNAMES, MULTICLASS_FIELDNAMES, CV
+from antropometria.config.training_parameters import (
     REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, SCORING, ERROR_ESTIMATION
 )
-from antropometria.mainPreprocessing import run_preprocessing
+from antropometria.preprocessing import run_preprocessing
 from antropometria.utils.parameter_calibration.mappers import map_test_to_dict, map_grid_search_results_to_dict
 from antropometria.utils.parameter_calibration.results import write_header, get_results, save_results
 from antropometria.utils.parameter_calibration.special_settings import skip_current_test

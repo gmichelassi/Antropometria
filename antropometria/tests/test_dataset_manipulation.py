@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import pytest
 
-from antropometria.config.exceptions.dataset import NonBinaryDatasetError
+from antropometria.exceptions import NonBinaryDatasetError
 from antropometria.utils.dataset.manipulation import (
     apply_pearson_feature_selection,
     combine_columns_names,

@@ -1,11 +1,6 @@
 import numpy as np
-import os
-import sys
 
-from antropometria.config.constants.general import CV
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-
+from antropometria.config.constants import CV
 from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
 from typing import Any, Dict, List, Tuple
 

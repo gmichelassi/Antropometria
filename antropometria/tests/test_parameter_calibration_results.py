@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 
-from antropometria.config.constants.general import MULTICLASS_FIELDNAMES
+from antropometria.config.constants import MULTICLASS_FIELDNAMES
 from antropometria.utils.parameter_calibration.results import get_results, save_results, write_header
 
 OUTPUT_FILE = './antropometria/output/file_test.csv'

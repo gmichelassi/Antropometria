@@ -1,10 +1,7 @@
 import logging
 import os
-import sys
 
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-
-from antropometria.config.constants.general import ROOT_DIR
+from antropometria.config.constants import ROOT_DIR
 
 
 def get_logger(logged_file: str = __file__):

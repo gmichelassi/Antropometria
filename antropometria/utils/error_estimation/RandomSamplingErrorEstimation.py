@@ -1,12 +1,12 @@
 import numpy as np
-import os
 import pandas as pd
-import sys
 
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
-
-from antropometria.config.constants.general import \
-    TEMPORARY_RANDOM_SAMPLES, TEMPORARY_RANDOM_SAMPLES_LABELS, N_SPLITS, CV
+from antropometria.config.constants import (
+    CV,
+    N_SPLITS,
+    TEMPORARY_RANDOM_SAMPLES,
+    TEMPORARY_RANDOM_SAMPLES_LABELS
+)
 from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
 from typing import Any, Dict, List, Tuple
 
