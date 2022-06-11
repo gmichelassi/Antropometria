@@ -10,11 +10,9 @@ from antropometria.classifiers.SupportVectorMachine import SupportVectorMachine 
 from antropometria.config import logger
 from antropometria.feature_selectors import get_feature_selector
 from antropometria.preprocessing import run_preprocessing
-from antropometria.utils.dataset.manipulation import (
-    apply_pearson_feature_selection,
-    apply_min_max_normalization,
-    get_difference_of_classes
-)
+from antropometria.statistics import apply_pearson_feature_selection, apply_min_max_normalization
+from antropometria.utils import get_difference_of_classes
+
 
 log = logger.get_logger(__file__)
 

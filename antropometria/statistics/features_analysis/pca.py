@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import time
 
-from antropometria.utils.dataset.load import LoadData
+from antropometria.utils.load_data import LoadData
 from scipy.stats import ttest_ind
 from sklearn.decomposition import PCA
 from typing import List

@@ -7,7 +7,7 @@ import time
 from config import logger
 from multiprocessing import Process
 from scipy import stats
-from utils.dataset.load import LoadData
+from antropometria.utils.load_data import LoadData
 from utils.dataset.manipulation import apply_pearson_feature_selection, build_ratio_dataset
 
 log = logger.get_logger(__file__)

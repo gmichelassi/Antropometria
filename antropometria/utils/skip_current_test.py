@@ -13,4 +13,3 @@ def skip_current_test(
         return True
 
     return False
-

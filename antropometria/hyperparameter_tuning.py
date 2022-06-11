@@ -15,9 +15,9 @@ from antropometria.config.training_parameters import (
     REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, SCORING, ERROR_ESTIMATION
 )
 from antropometria.preprocessing import run_preprocessing
-from antropometria.utils.parameter_calibration.mappers import map_test_to_dict, map_grid_search_results_to_dict
-from antropometria.utils.parameter_calibration.results import write_header, get_results, save_results
-from antropometria.utils.parameter_calibration.special_settings import skip_current_test
+from antropometria.utils.mappers import map_test_to_dict, map_grid_search_results_to_dict
+from antropometria.utils.results import write_header, get_results, save_results
+from antropometria.utils import skip_current_test
 from itertools import product
 from sklearn.model_selection import GridSearchCV
 

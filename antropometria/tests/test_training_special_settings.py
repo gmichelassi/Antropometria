@@ -1,4 +1,4 @@
-from antropometria.utils.parameter_calibration.special_settings import skip_current_test
+from antropometria.utils import skip_current_test
 
 
 class TestTrainingSpecialSettings:

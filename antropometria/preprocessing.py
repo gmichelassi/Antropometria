@@ -5,8 +5,8 @@ from antropometria.config import logger
 from antropometria.config.types import Reduction, Sampling
 from antropometria.sampling.OverSampling import OverSampling
 from antropometria.sampling.UnderSampling import UnderSampling
-from antropometria.utils.dataset.load import LoadData
-from antropometria.utils.dataset.manipulation import apply_pearson_feature_selection, apply_min_max_normalization
+from antropometria.utils.load_data import LoadData
+from antropometria.statistics import apply_pearson_feature_selection, apply_min_max_normalization
 from antropometria.feature_selectors.get_feature_selector import get_feature_selector
 from antropometria.utils.timeout import timeout
 from sklearn.decomposition import PCA

@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 
 from antropometria.exceptions import MissingDatasetError
-from antropometria.utils.dataset.load import LoadData
+from antropometria.utils.load_data import LoadData
 
 
 DATASET_MULTIPLE_FILES = 'distances_all_px_eu'

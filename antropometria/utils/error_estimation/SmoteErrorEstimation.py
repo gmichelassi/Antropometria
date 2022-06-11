@@ -1,7 +1,7 @@
 import numpy as np
 
 from antropometria.config.constants import N_SPLITS, CV
-from antropometria.utils.dataset.manipulation import get_difference_of_classes
+from antropometria.utils.get_difference_of_classes import get_difference_of_classes
 from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
 from typing import Any, Dict, List, Tuple
 

@@ -1,15 +1,10 @@
 import math
 import numpy as np
-import os
-import sys
-
-from antropometria.config.constants import N_SPLITS
-
-sys.path.insert(1, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 from abc import ABC, abstractmethod
-from antropometria.utils.metrics import calculate_mean, calculate_std
+from antropometria.config.constants import N_SPLITS
 from antropometria.exceptions import NonBinaryDatasetError
+from antropometria.statistics import calculate_mean_from_dict
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from typing import Any, Dict, List, Tuple
 
@@ -63,7 +58,7 @@ class ErrorEstimation(ABC):
             recall_macro: List[float],
             f1_macro: List[float]
     ) -> Dict[str, Tuple[float, float]]:
-        mean_results = calculate_mean({
+        mean_results = calculate_mean_from_dict({
             'accuracy': accuracy,
             'precision_micro': precision_micro,
             'recall_micro': recall_micro,
@@ -111,7 +106,7 @@ class ErrorEstimation(ABC):
             recall: List[float],
             f1: List[float]
     ) -> Dict[str, Tuple[float, float]]:
-        mean_results = calculate_mean({
+        mean_results = calculate_mean_from_dict({
             'accuracy': accuracy,
             'precision': precision,
             'recall': recall,
@@ -134,7 +129,7 @@ class ErrorEstimation(ABC):
     @staticmethod
     def calculate_confidence_interval(metric: list, mean_metric: float) -> Tuple[float, float]:
         tc = 2.262
-        std = calculate_std(np.array(metric))
+        std = np.std(np.array(metric))
 
         ic_lower = mean_metric - tc * (std / math.sqrt(N_SPLITS))
         ic_upper = mean_metric + tc * (std / math.sqrt(N_SPLITS))
