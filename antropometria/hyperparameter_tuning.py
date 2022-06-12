@@ -36,27 +36,6 @@ CLASSIFIERS = [Svm, Nn, Rf, Knn, Nb]
 FIELDNAMES = BINARY_FIELDNAMES if BINARY else MULTICLASS_FIELDNAMES
 
 
-def preprocessing(folder, dataset_name, classes, apply_min_max, p_filter, reduction, sampling, verbose):
-    log.info(
-        f'Preprocessing dataset {folder} with [{reduction}, {sampling}, filter {p_filter}, min_max {apply_min_max}]'
-    ) if verbose else lambda: None
-
-    preprocessing_initial_time = time.time()
-    x, y, classes_count = run_preprocessing(
-        folder=folder,
-        dataset_name=dataset_name,
-        classes=classes,
-        apply_min_max=apply_min_max,
-        p_filter=p_filter,
-        reduction=reduction,
-        sampling=sampling
-    )
-
-    log.info(f"Preprocessing took {(time.time() - preprocessing_initial_time) / 60} minutes")
-
-    return x, y, classes_count
-
-
 def grid_search(classifier, x, y, classes_count, verbose: bool = True):
     log.info(f'Running cross validation for {classifier.__name__}') if verbose else lambda: None
 
@@ -113,8 +92,7 @@ def hyperparameter_tuning(
 
     for reduction, sampling, p_filter, apply_min_max in preprocessing_params:
         try:
-
-            x, y, classes_count = preprocessing(
+            x, y, classes_count = run_preprocessing(
                 folder, dataset_name, classes, apply_min_max, p_filter, reduction, sampling, verbose
             )
 

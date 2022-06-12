@@ -1,45 +1,19 @@
 import numpy as np
+import time
 import platform
 
 from antropometria.config import logger
 from antropometria.config.types import Reduction, Sampling
+from antropometria.preprocessing.calculate_number_of_features_to_keep import calculate_number_of_neatures_to_keep
 from antropometria.sampling.OverSampling import OverSampling
 from antropometria.sampling.UnderSampling import UnderSampling
 from antropometria.utils.load_data import LoadData
 from antropometria.statistics import apply_pearson_feature_selection, apply_min_max_normalization
 from antropometria.feature_selectors.get_feature_selector import get_feature_selector
 from antropometria.utils.timeout import timeout
-from sklearn.decomposition import PCA
 from typing import Tuple, List, Optional
 
 log = logger.get_logger(__file__)
-
-
-def calculate_number_of_neatures_to_keep(
-        original_number_of_features: int,
-        current_number_of_features: int,
-        dataset: np.ndarray
-) -> int:
-    sqrt_original_features = int(np.sqrt(original_number_of_features))
-
-    if sqrt_original_features < current_number_of_features:
-        return current_number_of_features
-
-    pca = PCA()
-    pca.fit(dataset)
-
-    threshold = 0.9
-    accumulated_variance = 0
-    number_of_relevant_features = 0
-    for explained_variance in pca.explained_variance_ratio_:
-        if accumulated_variance > threshold:
-            break
-
-        accumulated_variance = accumulated_variance + explained_variance
-        number_of_relevant_features = number_of_relevant_features + 1
-
-    return number_of_relevant_features \
-        if (number_of_relevant_features / current_number_of_features) >= 0.6 else current_number_of_features
 
 
 @timeout(seconds=7500, use_timeout=(platform.system().lower() != 'windows'))
@@ -53,7 +27,12 @@ def run_preprocessing(
         sampling: Optional[Sampling] = None,
         verbose: bool = True
 ) -> Tuple[np.ndarray, np.ndarray, List[int]]:
+    log.info(
+        f'Preprocessing {folder} with [{reduction}, {sampling}, filter {p_filter}, min_max {apply_min_max}]'
+    ) if verbose else lambda: None
     log.info(f'Loading data from data/{folder}/{dataset_name}') if verbose else lambda: None
+
+    preprocessing_initial_time = time.time()
 
     x, y = LoadData(folder, dataset_name, classes).load()
     n_classes, classes_count = np.unique(y, return_counts=True)
@@ -97,5 +76,7 @@ def run_preprocessing(
             x, y = UnderSampling().fit_transform(x, y)
         else:
             x, y = OverSampling(sampling).fit_transform(x, y)
+
+    log.info(f"Preprocessing took {(time.time() - preprocessing_initial_time) / 60} minutes")
 
     return x, y, classes_count.tolist()
