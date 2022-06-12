@@ -1,9 +1,20 @@
 import time
 
-from antropometria.config import ERROR_ESTIMATION
 from antropometria.config import logger
+from antropometria.error_estimation.DefaultErrorEstimation import DefaultErrorEstimation
+from antropometria.error_estimation.RandomSamplingErrorEstimation import RandomSamplingErrorEstimation
+from antropometria.error_estimation.SmoteErrorEstimation import SmoteErrorEstimation
 
 
+ERROR_ESTIMATION = {
+    'None': DefaultErrorEstimation,
+    'Random': RandomSamplingErrorEstimation,
+    'Smote': SmoteErrorEstimation,
+    'Borderline': SmoteErrorEstimation,
+    'KMeans': SmoteErrorEstimation,
+    'SVM': SmoteErrorEstimation,
+    'Tomek': SmoteErrorEstimation
+}
 log = logger.get_logger(__file__)
 
 

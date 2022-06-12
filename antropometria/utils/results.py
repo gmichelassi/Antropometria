@@ -9,7 +9,7 @@ def write_header(file: str, fieldnames: List[str]) -> None:
         writer.writeheader()
 
 
-def get_results(grid_results) -> Tuple[float, float, float, float, dict, str]:
+def extract_results(grid_results) -> Tuple[float, float, float, float, dict, str]:
     f1 = grid_results.best_score_
     precision = grid_results.cv_results_['mean_test_precision'][grid_results.best_index_]
     recall = grid_results.cv_results_['mean_test_recall'][grid_results.best_index_]

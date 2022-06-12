@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 from antropometria.config.constants import MULTICLASS_FIELDNAMES
-from antropometria.utils.results import get_results, save_results, write_header
+from antropometria.utils.results import extract_results, save_results, write_header
 
 OUTPUT_FILE = './antropometria/output/file_test.csv'
 ANY = 'any'
@@ -50,7 +50,7 @@ class GridResults:
 
 class TestParameterCalibrationResults:
     def test_get_results(self):
-        accuracy, precision, recall, f1, parameters, best_estimator = get_results(GridResults())
+        accuracy, precision, recall, f1, parameters, best_estimator = extract_results(GridResults())
 
         assert type(accuracy) == float
         assert type(precision) == float

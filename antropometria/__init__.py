@@ -1,6 +1,4 @@
-from antropometria.hyperparameter_tuning import main as hyperparameter_tuning
-from antropometria.preprocessing import run_preprocessing
-from antropometria.save_models import save_model
+from antropometria.main import main
 
 import antropometria.classifiers
 import antropometria.config

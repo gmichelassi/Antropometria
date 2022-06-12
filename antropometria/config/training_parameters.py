@@ -1,17 +1,15 @@
-from antropometria.error_estimation import DefaultErrorEstimation
-from antropometria.error_estimation import RandomSamplingErrorEstimation
-from antropometria.error_estimation.SmoteErrorEstimation import SmoteErrorEstimation
+from antropometria.classifiers import (
+    KNearestNeighbors as Knn,
+    NaiveBayes as Nb,
+    NeuralNetwork as Nn,
+    RandomForest as Rf,
+    SupportVectorMachine as Svm
+)
+
 
 BINARY = True
-ERROR_ESTIMATION = {
-    'None': DefaultErrorEstimation,
-    'Random': RandomSamplingErrorEstimation,
-    'Smote': SmoteErrorEstimation,
-    'Borderline': SmoteErrorEstimation,
-    'KMeans': SmoteErrorEstimation,
-    'SVM': SmoteErrorEstimation,
-    'Tomek': SmoteErrorEstimation
-}
+CLASSIFIERS = [Svm, Nn, Rf, Knn, Nb]
+
 FILTERS = [0.98]
 MIN_MAX_NORMALIZATION = [True]
 REDUCTIONS = [None, 'PCA', 'ReliefF', 'RFSelect', 'mRMR', 'FCBF', 'CFS', 'RFS']
