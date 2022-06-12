@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from antropometria.config.constants import BINARY_FIELDNAMES, MULTICLASS_FIELDNAMES, CV, N_SPLITS
-from antropometria.utils.error_estimation.ErrorEstimation import ErrorEstimation
+from antropometria.error_estimation.ErrorEstimation import ErrorEstimation
 from typing import Any, Dict, List, Tuple
 from sklearn.datasets import make_classification
 from sklearn.svm import SVC

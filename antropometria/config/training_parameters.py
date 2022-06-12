@@ -1,6 +1,6 @@
-from antropometria.utils.error_estimation.DefaultErrorEstimation import DefaultErrorEstimation
-from antropometria.utils.error_estimation.RandomSamplingErrorEstimation import RandomSamplingErrorEstimation
-from antropometria.utils.error_estimation.SmoteErrorEstimation import SmoteErrorEstimation
+from antropometria.error_estimation import DefaultErrorEstimation
+from antropometria.error_estimation import RandomSamplingErrorEstimation
+from antropometria.error_estimation.SmoteErrorEstimation import SmoteErrorEstimation
 
 BINARY = True
 ERROR_ESTIMATION = {

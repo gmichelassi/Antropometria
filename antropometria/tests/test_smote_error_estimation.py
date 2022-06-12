@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from antropometria.config.constants import CV, N_SPLITS
-from antropometria.utils.error_estimation.SmoteErrorEstimation import SmoteErrorEstimation
+from antropometria.error_estimation.SmoteErrorEstimation import SmoteErrorEstimation
 from pytest import approx
 from sklearn.datasets import make_classification
 from sklearn.svm import SVC

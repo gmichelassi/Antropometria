@@ -14,7 +14,6 @@ from antropometria.config import (
     BINARY,
     BINARY_FIELDNAMES,
     CV,
-    ERROR_ESTIMATION,
     FILTERS,
     MIN_MAX_NORMALIZATION,
     MULTICLASS_FIELDNAMES,
@@ -22,6 +21,7 @@ from antropometria.config import (
     SAMPLINGS,
     SCORING
 )
+from antropometria.error_estimation import run_error_estimation
 from antropometria.preprocessing import run_preprocessing
 from antropometria.utils.mappers import map_test_to_dict, map_grid_search_results_to_dict
 from antropometria.utils.results import write_header, get_results, save_results
@@ -63,21 +63,6 @@ def grid_search(classifier, x, y, classes_count, verbose: bool = True):
     return accuracy, precision, recall, f1, parameters, best_estimator
 
 
-def error_estimation(x, y, classes_count, best_estimator, sampling, verbose):
-    log.info(f'Running error estimation')
-
-    initial_time = time.time()
-
-    error_estimation_results =\
-        ERROR_ESTIMATION[str(sampling)](x, y, classes_count, best_estimator).run_error_estimation()
-
-    ellapsed_time = (time.time() - initial_time) / 60
-
-    log.info(f"Finished error estimation in {ellapsed_time:.2f} minutes") if verbose else lambda: None
-
-    return error_estimation_results
-
-
 def hyperparameter_tuning(
         folder: str,
         dataset_name: str,
@@ -103,7 +88,7 @@ def hyperparameter_tuning(
                 accuracy, precision, recall, f1, parameters, best_estimator = grid_search(classifier, x, y, classes_count)
                 current_test = map_test_to_dict(folder, classifier.__name__, reduction, p_filter, apply_min_max, sampling)
                 grid_search_results = map_grid_search_results_to_dict(accuracy, precision, recall, precision)
-                error_estimation_results = error_estimation(x, y, classes_count, best_estimator, sampling, verbose)
+                error_estimation_results = run_error_estimation(x, y, classes_count, best_estimator, sampling, verbose)
 
                 log.info('Saving results!') if verbose else lambda: None
                 save_results(
