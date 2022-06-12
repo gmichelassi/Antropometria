@@ -25,8 +25,8 @@ log = get_logger(__file__)
 FIELDNAMES = BINARY_FIELDNAMES if BINARY else MULTICLASS_FIELDNAMES
 
 
-def run_hyperparameter_tuning(folder: str, dataset_name: str, classes: list = np.array([]), verbose: bool = True):
-    log.info(f'Running grid search for {folder}/{dataset_name}') if verbose else lambda: None
+def run_hyperparameter_tuning(folder: str, dataset_name: str, classes: list = np.array([])):
+    log.info(f'Running grid search for {folder}/{dataset_name}')
 
     preprocessing_params = product(REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION)
     output_file = f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv'
@@ -35,22 +35,21 @@ def run_hyperparameter_tuning(folder: str, dataset_name: str, classes: list = np
     for reduction, sampling, p_filter, apply_min_max in preprocessing_params:
         try:
             x, y, classes_count = run_preprocessing(
-                folder, dataset_name, classes, apply_min_max, p_filter, reduction, sampling, verbose
+                folder, dataset_name, classes, apply_min_max, p_filter, reduction, sampling
             )
 
             for classifier in CLASSIFIERS:
                 if skip_current_test(classifier.__name__, reduction):
-                    print(f'skipping {classifier.__name__} and {reduction}')
                     continue
 
-                accuracy, precision, recall, f1, parameters, best_estimator = grid_search(classifier, x, y, verbose)
+                accuracy, precision, recall, f1, parameters, best_estimator = grid_search(classifier, x, y)
                 current_test = map_test_to_dict(
                     folder, classifier.__name__, reduction, p_filter, apply_min_max, sampling
                 )
                 grid_search_results = map_grid_search_results_to_dict(accuracy, precision, recall, precision)
-                error_estimation_results = run_error_estimation(x, y, classes_count, best_estimator, sampling, verbose)
+                error_estimation_results = run_error_estimation(x, y, classes_count, best_estimator, sampling)
 
-                log.info('Saving results!') if verbose else lambda: None
+                log.info('Saving results!')
                 save_results(
                     file=output_file,
                     fieldnames=FIELDNAMES,

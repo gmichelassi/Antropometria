@@ -25,12 +25,9 @@ def run_preprocessing(
         p_filter: float = 0.0,
         reduction: Optional[Reduction] = None,
         sampling: Optional[Sampling] = None,
-        verbose: bool = True
 ) -> Tuple[np.ndarray, np.ndarray, List[int]]:
-    log.info(
-        f'Preprocessing {folder} with [{reduction}, {sampling}, filter {p_filter}, min_max {apply_min_max}]'
-    ) if verbose else lambda: None
-    log.info(f'Loading data from data/{folder}/{dataset_name}') if verbose else lambda: None
+    log.info(f'Preprocessing {folder} with [{reduction}, {sampling}, filter {p_filter}, min_max {apply_min_max}]')
+    log.info(f'Loading data from data/{folder}/{dataset_name}')
 
     preprocessing_initial_time = time.time()
 
@@ -38,16 +35,14 @@ def run_preprocessing(
     n_classes, classes_count = np.unique(y, return_counts=True)
     instances, original_number_of_features = x.shape
 
-    log.info(
-        f'Data has {len(n_classes)} classes, {instances} instances and {original_number_of_features} features'
-    ) if verbose else lambda: None
+    log.info(f'Data has {len(n_classes)} classes, {instances} instances and {original_number_of_features} features')
 
     if 0.0 < p_filter <= 0.99:
-        log.info('Applying pearson correlation filter') if verbose else lambda: None
+        log.info('Applying pearson correlation filter')
         x = apply_pearson_feature_selection(x, p_filter)
 
     if apply_min_max:
-        log.info('Applying min max normalization') if verbose else lambda: None
+        log.info('Applying min max normalization')
         x = apply_min_max_normalization(x)
 
     _, current_number_of_features = x.shape
@@ -59,7 +54,7 @@ def run_preprocessing(
     )
 
     if reduction is not None:
-        log.info(f'Applying {reduction} reduction') if verbose else lambda: None
+        log.info(f'Applying {reduction} reduction')
 
         feature_selector = get_feature_selector(reduction, n_features_to_keep, instances, current_number_of_features)
         x = feature_selector.fit_transform(x, y)
@@ -70,7 +65,7 @@ def run_preprocessing(
                         'mainParameterCalibration. If you don\'t, the algoritms will be executed anyway and can'
                         'slow parameter_calibration by a significant amount of time.')
 
-        log.info(f'Applying {sampling} sampling') if verbose else lambda: None
+        log.info(f'Applying {sampling} sampling')
 
         if sampling == 'Random':
             x, y = UnderSampling().fit_transform(x, y)

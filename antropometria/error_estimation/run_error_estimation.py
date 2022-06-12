@@ -18,7 +18,7 @@ ERROR_ESTIMATION = {
 log = logger.get_logger(__file__)
 
 
-def run_error_estimation(x, y, classes_count, best_estimator, sampling, verbose):
+def run_error_estimation(x, y, classes_count, best_estimator, sampling):
     log.info(f'Running error estimation')
 
     initial_time = time.time()
@@ -28,6 +28,6 @@ def run_error_estimation(x, y, classes_count, best_estimator, sampling, verbose)
 
     ellapsed_time = (time.time() - initial_time) / 60
 
-    log.info(f"Finished error estimation in {ellapsed_time:.2f} minutes") if verbose else lambda: None
+    log.info(f"Finished error estimation in {ellapsed_time:.2f} minutes")
 
     return error_estimation_results
