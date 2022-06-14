@@ -53,6 +53,7 @@ def run_hyperparameter_tuning(folder: str, dataset_name: str, classes: list = np
                 save_results(
                     file=output_file,
                     fieldnames=FIELDNAMES,
+                    dataset_shape=x.shape,
                     test=current_test,
                     grid_search_results=grid_search_results,
                     error_estimation_results=error_estimation_results,

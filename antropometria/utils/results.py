@@ -23,6 +23,7 @@ def extract_results(grid_results) -> Tuple[float, float, float, float, dict, str
 def save_results(
         file: str,
         fieldnames: List[str],
+        dataset_shape: tuple[int, int],
         test: dict,
         grid_search_results: dict,
         error_estimation_results: dict,
@@ -35,4 +36,5 @@ def save_results(
         results.update(grid_search_results)
         results.update(error_estimation_results)
         results['parameters'] = parameters
+        results['dataset_shape'] = dataset_shape
         writer.writerow(results)
