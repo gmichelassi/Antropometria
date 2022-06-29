@@ -72,6 +72,7 @@ def run_preprocessing(
         else:
             x, y = OverSampling(sampling).fit_transform(x, y)
 
+    log.info(f"Dataset final shape: {x.shape}")
     log.info(f"Preprocessing took {(time.time() - preprocessing_initial_time) / 60} minutes")
 
     return x, y, classes_count.tolist()

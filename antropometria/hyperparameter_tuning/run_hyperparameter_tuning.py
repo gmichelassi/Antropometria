@@ -40,6 +40,7 @@ def run_hyperparameter_tuning(folder: str, dataset_name: str, classes: list = np
 
             for classifier in CLASSIFIERS:
                 if skip_current_test(classifier.__name__, reduction):
+                    log.warn(f'Skipping current test because {classifier.__name__} and {reduction} are incompatible')
                     continue
 
                 accuracy, precision, recall, f1, parameters, best_estimator = grid_search(classifier, x, y)
