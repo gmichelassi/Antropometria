@@ -1,6 +1,6 @@
 import csv
 
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 
 def write_header(file: str, fieldnames: List[str]) -> None:
@@ -23,11 +23,11 @@ def extract_results(grid_results) -> Tuple[float, float, float, float, dict, str
 def save_results(
         file: str,
         fieldnames: List[str],
-        dataset_shape: tuple[int, int],
-        test: dict,
-        grid_search_results: dict,
-        error_estimation_results: dict,
-        parameters: dict
+        dataset_shape: Tuple[int, int],
+        test: Dict,
+        grid_search_results: Dict,
+        error_estimation_results: Dict,
+        parameters: Dict
 ) -> None:
     with open(file, 'a') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
