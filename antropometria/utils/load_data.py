@@ -11,10 +11,11 @@ IMAGE_PROCESSING = ['dlibhog', 'dlibcnn', 'opencvdnn', 'opencvhaar', 'openface',
 
 
 class LoadData:
-    def __init__(self, folder: str, dataset_name: str, classes: list):
+    def __init__(self, folder: str, dataset_name: str, classes: list, keep_instances_name: bool = False):
         self.folder = folder
         self.dataset_name = dataset_name
         self.classes = classes
+        self.keep_instances_name = keep_instances_name
         self.LABEL_COLUMN = 'class_label'
         self.LABEL_REGEX = '.*(label).*'
         self.RANDOM_STATE = 10000
@@ -57,6 +58,8 @@ class LoadData:
         dataset = pd.read_csv(file_name)
 
         if self.folder.lower() in IMAGE_PROCESSING:
+            if self.keep_instances_name:
+                return dataset
             return dataset.drop(['image_name', 'label'], axis=1)
 
         return dataset
