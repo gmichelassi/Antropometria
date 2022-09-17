@@ -5,3 +5,6 @@ from antropometria.utils.get_difference_of_classes import get_difference_of_clas
 from antropometria.utils.load_data import LoadData
 from antropometria.utils.skip_current_test import skip_current_test
 from antropometria.utils.timeout import timeout
+from antropometria.utils.transform_string_of_numbers_into_array_of_floats import (
+    transform_string_of_numbers_into_array_of_floats
+)
