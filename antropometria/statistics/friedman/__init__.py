@@ -1,0 +1,3 @@
+from antropometria.statistics.friedman.for_all import friedman_for_all
+from antropometria.statistics.friedman.per_test import friedman_per_test
+from antropometria.statistics.friedman.per_classifier import friedman_per_classifier

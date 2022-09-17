@@ -55,3 +55,11 @@ BINARY_FIELDNAMES = [
 ROOT_DIR = os.path.abspath(os.getcwd())
 TEMPORARY_RANDOM_SAMPLES = 'antropometria/output/temp_removed_random_samples.csv'
 TEMPORARY_RANDOM_SAMPLES_LABELS = 'antropometria/output/temp_removed_random_samples_labels.csv'
+
+
+CLASSIFIER_NAMES = ['SupportVectorMachine', 'KNearestNeighbors', 'NaiveBayes', 'NeuralNetwork', 'RandomForest']
+IMAGE_PROCESSING_LIBS = ['dlibCNN', 'openCvDNN', 'openFace', 'mediapipe64', 'mediapipe129']
+MIN_MAXS = ["Não", "Sim"]
+PEARSONS = ['0.98']
+REDUCTIONS_NAMES = ['CFS', 'FCBF', 'mRMR', 'RFS', 'RFSelect', 'PCA', 'ReliefF', 'None']
+SAMPLING_NAMES = ['None', 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
