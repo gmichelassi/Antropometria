@@ -3,12 +3,13 @@ from antropometria.classifiers import (
     NaiveBayes as Nb,
     NeuralNetwork as Nn,
     RandomForest as Rf,
-    SupportVectorMachine as Svm
+    SupportVectorMachine as Svm,
+    LinearDiscriminantAnalysis as Lda
 )
 
 
 BINARY = True
-CLASSIFIERS = [Svm, Nn, Rf, Knn, Nb]
+CLASSIFIERS = [Svm, Nn, Rf, Knn, Nb, Lda]
 
 FILTERS = [0.98]
 MIN_MAX_NORMALIZATION = [True]

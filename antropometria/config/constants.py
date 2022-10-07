@@ -57,7 +57,14 @@ TEMPORARY_RANDOM_SAMPLES = 'antropometria/output/temp_removed_random_samples.csv
 TEMPORARY_RANDOM_SAMPLES_LABELS = 'antropometria/output/temp_removed_random_samples_labels.csv'
 
 
-CLASSIFIER_NAMES = ['SupportVectorMachine', 'KNearestNeighbors', 'NaiveBayes', 'NeuralNetwork', 'RandomForest']
+CLASSIFIER_NAMES = [
+    'SupportVectorMachine',
+    'KNearestNeighbors',
+    'NaiveBayes',
+    'NeuralNetwork',
+    'RandomForest',
+    'LinearDiscriminantAnalysis'
+]
 IMAGE_PROCESSING_LIBS = ['dlibCNN', 'openCvDNN', 'openFace', 'mediapipe64', 'mediapipe129']
 MIN_MAXS = ["Não", "Sim"]
 PEARSONS = ['0.98']
