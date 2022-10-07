@@ -1,1 +1,2 @@
+from antropometria.preprocessing.preprocess import preprocess
 from antropometria.preprocessing.run_preprocessing import run_preprocessing

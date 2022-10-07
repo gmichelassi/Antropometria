@@ -13,7 +13,7 @@ from antropometria.config import (
 )
 from antropometria.error_estimation import run_error_estimation
 from antropometria.hyperparameter_tuning.grid_search import grid_search
-from antropometria.preprocessing import run_preprocessing
+from antropometria.preprocessing import preprocess
 from antropometria.utils.mappers import map_test_to_dict, map_grid_search_results_to_dict
 from antropometria.utils.results import write_header, save_results
 from antropometria.utils import skip_current_test
@@ -34,9 +34,7 @@ def run_hyperparameter_tuning(folder: str, dataset_name: str, classes: list = np
 
     for reduction, sampling, p_filter, apply_min_max in preprocessing_params:
         try:
-            x, y, classes_count = run_preprocessing(
-                folder, dataset_name, classes, apply_min_max, p_filter, reduction, sampling
-            )
+            x, y = preprocess(data, apply_min_max, p_filter, reduction, sampling)
 
             for classifier in CLASSIFIERS:
                 if skip_current_test(classifier.__name__, reduction):
