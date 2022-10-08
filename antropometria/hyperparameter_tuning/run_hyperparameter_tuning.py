@@ -24,7 +24,7 @@ log = get_logger(__file__)
 FIELDNAMES = BINARY_FIELDNAMES if BINARY else MULTICLASS_FIELDNAMES
 
 
-def run_hyperparameter_tuning(dataset_name: str, classes_count: List[int, int]):
+def run_hyperparameter_tuning(dataset_name: str, classes_count: List[int]):
     log.info(f'Running grid search for {dataset_name}')
 
     preprocessing_params = product(REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION)

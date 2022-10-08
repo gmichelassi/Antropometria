@@ -11,8 +11,8 @@ from antropometria.classifiers import (
 BINARY = True
 CLASSIFIERS = [Svm, Nn, Rf, Knn, Nb, Lda]
 
-FILTERS = [0.98]
-MIN_MAX_NORMALIZATION = [True]
-REDUCTIONS = [None, 'PCA', 'ReliefF', 'RFSelect', 'mRMR', 'FCBF', 'CFS', 'RFS']
-SAMPLINGS = [None, 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']
+FILTERS = [0.0]
+MIN_MAX_NORMALIZATION = [False]
+REDUCTIONS = [None]
+SAMPLINGS = [None]
 SCORING = ['accuracy', 'precision', 'recall', 'f1']

@@ -20,7 +20,7 @@ class LoadData:
         self.LABEL_REGEX = '.*(label).*'
         self.RANDOM_STATE = 10000
 
-    def load(self) -> Tuple[pd.DataFrame, np.ndarray, List[int, int]]:
+    def load(self) -> Tuple[pd.DataFrame, np.ndarray, List[int]]:
         if len(self.classes) == 0:
             raise IOError('It is not possible to load a dataset with {0} argument'.format(self.classes))
 
@@ -29,7 +29,7 @@ class LoadData:
 
         return self.__load_data_in_multiple_files()
 
-    def __load_data_in_multiple_files(self) -> Tuple[pd.DataFrame, np.ndarray, List[int, int]]:
+    def __load_data_in_multiple_files(self) -> Tuple[pd.DataFrame, np.ndarray, List[int]]:
         x = pd.DataFrame()
         y = np.array([])
 
@@ -67,7 +67,7 @@ class LoadData:
 
         return dataset
 
-    def __load_data_in_single_file(self) -> Tuple[pd.DataFrame, np.ndarray, List[int, int]]:
+    def __load_data_in_single_file(self) -> Tuple[pd.DataFrame, np.ndarray, List[int]]:
         path = f"./antropometria/data/{self.folder}/{self.dataset_name}.csv"
 
         if not os.path.isfile(path):
