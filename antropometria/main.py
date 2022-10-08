@@ -14,8 +14,8 @@ def main(folder: str, dataset_name: str, classes: List[str]):
     start_time = time.time()
 
     data_name = f'{folder}_{dataset_name}'
-    data = LoadData(folder, dataset_name, classes).load()
+    x, y, classes_count = LoadData(folder, dataset_name, classes).load()
 
-    run_preprocessing(data, name=data_name)
+    run_preprocessing(data=(x, y), name=data_name)
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))

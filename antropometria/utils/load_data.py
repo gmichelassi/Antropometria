@@ -4,7 +4,7 @@ import pandas as pd
 
 from antropometria.exceptions import MissingDatasetError
 from sklearn.utils import shuffle
-from typing import Tuple
+from typing import Tuple, List
 
 
 IMAGE_PROCESSING = ['dlibhog', 'dlibcnn', 'opencvdnn', 'opencvhaar', 'openface', 'mediapipe64', 'mediapipecustom']
@@ -20,7 +20,7 @@ class LoadData:
         self.LABEL_REGEX = '.*(label).*'
         self.RANDOM_STATE = 10000
 
-    def load(self) -> Tuple[pd.DataFrame, np.ndarray]:
+    def load(self) -> Tuple[pd.DataFrame, np.ndarray, List[int, int]]:
         if len(self.classes) == 0:
             raise IOError('It is not possible to load a dataset with {0} argument'.format(self.classes))
 
@@ -29,7 +29,7 @@ class LoadData:
 
         return self.__load_data_in_multiple_files()
 
-    def __load_data_in_multiple_files(self) -> Tuple[pd.DataFrame, np.ndarray]:
+    def __load_data_in_multiple_files(self) -> Tuple[pd.DataFrame, np.ndarray, List[int, int]]:
         x = pd.DataFrame()
         y = np.array([])
 
@@ -49,7 +49,10 @@ class LoadData:
             label_count += 1
 
         x, y = shuffle(x, y, random_state=self.RANDOM_STATE)
-        return x, y.astype('int64')
+
+        _, classes_count = np.unique(y, return_counts=True)
+
+        return x, y.astype('int64'), classes_count.tolist()
 
     def __load_data_from_file(self, file_name: str):
         if 'ratio' in self.folder:
@@ -64,7 +67,7 @@ class LoadData:
 
         return dataset
 
-    def __load_data_in_single_file(self) -> Tuple[pd.DataFrame, np.ndarray]:
+    def __load_data_in_single_file(self) -> Tuple[pd.DataFrame, np.ndarray, List[int, int]]:
         path = f"./antropometria/data/{self.folder}/{self.dataset_name}.csv"
 
         if not os.path.isfile(path):
@@ -83,4 +86,6 @@ class LoadData:
             labels = data[columns_regex].T.values[0]
             data = data.drop(columns_regex, axis=1)
 
-        return data, labels.astype('int64')
+        _, classes_count = np.unique(labels, return_counts=True)
+
+        return data, labels.astype('int64'), classes_count
