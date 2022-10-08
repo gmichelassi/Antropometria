@@ -1,4 +1,5 @@
 from antropometria.utils.build_ratio_dataset import build_ratio_dataset
+from antropometria.utils.cleanup_processed_data import cleanup_processed_data
 from antropometria.utils.combine_columns_names import combine_columns_names
 from antropometria.utils.find_and_save_datasets_intersection import find_and_save_datasets_intersection
 from antropometria.utils.get_difference_of_classes import get_difference_of_classes
