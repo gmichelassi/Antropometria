@@ -1,4 +1,4 @@
 from antropometria import main
 
 if __name__ == '__main__':
-    main()
+    main('shared_instances', 'mediapipe64', ['single'])

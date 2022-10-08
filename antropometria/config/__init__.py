@@ -3,6 +3,7 @@ from antropometria.config.constants import (
     CV,
     MULTICLASS_FIELDNAMES,
     N_SPLITS,
+    PROCESSED_DIR,
     ROOT_DIR,
     TEMPORARY_RANDOM_SAMPLES,
     TEMPORARY_RANDOM_SAMPLES_LABELS,

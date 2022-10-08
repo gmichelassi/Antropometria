@@ -5,13 +5,13 @@ import pandas as pd
 
 from .preprocess import preprocess
 from antropometria.config import FILTERS, MIN_MAX_NORMALIZATION, REDUCTIONS, SAMPLINGS
+from antropometria.config.constants import PROCESSED_DIR
 from itertools import product
 from pandas import DataFrame
 from typing import Tuple
 
 
 PREPROCESSING_PARAMS = product(REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION)
-PROCESSED_DIR = 'antropometria/data/processed/'
 
 
 def run_preprocessing(data: Tuple[DataFrame, np.ndarray], name: str):
