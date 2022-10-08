@@ -17,5 +17,6 @@ def main(folder: str, dataset_name: str, classes: List[str]):
     x, y, classes_count = LoadData(folder, dataset_name, classes).load()
 
     run_preprocessing(data=(x, y), name=data_name)
+    run_hyperparameter_tuning(data_name, classes_count)
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
