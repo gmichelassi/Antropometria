@@ -13,10 +13,9 @@ log = get_logger(__file__)
 def main(folder: str, dataset_name: str, classes: List[str]):
     start_time = time.time()
 
-    log.info(f'Loading data from data/{folder}/{dataset_name}')
-
+    data_name = f'{folder}_{dataset_name}'
     data = LoadData(folder, dataset_name, classes).load()
 
-    run_preprocessing(data)
+    run_preprocessing(data, name=data_name)
 
     log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
