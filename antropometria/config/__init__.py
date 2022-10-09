@@ -1,6 +1,7 @@
 from antropometria.config.constants import (
     BINARY_FIELDNAMES,
     CV,
+    DATA_DIR,
     MULTICLASS_FIELDNAMES,
     N_SPLITS,
     PROCESSED_DIR,
