@@ -11,11 +11,7 @@ from typing import List
 log = get_logger(__file__)
 
 DEFAULT_VALUES = [
-    ('shared_instances', 'mediapipe64', ['single']),
-    ('shared_instances', 'opencvdnn', ['single']),
-    ('shared_instances', 'opencvhaar', ['single']),
-    ('shared_instances', 'openface', ['single']),
-    ('shared_instances', 'mediapipecustom', ['single']),
+    ('dlibcnn', 'distances_px', ['casos', 'controles']),
 ]
 
 

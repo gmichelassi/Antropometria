@@ -4,12 +4,12 @@ from antropometria.classifiers import (
     NeuralNetwork as Nn,
     RandomForest as Rf,
     SupportVectorMachine as Svm,
-    LinearDiscriminantAnalysis as Lda
+    DiscriminantAnalysis as Lda
 )
 
 
 BINARY = True
-CLASSIFIERS = [Svm, Nn, Rf, Knn, Nb, Lda]
+CLASSIFIERS = [Lda]
 
 FILTERS = [0.98]
 MIN_MAX_NORMALIZATION = [True]
