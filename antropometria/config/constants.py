@@ -53,6 +53,8 @@ BINARY_FIELDNAMES = [
     'parameters',
 ]
 ROOT_DIR = os.path.abspath(os.getcwd())
+DATA_DIR = 'antropometria/data/'
+PROCESSED_DIR = 'antropometria/data/processed/'
 TEMPORARY_RANDOM_SAMPLES = 'antropometria/output/temp_removed_random_samples.csv'
 TEMPORARY_RANDOM_SAMPLES_LABELS = 'antropometria/output/temp_removed_random_samples_labels.csv'
 

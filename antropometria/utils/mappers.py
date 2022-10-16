@@ -2,7 +2,7 @@ from antropometria.config.types import Classifier, Reduction, Sampling
 
 
 def map_test_to_dict(
-        folder: str,
+        dataset: str,
         classifier: Classifier,
         reduction: Reduction,
         p_filter: float,
@@ -10,7 +10,7 @@ def map_test_to_dict(
         sampling: Sampling
 ) -> dict:
     return {
-        'biblioteca': folder,
+        'dataset': dataset,
         'classifier': classifier,
         'reduction': reduction,
         'filtro': p_filter,

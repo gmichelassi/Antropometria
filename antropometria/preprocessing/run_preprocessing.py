@@ -1,78 +1,34 @@
 import numpy as np
-import time
-import platform
+import os
 
-from antropometria.config import logger
-from antropometria.config.types import Reduction, Sampling
-from antropometria.preprocessing.calculate_number_of_features_to_keep import calculate_number_of_neatures_to_keep
-from antropometria.sampling.OverSampling import OverSampling
-from antropometria.sampling.UnderSampling import UnderSampling
-from antropometria.utils.load_data import LoadData
-from antropometria.statistics import apply_pearson_feature_selection, apply_min_max_normalization
-from antropometria.feature_selectors.get_feature_selector import get_feature_selector
-from antropometria.utils.timeout import timeout
-from typing import Tuple, List, Optional
+import pandas as pd
 
-log = logger.get_logger(__file__)
+from .preprocess import preprocess
+from antropometria.config import FILTERS, MIN_MAX_NORMALIZATION, REDUCTIONS, SAMPLINGS
+from antropometria.config.constants import PROCESSED_DIR
+from itertools import product
+from pandas import DataFrame
+from typing import Tuple
 
 
-@timeout(seconds=7500, use_timeout=(platform.system().lower() != 'windows'))
-def run_preprocessing(
-        folder: str,
-        dataset_name: str,
-        classes: list,
-        apply_min_max: bool = False,
-        p_filter: float = 0.0,
-        reduction: Optional[Reduction] = None,
-        sampling: Optional[Sampling] = None,
-) -> Tuple[np.ndarray, np.ndarray, List[int]]:
-    log.info(f'Preprocessing {folder} with [{reduction}, {sampling}, filter {p_filter}, min_max {apply_min_max}]')
-    log.info(f'Loading data from data/{folder}/{dataset_name}')
+PREPROCESSING_PARAMS = product(REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION)
 
-    preprocessing_initial_time = time.time()
 
-    x, y = LoadData(folder, dataset_name, classes).load()
-    n_classes, classes_count = np.unique(y, return_counts=True)
-    instances, original_number_of_features = x.shape
+def run_preprocessing(data: Tuple[DataFrame, np.ndarray], name: str):
+    setup_directory(PROCESSED_DIR)
 
-    log.info(f'Data has {len(n_classes)} classes, {instances} instances and {original_number_of_features} features')
+    for reduction, sampling, p_filter, apply_min_max in PREPROCESSING_PARAMS:
+        preprocessing_directory = f'{reduction}_{sampling}_{p_filter}_{apply_min_max}'
+        output_directory = PROCESSED_DIR + preprocessing_directory
 
-    if 0.0 < p_filter <= 0.99:
-        log.info('Applying pearson correlation filter')
-        x = apply_pearson_feature_selection(x, p_filter)
+        setup_directory(output_directory)
 
-    if apply_min_max:
-        log.info('Applying min max normalization')
-        x = apply_min_max_normalization(x)
+        x, y = preprocess(data, apply_min_max, p_filter, reduction, sampling)
 
-    _, current_number_of_features = x.shape
+        pd.DataFrame(x).to_csv(f'{output_directory}/{name}_data.csv', index=False, header=False)
+        pd.DataFrame(y).to_csv(f'{output_directory}/{name}_labels.csv', index=False, header=False)
 
-    x = x.to_numpy()
 
-    n_features_to_keep = calculate_number_of_neatures_to_keep(
-        original_number_of_features, current_number_of_features, dataset=x
-    )
-
-    if reduction is not None:
-        log.info(f'Applying {reduction} reduction')
-
-        feature_selector = get_feature_selector(reduction, n_features_to_keep, instances, current_number_of_features)
-        x = feature_selector.fit_transform(x, y)
-
-    if sampling is not None:
-        if len(classes_count) == 2 and abs(classes_count[0] - classes_count[1]) == 0:
-            log.warning('Your binary dataset is balanced, please keep only `None` on SAMPLINGS constant on '
-                        'mainParameterCalibration. If you don\'t, the algoritms will be executed anyway and can'
-                        'slow parameter_calibration by a significant amount of time.')
-
-        log.info(f'Applying {sampling} sampling')
-
-        if sampling == 'Random':
-            x, y = UnderSampling().fit_transform(x, y)
-        else:
-            x, y = OverSampling(sampling).fit_transform(x, y)
-
-    log.info(f"Dataset final shape: {x.shape}")
-    log.info(f"Preprocessing took {(time.time() - preprocessing_initial_time) / 60} minutes")
-
-    return x, y, classes_count.tolist()
+def setup_directory(directory: str):
+    if not os.path.exists(directory):
+        os.mkdir(directory)

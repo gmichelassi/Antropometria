@@ -9,7 +9,7 @@ from antropometria.classifiers.RandomForest import RandomForest as Rf
 from antropometria.classifiers.SupportVectorMachine import SupportVectorMachine as Svm
 from antropometria.config import logger
 from antropometria.feature_selectors import get_feature_selector
-from antropometria.preprocessing import run_preprocessing
+from antropometria.preprocessing import preprocess
 from antropometria.statistics import apply_pearson_feature_selection, apply_min_max_normalization
 from antropometria.utils import get_difference_of_classes
 
@@ -49,7 +49,7 @@ svm_parameters = {'kernel': 'linear',
 
 
 def save_model(folder, dataset_name, classes, model, p_filter, reduction, sampling, min_max):
-    data = run_preprocessing(folder, dataset_name, classes, p_filter, reduction, sampling, False, min_max)
+    data = preprocess(folder, dataset_name, classes, p_filter, reduction, sampling, False, min_max)
 
     if data is None:
         return

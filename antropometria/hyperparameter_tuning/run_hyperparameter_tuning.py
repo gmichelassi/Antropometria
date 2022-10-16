@@ -1,5 +1,3 @@
-import numpy as np
-
 from antropometria.config import get_logger
 from antropometria.config import (
     BINARY,
@@ -13,11 +11,12 @@ from antropometria.config import (
 )
 from antropometria.error_estimation import run_error_estimation
 from antropometria.hyperparameter_tuning.grid_search import grid_search
-from antropometria.preprocessing import run_preprocessing
+from antropometria.utils.load_processed_data import load_processed_data
 from antropometria.utils.mappers import map_test_to_dict, map_grid_search_results_to_dict
 from antropometria.utils.results import write_header, save_results
 from antropometria.utils import skip_current_test
 from itertools import product
+from typing import List
 
 
 log = get_logger(__file__)
@@ -25,18 +24,16 @@ log = get_logger(__file__)
 FIELDNAMES = BINARY_FIELDNAMES if BINARY else MULTICLASS_FIELDNAMES
 
 
-def run_hyperparameter_tuning(folder: str, dataset_name: str, classes: list = np.array([])):
-    log.info(f'Running grid search for {folder}/{dataset_name}')
+def run_hyperparameter_tuning(dataset_name: str, classes_count: List[int]):
+    log.info(f'Running grid search for {dataset_name}')
 
     preprocessing_params = product(REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION)
-    output_file = f'./antropometria/output/GridSearch/{folder}_{dataset_name}_best_results.csv'
+    output_file = f'./antropometria/output/GridSearch/{dataset_name}_best_results.csv'
     write_header(file=output_file, fieldnames=FIELDNAMES)
 
     for reduction, sampling, p_filter, apply_min_max in preprocessing_params:
         try:
-            x, y, classes_count = run_preprocessing(
-                folder, dataset_name, classes, apply_min_max, p_filter, reduction, sampling
-            )
+            x, y = load_processed_data(dataset_name, apply_min_max, p_filter, reduction, sampling)
 
             for classifier in CLASSIFIERS:
                 if skip_current_test(classifier.__name__, reduction):
@@ -45,7 +42,7 @@ def run_hyperparameter_tuning(folder: str, dataset_name: str, classes: list = np
 
                 accuracy, precision, recall, f1, parameters, best_estimator = grid_search(classifier, x, y)
                 current_test = map_test_to_dict(
-                    folder, classifier.__name__, reduction, p_filter, apply_min_max, sampling
+                    dataset_name, classifier.__name__, reduction, p_filter, apply_min_max, sampling
                 )
                 grid_search_results = map_grid_search_results_to_dict(accuracy, precision, recall, precision)
                 error_estimation_results = run_error_estimation(x, y, classes_count, best_estimator, sampling)
