@@ -7,7 +7,7 @@ N_SPLITS = 10
 CV = StratifiedKFold(n_splits=N_SPLITS)
 MULTICLASS_FIELDNAMES = [
     'dataset_shape',
-    'biblioteca',
+    'dataset',
     'classifier',
     'reduction',
     'filtro',
@@ -31,7 +31,7 @@ MULTICLASS_FIELDNAMES = [
 
 BINARY_FIELDNAMES = [
     'dataset_shape',
-    'biblioteca',
+    'dataset',
     'classifier',
     'reduction',
     'filtro',
