@@ -11,13 +11,10 @@ from pandas import DataFrame
 from typing import Tuple
 
 
-PREPROCESSING_PARAMS = product(REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION)
-
-
 def run_preprocessing(data: Tuple[DataFrame, np.ndarray], name: str):
     setup_directory(PROCESSED_DIR)
 
-    for reduction, sampling, p_filter, apply_min_max in PREPROCESSING_PARAMS:
+    for reduction, sampling, p_filter, apply_min_max in product(REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION):
         preprocessing_directory = f'{reduction}_{sampling}_{p_filter}_{apply_min_max}'
         output_directory = PROCESSED_DIR + preprocessing_directory
 
