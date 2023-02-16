@@ -16,7 +16,7 @@ def friedman_for_all(data: pd.DataFrame):
 
 
 def save(statistic, pvalue):
-    with open('./analysis_for_all_tests.csv', 'a') as csvfile:
+    with open('./antropometria/output/friedman/analysis_for_all_tests.csv', 'a') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=['Teste', 'Statistic', 'pvalue'])
 
         row = {

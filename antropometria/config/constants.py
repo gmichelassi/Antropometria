@@ -65,10 +65,10 @@ CLASSIFIER_NAMES = [
     'NaiveBayes',
     'NeuralNetwork',
     'RandomForest',
-    'LinearDiscriminantAnalysis'
+    'DiscriminantAnalysis'
 ]
-IMAGE_PROCESSING_LIBS = ['dlibCNN', 'openCvDNN', 'openFace', 'mediapipe64', 'mediapipe129']
-MIN_MAXS = ["Não", "Sim"]
-PEARSONS = ['0.98']
+IMAGE_PROCESSING_LIBS = ['dlibcnn', 'opencvdnn', 'openface', 'mediapipe64', 'mediapipecustom']
+MIN_MAXS = ["Sim"]
+PEARSONS = [0.98]
 REDUCTIONS_NAMES = ['CFS', 'FCBF', 'mRMR', 'RFS', 'RFSelect', 'PCA', 'ReliefF', 'None']
 SAMPLING_NAMES = ['None', 'Random', 'Smote', 'Borderline', 'KMeans', 'SVM', 'Tomek']

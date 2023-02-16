@@ -6,19 +6,18 @@ from antropometria.config.constants import CLASSIFIER_NAMES, REDUCTIONS_NAMES, P
 from itertools import product
 
 
-TESTS = product(CLASSIFIER_NAMES, REDUCTIONS_NAMES, PEARSONS, MIN_MAXS, SAMPLING_NAMES)
-
-
 def friedman_per_test(data: pd.DataFrame):
-    for classifier, red_dim, pearson, min_max, sampling in TESTS:
+    for classifier, red_dim, pearson, min_max, sampling in product(CLASSIFIER_NAMES, REDUCTIONS_NAMES, PEARSONS, MIN_MAXS, SAMPLING_NAMES):
         try:
             query = f'classifier == "{classifier}" and ' \
                     f'red_dim == "{red_dim}" and ' \
-                    f'pearson == "{pearson}" and ' \
+                    f'pearson == {pearson} and ' \
                     f'min_max == "{min_max}" and ' \
                     f'sampling == "{sampling}"'
 
             statistic, pvalue = perform(data=data, query=query, column='f1score_folds', expected_amount=5)
+
+            save(classifier, red_dim, pearson, min_max, sampling, statistic, pvalue)
 
             print(f'For {classifier, red_dim, pearson, min_max, sampling} '
                   f'we have statistic={statistic} and pvalue={pvalue}')
