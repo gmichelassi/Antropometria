@@ -14,7 +14,6 @@ from antropometria.hyperparameter_tuning.grid_search import grid_search
 from antropometria.utils.load_processed_data import load_processed_data
 from antropometria.utils.mappers import map_test_to_dict, map_grid_search_results_to_dict
 from antropometria.utils.results import write_header, save_results
-from antropometria.utils import skip_current_test
 from itertools import product
 from typing import List
 
@@ -36,10 +35,6 @@ def run_hyperparameter_tuning(dataset_name: str, classes_count: List[int]):
             x, y = load_processed_data(dataset_name, apply_min_max, p_filter, reduction, sampling)
 
             for classifier in CLASSIFIERS:
-                if skip_current_test(classifier.__name__, reduction):
-                    log.warn(f'Skipping current test because {classifier.__name__} and {reduction} are incompatible')
-                    continue
-
                 accuracy, precision, recall, f1, parameters, best_estimator = grid_search(classifier, x, y)
                 current_test = map_test_to_dict(
                     dataset_name, classifier.__name__, reduction, p_filter, apply_min_max, sampling
@@ -57,6 +52,5 @@ def run_hyperparameter_tuning(dataset_name: str, classes_count: List[int]):
                     error_estimation_results=error_estimation_results,
                     parameters=parameters
                 )
-
         except (IOError, KeyError, MemoryError, TimeoutError, ValueError) as error:
             log.error(f'Could not run current test due to error: {error}')
