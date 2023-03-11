@@ -9,7 +9,7 @@ from antropometria.classifiers import (
 
 
 BINARY = True
-CLASSIFIERS = [Lda]
+CLASSIFIERS = [Rf]
 
 FILTERS = [0.98]
 MIN_MAX_NORMALIZATION = [True]

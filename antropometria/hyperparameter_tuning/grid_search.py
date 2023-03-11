@@ -22,7 +22,8 @@ def grid_search(classifier, x, y):
         scoring=SCORING,
         cv=CV,
         refit='f1',
-        n_jobs=-1
+        n_jobs=-1,
+        verbose=1
     )
     grid_results = grd.fit(x, y)
 
