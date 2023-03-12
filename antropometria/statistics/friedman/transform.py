@@ -4,11 +4,13 @@ from antropometria.config.constants import CLASSIFIER_NAMES, REDUCTIONS_NAMES, P
 from antropometria.utils import transform_string_of_numbers_into_array_of_floats
 from itertools import product
 
+from typing import List
+
 
 EXPECTED_AMOUNT = 5
 
 
-def transform(data: pd.DataFrame, classifiers: list[str] = CLASSIFIER_NAMES) -> pd.DataFrame:
+def transform(data: pd.DataFrame, classifiers: List[str] = CLASSIFIER_NAMES) -> pd.DataFrame:
     df = pd.DataFrame()
     title_to_lib_and_f1_mapping = {}
 
