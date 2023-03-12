@@ -4,10 +4,6 @@ from .transform import transform
 from antropometria.config.constants import CLASSIFIER_NAMES
 from scipy.stats import friedmanchisquare
 from statsmodels.sandbox.stats.multicomp import multipletests
-from typing import Literal
-
-
-Mode = Literal['all', 'per_test']
 
 
 def apply_friedman_for_all(data: pd.DataFrame):
@@ -38,7 +34,7 @@ apply_friedman = {
 }
 
 
-def friedman(mode: Mode = 'all'):
+def friedman(mode = 'all'):
 
     results = ['./antropometria/data/results_individual.csv', './antropometria/data/results_shared.csv']
 
