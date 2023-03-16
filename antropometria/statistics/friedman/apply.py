@@ -34,7 +34,7 @@ apply_friedman = {
 }
 
 
-def friedman(mode = 'all'):
+def friedman(mode='all'):
 
     results = ['./antropometria/data/results_individual.csv', './antropometria/data/results_shared.csv']
 
