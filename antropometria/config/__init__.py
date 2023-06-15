@@ -8,6 +8,7 @@ from antropometria.config.constants import (
     ROOT_DIR,
     TEMPORARY_RANDOM_SAMPLES,
     TEMPORARY_RANDOM_SAMPLES_LABELS,
+    IMAGE_PROCESSING_LIBS
 )
 from antropometria.config.logger import get_logger
 from antropometria.config.types import Reduction, Sampling, Classifier

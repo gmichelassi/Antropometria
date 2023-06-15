@@ -9,6 +9,17 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 def apply_friedman_for_all(data: pd.DataFrame):
     transformed_data = transform(data)
 
+    total = {
+        'opencvdnn': 0,
+        'openface': 0,
+        'dlibcnn': 0,
+        'mediapipe64': 0,
+        'mediapipecustom': 0
+    }
+
+    for index, row in transformed_data.T.iterrows():
+        total[row.idxmax()] += 1
+
     statistic, pvalue = friedmanchisquare(*transformed_data.values)
 
     print(f'For all tests we have statistic={statistic} and pvalue={pvalue}')
