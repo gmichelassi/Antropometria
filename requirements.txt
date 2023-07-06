@@ -4,6 +4,6 @@ numpy==1.22.1
 pandas==1.4.0
 pytest==6.2.5
 scikit-learn==1.0.2
-scipy==1.7.3
+scipy==1.10.0
 skfeature-chappers==1.1.0
 skrebate==0.62
