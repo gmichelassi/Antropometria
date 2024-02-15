@@ -20,11 +20,8 @@ class LoadData:
         self.LABEL_REGEX = '.*(label).*'
         self.RANDOM_STATE = 10000
 
-    def load(self) -> Tuple[pd.DataFrame, np.ndarray, List[int]]:
-        if len(self.classes) == 0:
-            raise IOError('It is not possible to load a dataset with {0} argument'.format(self.classes))
-
-        if len(self.classes) == 1:
+    def load(self) -> Tuple[pd.DataFrame, np.ndarray, list[int]]:
+        if len(self.classes) in [0, 1]:
             return self.__load_data_in_single_file()
 
         return self.__load_data_in_multiple_files()
@@ -55,10 +52,7 @@ class LoadData:
         return x, y.astype('int64'), classes_count.tolist()
 
     def __load_data_from_file(self, file_name: str):
-        if 'ratio' in self.folder:
-            return pd.concat(list(map(lambda x: x, pd.read_csv(file_name, chuncksize=10, dtype=np.float64))))
-
-        dataset = pd.read_csv(file_name)
+        dataset = pd.read_csv(filepath_or_buffer=file_name)
 
         if self.folder.lower() in IMAGE_PROCESSING:
             if self.keep_instances_name:
