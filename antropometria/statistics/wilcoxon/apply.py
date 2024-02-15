@@ -24,9 +24,13 @@ def apply_wilcoxon():
             filtered_results_from_first_lib = results_from_first_lib.head(number_of_rows)[FILTER_COLUMNS]
             filtered_results_from_second_lib = results_from_second_lib.head(number_of_rows)[FILTER_COLUMNS]
 
-            f1_score_folds_from_first_lib = [float(i.replace(',', '.')) for i in filtered_results_from_first_lib['err_f1score'].values]
-            f1_score_folds_from_second_lib = [float(i.replace(',', '.')) for i in filtered_results_from_second_lib['err_f1score'].values]
+            f1_score_folds_from_first_lib = [
+                float(i.replace(',', '.')) for i in filtered_results_from_first_lib['err_f1score'].values
+            ]
+            f1_score_folds_from_second_lib = [
+                float(i.replace(',', '.')) for i in filtered_results_from_second_lib['err_f1score'].values
+            ]
 
-            _, pvalue = wilcoxon(f1_score_folds_from_first_lib, f1_score_folds_from_second_lib, correction=True)
+            pvalue = wilcoxon(f1_score_folds_from_first_lib, f1_score_folds_from_second_lib, correction=True)
 
             print(f'Wilcoxon for {first_lib} and {second_lib}: {pvalue}')

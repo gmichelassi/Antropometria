@@ -35,8 +35,13 @@ def apply_friedman_for_per_test(data: pd.DataFrame):
     holm_conclusions, bonferroni_adjusted_pvalues, _, _ = multipletests(pvalues, alpha=.05, method='bonferroni')
     holm_conclusions, holm_adjusted_pvalues, _, _ = multipletests(pvalues, alpha=.05, method='holm')
 
-    for classifier, pvalue, bonferroni_adjusted_pvalue, holm_adjusted_pvalue in zip(CLASSIFIER_NAMES, pvalues, bonferroni_adjusted_pvalues, holm_adjusted_pvalues):
-        print(f'For {classifier} we have pvalue={pvalue}, bonferroni_adjusted_pvalue={bonferroni_adjusted_pvalue} and holm_adjusted_pvalue={holm_adjusted_pvalue}')
+    for classifier, pvalue, bonferroni_adjusted_pvalue, holm_adjusted_pvalue in zip(
+        CLASSIFIER_NAMES, pvalues, bonferroni_adjusted_pvalues, holm_adjusted_pvalues
+    ):
+        print(
+            f'For {classifier} we have pvalue={pvalue}, bonferroni_adjusted_pvalue={bonferroni_adjusted_pvalue} '
+            f'and holm_adjusted_pvalue={holm_adjusted_pvalue}'
+        )
 
 
 apply_friedman = {
@@ -53,4 +58,3 @@ def friedman(mode='all'):
         print('Processing: ', result)
         data = pd.read_csv(result)
         apply_friedman[mode](data)
-

@@ -64,7 +64,7 @@ class PCAAnalysis:
 
 
 def main():
-    x, y = LoadData('dlibHOG', 'distances_all_px_eu', ['casos', 'controles']).load()
+    x, y, _ = LoadData('dlibHOG', 'distances_all_px_eu', ['casos', 'controles']).load()
     pca_analysis = PCAAnalysis(x, y)
 
     components_dict = pca_analysis.compute_best_features()
