@@ -9,14 +9,6 @@ from antropometria.utils.cleanup_processed_data import cleanup_processed_data
 
 log = get_logger(__file__)
 
-DEFAULT_VALUES = [
-    ('shared_instances', 'dlibcnn',         ['1']),
-    ('shared_instances', 'opencvdnn',       ['2']),
-    ('shared_instances', 'openface',        ['3']),
-    ('shared_instances', 'mediapipe64',     ['4']),
-    ('shared_instances', 'mediapipecustom', ['5']),
-]
-
 
 def run(folder: str, dataset_name: str, classes: list[str]):
     data_name = f'{folder}_{dataset_name}'
@@ -28,17 +20,20 @@ def run(folder: str, dataset_name: str, classes: list[str]):
     run_hyperparameter_tuning(data_name, classes_count)
 
 
-def main(use_default_values: bool = True, **kwargs):
+def main(*args, **kwargs):
     start_time = time.time()
-    if use_default_values:
-        for folder, dataset_name, classes in DEFAULT_VALUES:
+
+    if 'data' in kwargs:
+        for folder, dataset_name, classes in kwargs['data']:
             run(folder, dataset_name, classes)
-    else:
+    elif 'folder' in kwargs and 'dataset_name' in kwargs and 'classes' in kwargs:
         folder: str = kwargs.get('folder')
         dataset_name: str = kwargs.get('dataset_name')
         classes: list[str] = kwargs.get('classes')
 
         run(folder, dataset_name, classes)
+    else:
+        raise ValueError(f"Invalid arguments {args} and {kwargs}")
 
     cleanup_processed_data()
 

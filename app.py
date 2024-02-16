@@ -6,6 +6,9 @@ from antropometria.config import DATA_DIR
 
 
 FOLDER_CHOICES = [file for file in os.listdir(DATA_DIR) if os.path.isdir(f'{DATA_DIR}{file}')]
+DEFAULT_VALUES = [
+    ('dataset_folder', 'dataset_name', ['1st_class', '2nd_class', '3rd_class']),
+]
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Machine Learning Pipeline')
@@ -20,6 +23,6 @@ if __name__ == '__main__':
     folder, dataset_name, classes = args.folder, args.dataset, args.classes
 
     if folder is None or dataset_name is None:
-        main()
+        main(data=DEFAULT_VALUES)
     else:
-        main(use_default_values=False, folder=folder, dataset_name=dataset_name, classes=classes)
+        main(folder=folder, dataset_name=dataset_name, classes=classes)
