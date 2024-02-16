@@ -1,2 +1,2 @@
-from antropometria.preprocessing.preprocess import preprocess
+from antropometria.preprocessing.deprecated_preprocess import deprecated_preprocess
 from antropometria.preprocessing.run_preprocessing import run_preprocessing

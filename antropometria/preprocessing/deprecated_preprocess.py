@@ -16,7 +16,7 @@ log = logger.get_logger(__file__)
 
 
 @timeout(seconds=7500, use_timeout=(platform.system().lower() != 'windows'))
-def preprocess(
+def deprecated_preprocess(
         data,
         apply_min_max: bool = False,
         p_filter: float = 0.0,

@@ -3,7 +3,7 @@ import os
 
 import pandas as pd
 
-from .preprocess import preprocess
+from .deprecated_preprocess import deprecated_preprocess
 from antropometria.config import FILTERS, MIN_MAX_NORMALIZATION, REDUCTIONS, SAMPLINGS
 from antropometria.config.constants import PROCESSED_DIR
 from itertools import product
@@ -20,7 +20,7 @@ def run_preprocessing(data: Tuple[DataFrame, np.ndarray], name: str):
 
         setup_directory(output_directory)
 
-        x, y = preprocess(data, apply_min_max, p_filter, reduction, sampling)
+        x, y = deprecated_preprocess(data, apply_min_max, p_filter, reduction, sampling)
 
         pd.DataFrame(x).to_csv(f'{output_directory}/{name}_data.csv', index=False, header=False)
         pd.DataFrame(y).to_csv(f'{output_directory}/{name}_labels.csv', index=False, header=False)
