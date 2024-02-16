@@ -5,4 +5,4 @@ class MissingDatasetError(Exception):
         super().__init__()
 
     def __str__(self):
-        return f'File not found for arguments folder={self.folder}, name={self.name}'
+        return f'File antropometria/data/{self.folder}/{self.name}.csv not found.'

@@ -52,12 +52,12 @@ class TestParameterCalibrationResults:
     def test_get_results(self):
         accuracy, precision, recall, f1, parameters, best_estimator = extract_results(GridResults())
 
-        assert type(accuracy) == float
-        assert type(precision) == float
-        assert type(recall) == float
-        assert type(f1) == float
-        assert type(parameters) == dict
-        assert type(best_estimator) == str
+        assert type(accuracy) is float
+        assert type(precision) is float
+        assert type(recall) is float
+        assert type(f1) is float
+        assert type(parameters) is dict
+        assert type(best_estimator) is str
 
     def test_save_results(self):
         save_results(

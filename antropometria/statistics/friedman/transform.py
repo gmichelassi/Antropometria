@@ -14,8 +14,11 @@ def transform(data: pd.DataFrame, classifiers: List[str] = CLASSIFIER_NAMES) -> 
     df = pd.DataFrame()
     title_to_lib_and_f1_mapping = {}
 
-    for classifier, red_dim, pearson, min_max, sampling in product(classifiers, REDUCTIONS_NAMES, PEARSONS, MIN_MAXS, SAMPLING_NAMES):
-        query = f'classifier == "{classifier}" and red_dim == "{red_dim}" and pearson == {pearson} and min_max == "{min_max}" and sampling == "{sampling}"'
+    for classifier, red_dim, pearson, min_max, sampling in product(
+            classifiers, REDUCTIONS_NAMES, PEARSONS, MIN_MAXS, SAMPLING_NAMES
+    ):
+        query = (f'classifier == "{classifier}" and red_dim == "{red_dim}" and pearson == {pearson} and '
+                 f'min_max == "{min_max}" and sampling == "{sampling}"')
         filtered_data = data.query(query)
 
         if len(filtered_data) == 0 or len(filtered_data) != EXPECTED_AMOUNT:

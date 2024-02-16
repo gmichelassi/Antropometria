@@ -4,7 +4,7 @@ import platform
 
 from antropometria.config import logger
 from antropometria.config.types import Reduction, Sampling
-from antropometria.preprocessing.calculate_number_of_features_to_keep import calculate_number_of_neatures_to_keep
+from antropometria.preprocessing.calculate_number_of_features_to_keep import calculate_number_of_n_features_to_keep
 from antropometria.sampling.OverSampling import OverSampling
 from antropometria.sampling.UnderSampling import UnderSampling
 from antropometria.statistics import apply_pearson_feature_selection, apply_min_max_normalization
@@ -43,7 +43,7 @@ def preprocess(
 
     x = x.to_numpy()
 
-    n_features_to_keep = calculate_number_of_neatures_to_keep(
+    n_features_to_keep = calculate_number_of_n_features_to_keep(
         original_number_of_features, current_number_of_features, dataset=x
     )
 
