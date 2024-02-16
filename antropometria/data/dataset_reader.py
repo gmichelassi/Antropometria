@@ -26,7 +26,7 @@ class DatasetReader:
         self.classes = classes
         self.columns_to_drop = columns_to_drop
 
-    def read(self):
+    def read(self) -> tuple[pd.DataFrame, np.ndarray, list[int]]:
         """Read the dataset from a csv file.
 
         Returns:
