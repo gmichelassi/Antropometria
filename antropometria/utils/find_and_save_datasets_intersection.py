@@ -1,4 +1,4 @@
-from antropometria.utils.load_data import LoadData
+from antropometria.data import DatasetReader
 from functools import reduce
 from typing import List
 
@@ -8,7 +8,8 @@ def find_and_save_datasets_intersection(datasets_name: List[str], key_column: st
     all_data = []
 
     for dataset in datasets_name:
-        x, y = LoadData(dataset, 'distances_px', ['casos', 'controles'], keep_instances_name=True).load()
+        reader = DatasetReader(folder='shared_instances', dataset_name=dataset, classes=['1'])
+        x, y, _ = reader.read()
 
         all_data.append(x)
         all_instances.append(x[key_column].to_list())

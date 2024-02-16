@@ -5,7 +5,10 @@ nohup.out
 antropometria/output/*
 !antropometria/output/GridSearch/.gitkeep
 antropometria/data/*
-!antropometria/data/dlibHOG
+!antropometria/data/__init__.py
+!antropometria/data/dataset_analyzer.py
+!antropometria/data/dataset_reader.py
+!antropometria/data/tests
 !antropometria/data/dumb
 .pytest_cache/
 .DS_Store

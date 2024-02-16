@@ -1,10 +1,10 @@
 import time
 
 from antropometria.config import get_logger
+from antropometria.data import DatasetReader
 from antropometria.hyperparameter_tuning import run_hyperparameter_tuning
 from antropometria.preprocessing.run_preprocessing import run_preprocessing
 from antropometria.utils.cleanup_processed_data import cleanup_processed_data
-from antropometria.utils.load_data import LoadData
 
 
 log = get_logger(__file__)
@@ -20,7 +20,9 @@ DEFAULT_VALUES = [
 
 def run(folder: str, dataset_name: str, classes: list[str]):
     data_name = f'{folder}_{dataset_name}'
-    x, y, classes_count = LoadData(folder, dataset_name, classes).load()
+
+    reader = DatasetReader(folder=folder, dataset_name=dataset_name, classes=classes)
+    x, y, classes_count = reader.read()
 
     run_preprocessing(data=(x, y), name=data_name)
     run_hyperparameter_tuning(data_name, classes_count)
