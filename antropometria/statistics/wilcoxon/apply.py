@@ -5,8 +5,8 @@ from itertools import combinations
 from scipy.stats import wilcoxon
 
 
-SORT_COLUMNS = ['classifier', 'red_dim', 'sampling']
-FILTER_COLUMNS = ['classifier', 'red_dim', 'sampling', 'err_f1score']
+SORT_COLUMNS = ['classifier', 'red_dim', 'dataset_imbalance']
+FILTER_COLUMNS = ['classifier', 'red_dim', 'dataset_imbalance', 'err_f1score']
 
 
 def apply_wilcoxon():

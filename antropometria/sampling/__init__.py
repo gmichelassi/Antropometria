@@ -1,2 +1,0 @@
-from antropometria.sampling.OverSampling import OverSampling
-from antropometria.sampling.UnderSampling import UnderSampling
