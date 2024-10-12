@@ -17,7 +17,7 @@ def build_ratio_dataset(dataset: pd.DataFrame, name: str) -> None:
     if not os.path.isdir(folder_name):
         os.mkdir(folder_name)
 
-    with open(f'{folder_name}/{name}.csv', 'w') as csvfile:
+    with open(f'{folder_name}/{name}.csv', 'w', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(columns)
 
