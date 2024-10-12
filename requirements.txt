@@ -1,6 +1,6 @@
 absl-py==2.1.0
 aggdraw==1.3.18.post0
-aiohttp==3.9.5
+aiohttp==3.10.2
 aiosignal==1.3.1
 appdirs==1.4.4
 astroid==3.3.5
