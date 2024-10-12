@@ -11,7 +11,7 @@ from antropometria.error_estimation.ErrorEstimation import ErrorEstimation
 
 class RandomSamplingErrorEstimation(ErrorEstimation):
     def __init__(self, x: np.ndarray, y: np.ndarray, class_count: List[int], estimator: Any):
-        super(RandomSamplingErrorEstimation, self).__init__(x, y, class_count, estimator)
+        super().__init__(x, y, class_count, estimator)
         self.removed_values = pd.read_csv(TEMPORARY_RANDOM_SAMPLES).to_numpy()
         self.removed_values_labels = pd.read_csv(TEMPORARY_RANDOM_SAMPLES_LABELS).T.to_numpy()[0]
 

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List, Tuple
 
 import numpy as np
 
@@ -7,9 +7,6 @@ from antropometria.error_estimation.ErrorEstimation import ErrorEstimation
 
 
 class DefaultErrorEstimation(ErrorEstimation):
-    def __init__(self, x: np.ndarray, y: np.ndarray, class_count: List[int], estimator: Any):
-        super(DefaultErrorEstimation, self).__init__(x, y, class_count, estimator)
-
     def run_error_estimation(self) -> Dict[str, Tuple[float, float]]:
         folds = self.get_folds()
 

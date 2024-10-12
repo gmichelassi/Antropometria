@@ -1,3 +1,4 @@
+# pylint: disable=too-many-arguments, too-many-positional-arguments
 import math
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Tuple
@@ -144,7 +145,7 @@ class ErrorEstimation(ABC):
 
         true_positive, false_positive, true_negative, false_negative = 0, 0, 0, 0
 
-        for i in range(len(y_true)):
+        for i, _ in enumerate(y_true):
             if y_true[i] == y_predicted[i] == 1:
                 true_positive += 1
             if y_predicted[i] == 1 and y_true[i] != y_predicted[i]:

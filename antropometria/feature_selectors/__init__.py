@@ -5,3 +5,5 @@ from antropometria.feature_selectors.get_feature_selector import \
 from antropometria.feature_selectors.MRMR import MRMR
 from antropometria.feature_selectors.RFS import RFS
 from antropometria.feature_selectors.RFSelect import RFSelect
+
+__all__ = ['CFS', 'FCBF', 'get_feature_selector', 'MRMR', 'RFS', 'RFSelect']

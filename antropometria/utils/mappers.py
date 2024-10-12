@@ -1,3 +1,4 @@
+# pylint: disable=too-many-arguments, too-many-positional-arguments
 from antropometria.config.types import Classifier, Reduction, Sampling
 
 

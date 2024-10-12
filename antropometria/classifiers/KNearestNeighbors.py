@@ -13,7 +13,3 @@ class KNearestNeighbors:
             'leaf_size': [1, 10, 30],
             'n_jobs': [-1]
         }
-
-    @staticmethod
-    def get_trained_estimator(parameters):
-        return

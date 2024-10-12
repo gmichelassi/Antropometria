@@ -21,7 +21,3 @@ class NeuralNetwork:
             'max_iter': [1000],
             'random_state': [707878]
         }
-
-    @staticmethod
-    def get_trained_estimator(parameters):
-        return

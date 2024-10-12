@@ -10,7 +10,7 @@ from antropometria.utils.get_difference_of_classes import \
 
 class SmoteErrorEstimation(ErrorEstimation):
     def __init__(self, x: np.ndarray, y: np.ndarray, class_count: List[int], estimator: Any):
-        super(SmoteErrorEstimation, self).__init__(x, y, class_count, estimator)
+        super().__init__(x, y, class_count, estimator)
 
         self.diff_classes = get_difference_of_classes(self.class_count)
         self.x: np.ndarray = x[:-self.diff_classes]

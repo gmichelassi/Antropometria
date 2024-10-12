@@ -26,16 +26,12 @@ class RandomForest:
         return sorted_uniq([
             self.sqrt_n_features,
             *list(
-                set(
+                {
                     [
                         int(i) for i in linspace(
                             int(0.5 * self.sqrt_n_features), int(2 * self.sqrt_n_features), 3
                         ) if i < self.n_features
                     ]
-                )
+                }
             )
         ])
-
-    @staticmethod
-    def get_trained_estimator(parameters):
-        return

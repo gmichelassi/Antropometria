@@ -10,7 +10,7 @@ def find_and_save_datasets_intersection(datasets_name: List[str], key_column: st
 
     for dataset in datasets_name:
         reader = DatasetReader(folder='shared_instances', dataset_name=dataset, classes=['1'])
-        x, y, _ = reader.read()
+        x, _, _ = reader.read()
 
         all_data.append(x)
         all_instances.append(x[key_column].to_list())

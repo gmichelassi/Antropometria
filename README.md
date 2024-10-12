@@ -46,9 +46,13 @@ Em `antropometria/config/training_parameters.py` estão definidas as configuraç
 
 ##### Executar
 Na raiz do projeto execute `python3 app.py`.
-- Não se esqueça de alterar a chamada do método `run_hyperparameter_tuning` em `antropometria/main.py`, para os exemplos acima temos duas opções de chamada do método:
-  - run_hyperparameter_tuning('exemplo1', 'mydata', ['A', 'B'])
-  - run_hyperparameter_tuning('exemplo2', 'mydata', [''])
+- Não se esqueça de alterar o arquivo `app.py` para que seus dados sejam carregados e os testes sejam executados.
+```
+DEFAULT_VALUES = [
+    ('exemplo1', 'mydata', ['A', 'B']), # 'A' e 'B' são as classes que serão carregadas e cada uma está em um arquivo .csv separado
+    ('exemplo2', 'mydata', None) # todos os dados estão em um mesmo arquivo .csv
+]
+```
 
 
 ##### Executar
@@ -80,3 +84,13 @@ Arquivos e diretórios
 Commits
 - Durante seus _commits_, as mensagens devem ser claras e explicativas do que foi alterado.
 - Utilize os prefixos `feat: | refactor: | chore: | fix:` e outros para deixar mais claro a intençao do seu _commit_.
+
+### Testes, qualidade de código e CI/CD
+
+Os seguintes comandos são obrigatórios antes de abrir um _pull request_:
+- `pytest` para rodar os testes unitários;
+- `propector` para verificar a qualidade do código;
+- `isort .` para organizar os imports;
+
+Esses comandos são verificados ao abrir um PR, e o _pipeline_ de CI/CD só é aprovado se todos os testes passarem.
+

@@ -21,6 +21,6 @@ class MRMR(BaseEstimator, TransformerMixin):
 
         return x[:, ranking[:self.n_features_to_select]]
 
-    def fit_transform(self, x: np.ndarray, y: np.ndarray = None, **fit_param) -> np.ndarray:
-        ranking = self.fit(x, y)
-        return self.transform(x, ranking)
+    def fit_transform(self, X: np.ndarray, y: np.ndarray = None, **_) -> np.ndarray:
+        ranking = self.fit(X, y)
+        return self.transform(X, ranking)

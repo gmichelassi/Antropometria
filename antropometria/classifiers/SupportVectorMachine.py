@@ -15,7 +15,3 @@ class SupportVectorMachine:
             'probability': [True],
             'random_state': [707878]
         }
-
-    @staticmethod
-    def get_trained_estimator(parameters):
-        return

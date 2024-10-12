@@ -35,8 +35,7 @@ def get_feature_selector(
     if lowered_reduction == 'pca':
         if n_features_to_keep < min(instances, features):
             return reduction_method(n_components=n_features_to_keep)
-        else:
-            return reduction_method(n_components=min(instances, features))
+        return reduction_method(n_components=min(instances, features))
 
     if lowered_reduction == 'relieff':
         return reduction_method(n_features_to_select=n_features_to_keep, n_neighbors=100, n_jobs=-1)

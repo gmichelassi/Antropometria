@@ -1,3 +1,4 @@
+# pylint: disable=dangerous-default-value, too-many-arguments, too-many-positional-arguments
 import os
 import platform
 import time
@@ -134,9 +135,6 @@ class PreProcess:
 
     def __original_number_of_features(self):
         return self.dataset.shape[1]
-
-    def __class_counts(self):
-        return np.unique(self.labels, return_counts=True)[1]
 
     def __combinations(self):
         return product(self.reductions, self.samplings, self.filters, self.min_max_normalization)

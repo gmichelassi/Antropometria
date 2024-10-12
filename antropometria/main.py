@@ -37,4 +37,5 @@ def main(*args, **kwargs):
 
     cleanup_processed_data()
 
-    log.info("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
+    total_time = (time.time() - start_time) / 60
+    log.info(f"Total time elapsed: {total_time:.2f} minutes")
