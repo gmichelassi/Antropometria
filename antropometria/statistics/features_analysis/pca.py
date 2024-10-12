@@ -48,7 +48,7 @@ class PCAAnalysis:
                     second_class_feature = data[1][feature].values
                     second_class_feature_mean = second_class_feature.mean()
 
-                    statistic, pvalue = ttest_ind(first_class_feature, second_class_feature)
+                    _, pvalue = ttest_ind(first_class_feature, second_class_feature)
                     test.append([feature, component, first_class_feature_mean, second_class_feature_mean, pvalue])
 
         pd.DataFrame(test, columns=['Distancia', 'Componente', 'Media Casos', 'Media Controles', 'pvalor']).to_csv(
@@ -59,9 +59,8 @@ class PCAAnalysis:
 
     @staticmethod
     def save_dict(components_dict: dict, file: str):
-        output_file = open(file, "w")
-        json.dump(components_dict, output_file, indent=4)
-        output_file.close()
+        with open(file, 'w', encoding='utf-8') as output_file:
+            json.dump(components_dict, output_file, indent=4)
 
 
 def main():
@@ -80,4 +79,5 @@ def main():
 if __name__ == '__main__':
     start_time = time.time()
     main()
-    print("--- Total execution time: %s minutes ---" % ((time.time() - start_time) / 60))
+    total_time = (time.time() - start_time) / 60
+    print(f"Total time elapsed: {total_time:.2f} minutes")

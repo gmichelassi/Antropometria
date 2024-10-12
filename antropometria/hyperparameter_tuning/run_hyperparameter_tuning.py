@@ -1,3 +1,4 @@
+# pylint: disable=too-many-locals
 from itertools import product
 from typing import List
 
@@ -29,7 +30,7 @@ def run_hyperparameter_tuning(dataset_name: str, classes_count: List[int]):
             x, y = load_processed_data(dataset_name, apply_min_max, p_filter, reduction, sampling)
 
             for classifier in CLASSIFIERS:
-                accuracy, precision, recall, f1, parameters, best_estimator = grid_search(classifier, x, y)
+                accuracy, precision, recall, _, parameters, best_estimator = grid_search(classifier, x, y)
                 current_test = map_test_to_dict(
                     dataset_name, classifier.__name__, reduction, p_filter, apply_min_max, sampling
                 )

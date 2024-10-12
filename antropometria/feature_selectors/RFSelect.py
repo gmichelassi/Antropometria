@@ -15,6 +15,6 @@ class RFSelect(BaseEstimator, TransformerMixin):
     def transform(self, x: np.ndarray) -> np.ndarray:
         return x[:, self.__sel.get_support()]
 
-    def fit_transform(self, x: np.ndarray, y: np.ndarray = None, **fit_param) -> np.ndarray:
-        self.fit(x, y)
-        return self.transform(x)
+    def fit_transform(self, X: np.ndarray, y: np.ndarray = None, **_) -> np.ndarray:
+        self.fit(X, y)
+        return self.transform(X)

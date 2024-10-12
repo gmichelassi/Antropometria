@@ -10,7 +10,3 @@ class DiscriminantAnalysis:
             'solver': ['svd', 'lsqr', 'eigen'],
             'shrinkage': ['auto', None]
         }
-
-    @staticmethod
-    def get_trained_estimator(parameters):
-        return

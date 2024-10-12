@@ -18,7 +18,7 @@ def apply_friedman_for_all(data: pd.DataFrame):
         'mediapipecustom': 0
     }
 
-    for index, row in transformed_data.T.iterrows():
+    for _, row in transformed_data.T.iterrows():
         total[row.idxmax()] += 1
 
     statistic, pvalue = friedmanchisquare(*transformed_data.values)
@@ -33,8 +33,8 @@ def apply_friedman_for_per_test(data: pd.DataFrame):
         _, pvalue = friedmanchisquare(*transformed_data.values)
         pvalues.append(pvalue)
 
-    holm_conclusions, bonferroni_adjusted_pvalues, _, _ = multipletests(pvalues, alpha=.05, method='bonferroni')
-    holm_conclusions, holm_adjusted_pvalues, _, _ = multipletests(pvalues, alpha=.05, method='holm')
+    _, bonferroni_adjusted_pvalues, _, _ = multipletests(pvalues, alpha=.05, method='bonferroni')
+    _, holm_adjusted_pvalues, _, _ = multipletests(pvalues, alpha=.05, method='holm')
 
     for classifier, pvalue, bonferroni_adjusted_pvalue, holm_adjusted_pvalue in zip(
         CLASSIFIER_NAMES, pvalues, bonferroni_adjusted_pvalues, holm_adjusted_pvalues

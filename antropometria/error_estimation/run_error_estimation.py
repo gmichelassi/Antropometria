@@ -21,7 +21,7 @@ log = logger.get_logger(__file__)
 
 
 def run_error_estimation(x, y, classes_count, best_estimator, sampling):
-    log.info(f'Running error estimation')
+    log.info('Running error estimation')
 
     initial_time = time.time()
 

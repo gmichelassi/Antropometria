@@ -1,7 +1,3 @@
-import antropometria.classifiers
-import antropometria.config
-import antropometria.dataset_imbalance
-import antropometria.feature_selectors
-import antropometria.tests
-import antropometria.utils
 from antropometria.main import main
+
+__all__ = ['main', 'utils']

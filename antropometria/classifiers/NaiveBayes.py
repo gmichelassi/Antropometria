@@ -7,7 +7,3 @@ class NaiveBayes:
         self.n_features = n_features
         self.estimator = GaussianNB()
         self.parameter_grid = {}
-
-    @staticmethod
-    def get_trained_estimator(parameters):
-        return

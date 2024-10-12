@@ -21,7 +21,7 @@ class PeasonCorrelationFeatureSelector:
                 for j in range(i+1, n_features):
                     if not features_to_delete[j]:
                         feature_j = self.dataset.iloc[:, j].to_numpy()
-                        pearson, pvalue = stats.pearsonr(feature_i, feature_j)
+                        pearson, _ = stats.pearsonr(feature_i, feature_j)
                         if abs(pearson) >= self.threshold:
                             features_to_delete[j] = True
 

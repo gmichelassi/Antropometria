@@ -1,9 +1,10 @@
+# pylint: disable=too-many-arguments, too-many-positional-arguments
 import csv
 from typing import Dict, List, Tuple
 
 
 def write_header(file: str, fieldnames: List[str]) -> None:
-    with open(file, 'w') as csvfile:
+    with open(file, 'w', encoding='utf-8') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
@@ -28,7 +29,7 @@ def save_results(
         error_estimation_results: Dict,
         parameters: Dict
 ) -> None:
-    with open(file, 'a') as csvfile:
+    with open(file, 'a', encoding='utf-8') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         results = {}
         results.update(test)

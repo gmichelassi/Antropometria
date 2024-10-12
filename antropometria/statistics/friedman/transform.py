@@ -1,18 +1,18 @@
+# pylint: disable=too-many-locals
 from itertools import product
 from typing import List
 
 import pandas as pd
 
-from antropometria.config.constants import (CLASSIFIER_NAMES, MIN_MAXS,
-                                            PEARSONS, REDUCTIONS_NAMES,
-                                            SAMPLING_NAMES)
+from antropometria.config.constants import (MIN_MAXS, PEARSONS,
+                                            REDUCTIONS_NAMES, SAMPLING_NAMES)
 from antropometria.utils import \
     transform_string_of_numbers_into_array_of_floats
 
 EXPECTED_AMOUNT = 5
 
 
-def transform(data: pd.DataFrame, classifiers: List[str] = CLASSIFIER_NAMES) -> pd.DataFrame:
+def transform(data: pd.DataFrame, classifiers: List[str] = None) -> pd.DataFrame:
     df = pd.DataFrame()
     title_to_lib_and_f1_mapping = {}
 
@@ -36,7 +36,7 @@ def transform(data: pd.DataFrame, classifiers: List[str] = CLASSIFIER_NAMES) -> 
                 title_to_lib_and_f1_mapping[current_title] = {
                     **title_to_lib_and_f1_mapping[current_title],
                     img_lib: f1_score
-                } if current_title in list(title_to_lib_and_f1_mapping.keys()) else {img_lib: f1_score}
+                } if current_title in list(title_to_lib_and_f1_mapping.keys()) else {img_lib: f1_score} # pylint: disable=consider-iterating-dictionary
 
     for row_name, values in title_to_lib_and_f1_mapping.items():
         df = pd.concat([df, pd.Series(data=values, name=row_name)], axis=1)

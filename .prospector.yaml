@@ -1,0 +1,11 @@
+allow-shorthand: false
+
+inherits:
+  - strictness_medium
+
+pylint:
+  disable:
+    - logging-fstring-interpolation
+    - logging-not-lazy
+
+test-warnings: true

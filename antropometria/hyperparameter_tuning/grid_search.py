@@ -1,3 +1,4 @@
+# pylint: disable=too-many-locals
 import time
 
 from sklearn.model_selection import GridSearchCV
@@ -12,7 +13,7 @@ def grid_search(classifier, x, y):
     log.info(f'Running cross validation for {classifier.__name__}')
 
     initial_time = time.time()
-    n_instances, n_features = x.shape
+    _, n_features = x.shape
     model = classifier(n_features=n_features)
 
     grd = GridSearchCV(
