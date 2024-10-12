@@ -2,9 +2,8 @@ from .calculate_number_of_features_to_keep import calculate_number_of_n_features
 from antropometria.config import REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, PROCESSED_DIR
 from antropometria.config import logger
 from antropometria.feature_selectors.get_feature_selector import get_feature_selector
-from antropometria.sampling.OverSampling import OverSampling
-from antropometria.sampling.UnderSampling import UnderSampling
-from antropometria.statistics import apply_pearson_feature_selection
+from antropometria.dataset_imbalance import ClassImbalanceReduction
+from antropometria.statistics import PeasonCorrelationFeatureSelector
 from antropometria.utils.timeout import timeout
 from itertools import product
 from sklearn.preprocessing import MinMaxScaler
@@ -101,12 +100,12 @@ class PreProcess:
         return x, y
 
     @staticmethod
-    def apply_min_max_normalization(dataset: np.ndarray) -> np.ndarray:
-        return MinMaxScaler().fit_transform(dataset.copy())
+    def apply_min_max_normalization(dataset: pd.DataFrame) -> pd.DataFrame:
+        return pd.DataFrame(MinMaxScaler().fit_transform(dataset.copy()), columns=dataset.columns)
 
     @staticmethod
     def apply_pearson_correlation_filter(dataset: pd.DataFrame, p_filter: float) -> pd.DataFrame:
-        return apply_pearson_feature_selection(dataset.copy(), p_filter)
+        return PeasonCorrelationFeatureSelector(dataset.copy(), p_filter).apply_pearson_feature_selection()
 
     @staticmethod
     def apply_feature_selection(
@@ -122,12 +121,9 @@ class PreProcess:
 
     @staticmethod
     def apply_class_imbalance_reduction(
-        dataset: np.ndarray, labels: np.ndarray, sampling: str
-    ) -> tuple[np.ndarray, np.ndarray]:
-        if sampling == 'Random':
-            return UnderSampling().fit_transform(dataset, labels)
-
-        return OverSampling(sampling).fit_transform(dataset, labels)
+        dataset: pd.DataFrame, labels: np.ndarray, sampling: str
+    ) -> tuple[pd.DataFrame, np.ndarray]:
+        return ClassImbalanceReduction(dataset, labels, sampling).apply_class_imbalance_reduction()
 
     def __instances(self):
         return self.dataset.shape[0]
