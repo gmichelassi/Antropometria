@@ -74,7 +74,7 @@ class TestErrorEstimation:
             f1_macro=[0.99, 0.98, 0.95]
         )
 
-        assert list(result_dict.keys()) == MULTICLASS_FIELDNAMES[10:len(MULTICLASS_FIELDNAMES) - 1]
+        assert list(result_dict.keys()) == MULTICLASS_FIELDNAMES[11:len(MULTICLASS_FIELDNAMES) - 1]
         assert isinstance(result_dict['err_accuracy'], float)
         assert isinstance(result_dict['err_precision_micro'], float)
         assert isinstance(result_dict['err_recall_micro'], float)
@@ -106,7 +106,7 @@ class TestErrorEstimation:
             f1=[0.99, 0.98, 0.95],
         )
 
-        assert list(result_dict.keys()) == BINARY_FIELDNAMES[10:len(BINARY_FIELDNAMES) - 1]
+        assert list(result_dict.keys()) == BINARY_FIELDNAMES[11:len(BINARY_FIELDNAMES) - 1]
         assert isinstance(result_dict['err_accuracy'], float)
         assert isinstance(result_dict['err_precision'], float)
         assert isinstance(result_dict['err_recall'], float)

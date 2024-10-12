@@ -7,7 +7,7 @@ from antropometria.config import DATA_DIR
 
 FOLDER_CHOICES = [file for file in os.listdir(DATA_DIR) if os.path.isdir(f'{DATA_DIR}{file}')]
 DEFAULT_VALUES = [
-    ('dataset_folder', 'dataset_name', ['1st_class', '2nd_class', '3rd_class']),
+    ('dumb', 'wine', None),
 ]
 
 if __name__ == '__main__':

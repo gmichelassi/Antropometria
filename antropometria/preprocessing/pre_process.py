@@ -71,7 +71,7 @@ class PreProcess:
 
         if 0.0 < p_filter <= 0.99:
             log.info('Applying pearson correlation filter')
-            x = self.apply_pearson_correlation_filter(x, p_filter).to_numpy()
+            x = self.apply_pearson_correlation_filter(x, p_filter)
 
         if apply_min_max:
             log.info('Applying min max normalization')
@@ -109,7 +109,7 @@ class PreProcess:
 
     @staticmethod
     def apply_feature_selection(
-        dataset: np.ndarray,
+        dataset: pd.DataFrame,
         labels: np.ndarray,
         reduction: str,
         n_features_to_keep: int,
@@ -117,7 +117,7 @@ class PreProcess:
         current_number_of_features: int
     ) -> np.ndarray:
         feature_selector = get_feature_selector(reduction, n_features_to_keep, instances, current_number_of_features)
-        return feature_selector.fit_transform(dataset, labels)
+        return feature_selector.fit_transform(dataset.to_numpy(), labels)
 
     @staticmethod
     def apply_class_imbalance_reduction(

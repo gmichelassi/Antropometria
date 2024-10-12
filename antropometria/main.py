@@ -16,7 +16,8 @@ def run(folder: str, dataset_name: str, classes: list[str]):
     reader = DatasetReader(folder=folder, dataset_name=dataset_name, classes=classes)
     x, y, classes_count = reader.read()
 
-    PreProcess(dataset=x, labels=y, name=data_name).run()
+    preprocessing = PreProcess(dataset=x, labels=y, name=data_name)
+    preprocessing.run()
     run_hyperparameter_tuning(data_name, classes_count)
 
 

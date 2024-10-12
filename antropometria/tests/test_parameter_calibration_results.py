@@ -8,7 +8,6 @@ from antropometria.utils.results import extract_results, save_results, write_hea
 OUTPUT_FILE = './antropometria/output/file_test.csv'
 ANY = 'any'
 TEST = {
-    'biblioteca': ANY,
     'classifier': ANY,
     'reduction': ANY,
     'filtro': ANY,
@@ -61,6 +60,7 @@ class TestParameterCalibrationResults:
 
     def test_save_results(self):
         save_results(
+            dataset_shape=(100, 10),
             file=OUTPUT_FILE,
             fieldnames=MULTICLASS_FIELDNAMES,
             test=TEST,

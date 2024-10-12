@@ -56,11 +56,11 @@ class TestMain:
 
 
 @patch('antropometria.main.DatasetReader', new=DatasetReaderMock)
-@patch('antropometria.main.run_preprocessing')
+@patch('antropometria.main.PreProcess')
 @patch('antropometria.main.run_hyperparameter_tuning')
 class TestRun:
-    def test_run_works_correctly(self, mocked_run_hyperparameter_tuning, mocked_run_preprocessing):
+    def test_run_works_correctly(self, mocked_run_hyperparameter_tuning, mocked_preprocess):
         run('folder', 'dataset', ['class_1', 'class_2'])
 
-        mocked_run_preprocessing.assert_called_once_with(data=(dataset, labels), name='folder_dataset')
+        mocked_preprocess.assert_called_once_with(dataset=dataset, labels=labels, name='folder_dataset')
         mocked_run_hyperparameter_tuning.assert_called_once_with('folder_dataset', classes_count)

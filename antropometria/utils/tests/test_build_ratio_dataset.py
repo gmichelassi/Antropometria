@@ -30,9 +30,9 @@ class TestBuildRatioDataset:
                     value_j = DF_TO_CREATE_RATIO_DF.iloc[row_index, column_j]
 
                     if value_i >= value_j:
-                        assert row[column_index] == np.float64(value_i / value_j)
+                        assert row.iloc[column_index] == np.float64(value_i / value_j)
                     else:
-                        assert row[column_index] == np.float64(value_j / value_i)
+                        assert row.iloc[column_index] == np.float64(value_j / value_i)
 
                     column_index += 1
 
