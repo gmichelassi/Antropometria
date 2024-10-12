@@ -2,6 +2,7 @@ imbalanced_learn==0.12.0
 matplotlib==3.9.2
 numpy==1.26.4
 pandas==2.2.3
+prospector==1.12.1
 pydash==7.0.7
 pytest==8.0.0
 scikit_learn==1.4.2
