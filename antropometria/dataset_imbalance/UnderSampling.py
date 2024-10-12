@@ -10,7 +10,7 @@ RANDOM_STATE = 10000
 
 class UnderSampling:
     @staticmethod
-    def fit_transform(x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    def fit_transform(x: pd.DataFrame, y: np.ndarray) -> Tuple[pd.DataFrame, np.ndarray]:
         under_sampler = RandomUnderSampler(random_state=RANDOM_STATE)
         x_novo, y_novo = under_sampler.fit_resample(x, y)
 

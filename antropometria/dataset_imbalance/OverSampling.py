@@ -15,7 +15,7 @@ class OverSampling:
     def __init__(self, algorithm: Union[Sampling, DEFAULT] = 'default'):
         self.algorithm = algorithm
 
-    def fit_transform(self, x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    def fit_transform(self, x: pd.DataFrame, y: np.ndarray) -> Tuple[pd.DataFrame, np.ndarray]:
         smote = self.__get_smote()
 
         x_novo, y_novo = smote.fit_resample(x, y)
