@@ -1,1 +1,2 @@
-from antropometria.dataset_imbalance.ClassImbalanceReduction import ClassImbalanceReduction
+from antropometria.dataset_imbalance.ClassImbalanceReduction import \
+    ClassImbalanceReduction

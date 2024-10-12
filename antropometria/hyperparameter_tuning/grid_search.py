@@ -1,10 +1,9 @@
 import time
 
-from antropometria.config import CV, SCORING
-from antropometria.config import logger
-from antropometria.utils.results import extract_results
 from sklearn.model_selection import GridSearchCV
 
+from antropometria.config import CV, SCORING, logger
+from antropometria.utils.results import extract_results
 
 log = logger.get_logger(__file__)
 

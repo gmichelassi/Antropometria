@@ -1,11 +1,13 @@
-import pandas as pd
-
-from antropometria.config.constants import CLASSIFIER_NAMES, REDUCTIONS_NAMES, PEARSONS, MIN_MAXS, SAMPLING_NAMES
-from antropometria.utils import transform_string_of_numbers_into_array_of_floats
 from itertools import product
-
 from typing import List
 
+import pandas as pd
+
+from antropometria.config.constants import (CLASSIFIER_NAMES, MIN_MAXS,
+                                            PEARSONS, REDUCTIONS_NAMES,
+                                            SAMPLING_NAMES)
+from antropometria.utils import \
+    transform_string_of_numbers_into_array_of_floats
 
 EXPECTED_AMOUNT = 5
 

@@ -1,11 +1,11 @@
 import os
-import numpy as np
-import pandas as pd
-
-from antropometria.exceptions import MissingDatasetError
-from sklearn.utils import shuffle
 from typing import Optional
 
+import numpy as np
+import pandas as pd
+from sklearn.utils import shuffle
+
+from antropometria.exceptions import MissingDatasetError
 
 BASE_PATH = './antropometria/data'
 LABEL_REGEX = '.*(label).*'

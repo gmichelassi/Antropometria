@@ -1,6 +1,5 @@
 import csv
-
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
 
 
 def write_header(file: str, fieldnames: List[str]) -> None:

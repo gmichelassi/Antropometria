@@ -1,19 +1,23 @@
-from .calculate_number_of_features_to_keep import calculate_number_of_n_features_to_keep
-from antropometria.config import REDUCTIONS, SAMPLINGS, FILTERS, MIN_MAX_NORMALIZATION, PROCESSED_DIR
-from antropometria.config import logger
-from antropometria.feature_selectors.get_feature_selector import get_feature_selector
-from antropometria.dataset_imbalance import ClassImbalanceReduction
-from antropometria.statistics import PeasonCorrelationFeatureSelector
-from antropometria.utils.timeout import timeout
+import os
+import platform
+import time
 from itertools import product
-from sklearn.preprocessing import MinMaxScaler
 from typing import Optional
 
 import numpy as np
-import os
 import pandas as pd
-import platform
-import time
+from sklearn.preprocessing import MinMaxScaler
+
+from antropometria.config import (FILTERS, MIN_MAX_NORMALIZATION,
+                                  PROCESSED_DIR, REDUCTIONS, SAMPLINGS, logger)
+from antropometria.dataset_imbalance import ClassImbalanceReduction
+from antropometria.feature_selectors.get_feature_selector import \
+    get_feature_selector
+from antropometria.statistics import PeasonCorrelationFeatureSelector
+from antropometria.utils.timeout import timeout
+
+from .calculate_number_of_features_to_keep import \
+    calculate_number_of_n_features_to_keep
 
 log = logger.get_logger(__file__)
 

@@ -1,5 +1,4 @@
 import numpy as np
-
 from skfeature.function.sparse_learning_based.RFS import rfs
 from sklearn.base import BaseEstimator, TransformerMixin
 

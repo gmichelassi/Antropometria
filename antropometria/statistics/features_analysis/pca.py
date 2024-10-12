@@ -1,12 +1,13 @@
 import json
+import time
+from typing import List
+
 import numpy as np
 import pandas as pd
-import time
-
-from antropometria.data import DatasetReader
 from scipy.stats import ttest_ind
 from sklearn.decomposition import PCA
-from typing import List
+
+from antropometria.data import DatasetReader
 
 THRESHOLD = 0.1
 

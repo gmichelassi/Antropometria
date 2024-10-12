@@ -1,10 +1,10 @@
+from unittest.mock import Mock, call, patch
+
 import numpy as np
 import pandas as pd
+import pytest
 
 from antropometria.main import main, run
-from unittest.mock import patch, call, Mock
-
-import pytest
 
 dataset = pd.DataFrame({})
 labels = np.array([])

@@ -1,6 +1,7 @@
 import csv
-import numpy as np
 import os
+
+import numpy as np
 import pandas as pd
 
 from antropometria.utils.combine_columns_names import combine_columns_names

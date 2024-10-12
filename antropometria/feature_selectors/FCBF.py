@@ -1,5 +1,4 @@
 import numpy as np
-
 from skfeature.function.information_theoretical_based.FCBF import fcbf
 from sklearn.base import BaseEstimator, TransformerMixin
 

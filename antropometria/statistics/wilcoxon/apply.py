@@ -1,9 +1,9 @@
-import pandas as pd
-
-from antropometria.config import IMAGE_PROCESSING_LIBS
 from itertools import combinations
+
+import pandas as pd
 from scipy.stats import wilcoxon
 
+from antropometria.config import IMAGE_PROCESSING_LIBS
 
 SORT_COLUMNS = ['classifier', 'red_dim', 'dataset_imbalance']
 FILTER_COLUMNS = ['classifier', 'red_dim', 'dataset_imbalance', 'err_f1score']

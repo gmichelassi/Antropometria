@@ -1,6 +1,7 @@
-from antropometria.data import DatasetReader
 from functools import reduce
 from typing import List
+
+from antropometria.data import DatasetReader
 
 
 def find_and_save_datasets_intersection(datasets_name: List[str], key_column: str):

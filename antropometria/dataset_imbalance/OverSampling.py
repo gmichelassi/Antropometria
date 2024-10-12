@@ -1,11 +1,13 @@
+from typing import Tuple, Union
+
 import numpy as np
 import pandas as pd
+from imblearn.combine import SMOTETomek
+from imblearn.over_sampling import (SMOTE, SVMSMOTE, BorderlineSMOTE,
+                                    KMeansSMOTE)
+from sklearn.cluster import KMeans
 
 from antropometria.config.types import Sampling
-from imblearn.combine import SMOTETomek
-from imblearn.over_sampling import SMOTE, BorderlineSMOTE, KMeansSMOTE, SVMSMOTE
-from sklearn.cluster import KMeans
-from typing import Tuple, Union
 
 RANDOM_STATE = 10000
 DEFAULT = 'default'

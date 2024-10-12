@@ -1,8 +1,9 @@
+from typing import Any, Dict, List, Tuple
+
 import numpy as np
 
 from antropometria.config.constants import CV
 from antropometria.error_estimation.ErrorEstimation import ErrorEstimation
-from typing import Any, Dict, List, Tuple
 
 
 class DefaultErrorEstimation(ErrorEstimation):

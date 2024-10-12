@@ -1,11 +1,13 @@
+from typing import Any, Dict, List, Tuple
+
 import numpy as np
 import pytest
-
-from antropometria.config.constants import BINARY_FIELDNAMES, MULTICLASS_FIELDNAMES, CV, N_SPLITS
-from antropometria.error_estimation.ErrorEstimation import ErrorEstimation
-from typing import Any, Dict, List, Tuple
 from sklearn.datasets import make_classification
 from sklearn.svm import SVC
+
+from antropometria.config.constants import (BINARY_FIELDNAMES, CV,
+                                            MULTICLASS_FIELDNAMES, N_SPLITS)
+from antropometria.error_estimation.ErrorEstimation import ErrorEstimation
 
 N_FEATURES = 144
 N_SAMPLES = 100

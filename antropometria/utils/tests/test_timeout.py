@@ -1,9 +1,10 @@
-import pytest
 import time
+from unittest.mock import MagicMock
+
+import pytest
+from pytest import approx
 
 from antropometria.utils.timeout import timeout
-from pytest import approx
-from unittest.mock import MagicMock
 
 WAIT_TIME = 5
 MOCK = MagicMock()

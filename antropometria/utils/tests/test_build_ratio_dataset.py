@@ -1,9 +1,9 @@
 import os
+
 import numpy as np
 import pandas as pd
 
 from antropometria.utils import build_ratio_dataset
-
 
 DF_TO_CREATE_RATIO_DF = pd.DataFrame([[1, 2, 3], [5, 6, 7]])
 

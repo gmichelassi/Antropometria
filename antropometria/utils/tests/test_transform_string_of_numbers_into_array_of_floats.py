@@ -1,6 +1,7 @@
 import pytest
 
-from antropometria.utils import transform_string_of_numbers_into_array_of_floats
+from antropometria.utils import \
+    transform_string_of_numbers_into_array_of_floats
 
 
 class TestTransformStringOfNumbersIntoArrayOfFloats:

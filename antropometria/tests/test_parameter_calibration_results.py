@@ -1,9 +1,11 @@
-import numpy as np
-import pandas as pd
 import os
 
+import numpy as np
+import pandas as pd
+
 from antropometria.config.constants import MULTICLASS_FIELDNAMES
-from antropometria.utils.results import extract_results, save_results, write_header
+from antropometria.utils.results import (extract_results, save_results,
+                                         write_header)
 
 OUTPUT_FILE = './antropometria/output/file_test.csv'
 ANY = 'any'

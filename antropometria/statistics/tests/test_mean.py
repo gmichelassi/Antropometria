@@ -2,7 +2,6 @@ import numpy as np
 
 from antropometria.statistics import calculate_mean_from_dict
 
-
 DICT = {
     'accuracy': np.random.uniform(size=(5,)),
     'precision': np.random.uniform(size=(5,)),

@@ -1,9 +1,10 @@
 import pandas as pd
-
-from .transform import transform
-from antropometria.config.constants import CLASSIFIER_NAMES
 from scipy.stats import friedmanchisquare
 from statsmodels.sandbox.stats.multicomp import multipletests
+
+from antropometria.config.constants import CLASSIFIER_NAMES
+
+from .transform import transform
 
 
 def apply_friedman_for_all(data: pd.DataFrame):

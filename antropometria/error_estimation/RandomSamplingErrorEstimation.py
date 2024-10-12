@@ -1,14 +1,12 @@
+from typing import Any, Dict, List, Tuple
+
 import numpy as np
 import pandas as pd
 
-from antropometria.config.constants import (
-    CV,
-    N_SPLITS,
-    TEMPORARY_RANDOM_SAMPLES,
-    TEMPORARY_RANDOM_SAMPLES_LABELS
-)
+from antropometria.config.constants import (CV, N_SPLITS,
+                                            TEMPORARY_RANDOM_SAMPLES,
+                                            TEMPORARY_RANDOM_SAMPLES_LABELS)
 from antropometria.error_estimation.ErrorEstimation import ErrorEstimation
-from typing import Any, Dict, List, Tuple
 
 
 class RandomSamplingErrorEstimation(ErrorEstimation):

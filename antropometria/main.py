@@ -6,7 +6,6 @@ from antropometria.hyperparameter_tuning import run_hyperparameter_tuning
 from antropometria.preprocessing import PreProcess
 from antropometria.utils.cleanup_processed_data import cleanup_processed_data
 
-
 log = get_logger(__file__)
 
 

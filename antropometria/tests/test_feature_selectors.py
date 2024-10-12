@@ -1,8 +1,8 @@
 import numpy as np
-
-from antropometria.feature_selectors.get_feature_selector import get_feature_selector
 from sklearn.datasets import make_classification
 
+from antropometria.feature_selectors.get_feature_selector import \
+    get_feature_selector
 
 N_FEATURES = 144
 N_SAMPLES = 100

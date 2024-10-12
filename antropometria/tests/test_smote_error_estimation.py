@@ -1,11 +1,12 @@
 import numpy as np
 import pytest
-
-from antropometria.config.constants import CV, N_SPLITS
-from antropometria.error_estimation.SmoteErrorEstimation import SmoteErrorEstimation
 from pytest import approx
 from sklearn.datasets import make_classification
 from sklearn.svm import SVC
+
+from antropometria.config.constants import CV, N_SPLITS
+from antropometria.error_estimation.SmoteErrorEstimation import \
+    SmoteErrorEstimation
 
 N_FEATURES = 144
 N_SAMPLES = 100

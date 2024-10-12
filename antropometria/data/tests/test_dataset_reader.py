@@ -1,11 +1,11 @@
+from unittest.mock import patch
+
 import numpy as np
 import pandas as pd
 import pytest
 
 from antropometria.data.dataset_reader import DatasetReader
 from antropometria.exceptions import MissingDatasetError
-from unittest.mock import patch
-
 
 dataset = pd.DataFrame({
     'image_name': ['image_1', 'image_2', 'image_3', 'image_4', 'image_5'],

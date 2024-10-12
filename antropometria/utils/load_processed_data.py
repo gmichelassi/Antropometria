@@ -1,9 +1,10 @@
+from typing import Optional, Tuple
+
 import numpy as np
 import pandas as pd
 
 from antropometria.config.constants import PROCESSED_DIR
 from antropometria.config.types import Reduction, Sampling
-from typing import Optional, Tuple
 
 
 def load_processed_data(

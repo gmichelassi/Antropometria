@@ -1,12 +1,14 @@
 import math
-import numpy as np
-
 from abc import ABC, abstractmethod
+from typing import Any, Dict, List, Tuple
+
+import numpy as np
+from sklearn.metrics import (accuracy_score, f1_score, precision_score,
+                             recall_score)
+
 from antropometria.config.constants import N_SPLITS
 from antropometria.exceptions import NonBinaryDatasetError
 from antropometria.statistics import calculate_mean_from_dict
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from typing import Any, Dict, List, Tuple
 
 
 class ErrorEstimation(ABC):

@@ -1,9 +1,10 @@
+import os
+import shutil
+
+import pytest
+
 from antropometria.config import PROCESSED_DIR
 from antropometria.utils.cleanup_processed_data import cleanup_processed_data
-
-import os
-import pytest
-import shutil
 
 
 @pytest.fixture

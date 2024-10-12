@@ -1,13 +1,14 @@
-import numpy as np
 import os
-import pandas as pd
 
-from antropometria.config.constants import TEMPORARY_RANDOM_SAMPLES, TEMPORARY_RANDOM_SAMPLES_LABELS
-from antropometria.dataset_imbalance.OverSampling import OverSampling
-from antropometria.dataset_imbalance.UnderSampling import UnderSampling
+import numpy as np
+import pandas as pd
 from pytest import approx
 from sklearn.datasets import make_classification
 
+from antropometria.config.constants import (TEMPORARY_RANDOM_SAMPLES,
+                                            TEMPORARY_RANDOM_SAMPLES_LABELS)
+from antropometria.dataset_imbalance.OverSampling import OverSampling
+from antropometria.dataset_imbalance.UnderSampling import UnderSampling
 
 N_FEATURES = 144
 N_SAMPLES = 100

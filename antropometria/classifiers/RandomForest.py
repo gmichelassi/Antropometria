@@ -1,6 +1,6 @@
 from numpy import linspace, sqrt
-from sklearn.ensemble import RandomForestClassifier
 from pydash import sorted_uniq
+from sklearn.ensemble import RandomForestClassifier
 
 
 class RandomForest:

@@ -1,22 +1,16 @@
-from antropometria.config import get_logger
-from antropometria.config import (
-    BINARY,
-    BINARY_FIELDNAMES,
-    CLASSIFIERS,
-    FILTERS,
-    MIN_MAX_NORMALIZATION,
-    MULTICLASS_FIELDNAMES,
-    REDUCTIONS,
-    SAMPLINGS,
-)
-from antropometria.error_estimation import run_error_estimation
-from antropometria.hyperparameter_tuning.grid_search import grid_search
-from antropometria.utils.load_processed_data import load_processed_data
-from antropometria.utils.mappers import map_test_to_dict, map_grid_search_results_to_dict
-from antropometria.utils.results import write_header, save_results
 from itertools import product
 from typing import List
 
+from antropometria.config import (BINARY, BINARY_FIELDNAMES, CLASSIFIERS,
+                                  FILTERS, MIN_MAX_NORMALIZATION,
+                                  MULTICLASS_FIELDNAMES, REDUCTIONS, SAMPLINGS,
+                                  get_logger)
+from antropometria.error_estimation import run_error_estimation
+from antropometria.hyperparameter_tuning.grid_search import grid_search
+from antropometria.utils.load_processed_data import load_processed_data
+from antropometria.utils.mappers import (map_grid_search_results_to_dict,
+                                         map_test_to_dict)
+from antropometria.utils.results import save_results, write_header
 
 log = get_logger(__file__)
 

@@ -4,7 +4,6 @@ import os
 from antropometria import main
 from antropometria.config import DATA_DIR
 
-
 FOLDER_CHOICES = [file for file in os.listdir(DATA_DIR) if os.path.isdir(f'{DATA_DIR}{file}')]
 DEFAULT_VALUES = [
     ('dumb', 'wine', None),

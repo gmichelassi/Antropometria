@@ -1,8 +1,8 @@
+import numpy as np
+import pandas as pd
+
 from .OverSampling import OverSampling
 from .UnderSampling import UnderSampling
-
-import pandas as pd
-import numpy as np
 
 
 class ClassImbalanceReduction:

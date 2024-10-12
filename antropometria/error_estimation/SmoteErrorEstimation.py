@@ -1,9 +1,11 @@
+from typing import Any, Dict, List, Tuple
+
 import numpy as np
 
-from antropometria.config.constants import N_SPLITS, CV
-from antropometria.utils.get_difference_of_classes import get_difference_of_classes
+from antropometria.config.constants import CV, N_SPLITS
 from antropometria.error_estimation.ErrorEstimation import ErrorEstimation
-from typing import Any, Dict, List, Tuple
+from antropometria.utils.get_difference_of_classes import \
+    get_difference_of_classes
 
 
 class SmoteErrorEstimation(ErrorEstimation):

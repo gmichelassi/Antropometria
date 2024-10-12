@@ -1,13 +1,14 @@
+from typing import Union
+
+from sklearn.decomposition import PCA
+from skrebate import ReliefF
+
 from antropometria.config.types import Reduction
 from antropometria.feature_selectors.CFS import CFS
 from antropometria.feature_selectors.FCBF import FCBF
 from antropometria.feature_selectors.MRMR import MRMR
 from antropometria.feature_selectors.RFS import RFS
 from antropometria.feature_selectors.RFSelect import RFSelect
-from sklearn.decomposition import PCA
-from skrebate import ReliefF
-from typing import Union
-
 
 FeatureSelector = Union[CFS, FCBF, MRMR, RFS, RFSelect, PCA, ReliefF]
 

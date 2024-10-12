@@ -1,5 +1,6 @@
-from antropometria.config.types import Classifier, Reduction
 from typing import Optional
+
+from antropometria.config.types import Classifier, Reduction
 
 
 def skip_current_test(

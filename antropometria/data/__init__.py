@@ -1,2 +1,2 @@
-from antropometria.data.dataset_reader import DatasetReader
 from antropometria.data.dataset_analyzer import DatasetAnalyzer
+from antropometria.data.dataset_reader import DatasetReader
