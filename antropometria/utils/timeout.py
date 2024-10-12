@@ -9,7 +9,7 @@ def timeout(seconds: int, use_timeout: bool):
             return function
 
         def wrapper(*args, **kwargs):
-            def handler(signum, frame):
+            def handler(_, __):
                 raise TimeoutError(f'This call took longer than {seconds} seconds')
 
             signal.signal(signal.SIGALRM, handler)

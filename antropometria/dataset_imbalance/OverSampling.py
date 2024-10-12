@@ -15,6 +15,13 @@ class OverSampling:
     def __init__(self, algorithm: Union[Sampling, DEFAULT] = 'default'):
         self.algorithm = algorithm
 
+    def fit_transform(self, x: pd.DataFrame, y: np.ndarray) -> Tuple[pd.DataFrame, np.ndarray]:
+        smote = self.__get_smote()
+
+        x_novo, y_novo = smote.fit_resample(x, y)
+
+        return x_novo, y_novo
+
     def __get_smote(self) -> Union[SMOTE, BorderlineSMOTE, KMeansSMOTE, SVMSMOTE, SMOTETomek]:
         if self.algorithm == 'Borderline':
             return BorderlineSMOTE(random_state=RANDOM_STATE)
@@ -26,10 +33,3 @@ class OverSampling:
             return SMOTETomek(random_state=RANDOM_STATE)
 
         return SMOTE(random_state=RANDOM_STATE)
-
-    def fit_transform(self, x: pd.DataFrame, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        smote = self.__get_smote()
-
-        x_novo, y_novo = smote.fit_resample(x, y)
-
-        return x_novo, y_novo

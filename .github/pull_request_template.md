@@ -1,5 +1,5 @@
 ## Purpose
-Describe why this pull request will be open. Use [Github Markdown cheat sheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links)
+Describe why this pull request will be open. Use [GitHub Markdown cheat sheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links)
 ## Changes
 ### Added
 - added  `RandomForestClassifier`

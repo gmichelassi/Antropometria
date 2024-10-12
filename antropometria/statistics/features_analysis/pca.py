@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import time
 
-from antropometria.utils.load_data import LoadData
+from antropometria.data import DatasetReader
 from scipy.stats import ttest_ind
 from sklearn.decomposition import PCA
 from typing import List
@@ -64,7 +64,8 @@ class PCAAnalysis:
 
 
 def main():
-    x, y = LoadData('dlibHOG', 'distances_all_px_eu', ['casos', 'controles']).load()
+    reader = DatasetReader(folder='dlibHOG', dataset_name='distances_all_px_eu', classes=['casos', 'controles'])
+    x, y, _ = reader.read()
     pca_analysis = PCAAnalysis(x, y)
 
     components_dict = pca_analysis.compute_best_features()

@@ -3,8 +3,8 @@ import os
 import pandas as pd
 
 from antropometria.config.constants import TEMPORARY_RANDOM_SAMPLES, TEMPORARY_RANDOM_SAMPLES_LABELS
-from antropometria.sampling.OverSampling import OverSampling
-from antropometria.sampling.UnderSampling import UnderSampling
+from antropometria.dataset_imbalance.OverSampling import OverSampling
+from antropometria.dataset_imbalance.UnderSampling import UnderSampling
 from pytest import approx
 from sklearn.datasets import make_classification
 

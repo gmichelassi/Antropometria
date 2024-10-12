@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.decomposition import PCA
 
 
-def calculate_number_of_neatures_to_keep(
+def calculate_number_of_n_features_to_keep(
         original_number_of_features: int,
         current_number_of_features: int,
         dataset: np.ndarray
