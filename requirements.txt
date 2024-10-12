@@ -127,7 +127,7 @@ visualkeras==0.1.2
 wcwidth==0.2.13
 webencodings==0.5.1
 websockets==10.4
-Werkzeug==3.0.2
+Werkzeug==3.0.3
 wrapt==1.16.0
 yarl==1.9.4
 zipp==3.20.0
